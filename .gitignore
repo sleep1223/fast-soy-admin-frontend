@@ -1,66 +1,35 @@
-__pycache__/
-.idea/
-venv/
-.venv/
-.vscode/
-.ruff_cache/
-.pytest_cache/
-
-# Tortoise ORM generated files
-.mypy_cache/
-*.sqlite3
-tortoise_queries.json
-tortoise_last.txt
-
-# Aerich migrations
-aerich.ini
-migrations/
-
-*.log
-*.sqlite3*
-
-.DS_Store
-._.DS_Store
-.pdm-python
-
-
 # Logs
-/web/logs
-/web/*.log
-/web/npm-debug.log*
-/web/yarn-debug.log*
-/web/yarn-error.log*
-/web/pnpm-debug.log*
-/web/lerna-debug.log*
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-/web/node_modules
-/web/.DS_Store
-/web/dist
-/web/dist-ssr
-/web/coverage
-/web/*.local
+node_modules
+.DS_Store
+dist
+dist-ssr
+coverage
+*.local
 
-/web/cypress/videos/
-/web/cypress/screenshots/
+/cypress/videos/
+/cypress/screenshots/
 
 # Editor directories and files
-/web/.vscode/*
-/web/!.vscode/extensions.json
-/web/!.vscode/settings.json
-/web/!.vscode/launch.json
-/web/.idea
-/web/*.suo
-/web/*.ntvs*
-/web/*.njsproj
-/web/*.sln
-/web/*.sw?
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-/web/.VSCodeCounter
-/web/packages/scripts/node_modules/*
-/web/packages/axios/node_modules/*
-/web/packages/color/node_modules/*
-/web/packages/hooks/node_modules/*
-/web/packages/materials/node_modules/*
-/web/packages/ofetch/node_modules/*
-/web/packages/utils/node_modules/*
-/web/.pnpm-store/*
+package-lock.json
+yarn.lock
+
+.VSCodeCounter
