@@ -1,10 +1,10 @@
 import { request } from '../request';
 
 /**
- * Login
+ * login
  *
- * @param userName User name
- * @param password Password
+ * @param userName user name
+ * @param password password
  */
 export function fetchLogin(userName: string, password: string) {
   return request<Api.Auth.LoginToken>({
@@ -17,19 +17,19 @@ export function fetchLogin(userName: string, password: string) {
   });
 }
 
-/** Get user info */
+/** get user info */
 export function fetchGetUserInfo() {
-  return request<Api.Auth.UserInfo>({ url: '/auth/getUserInfo' });
+  return request<Api.Auth.UserInfo>({ url: '/auth/user-info' });
 }
 
 /**
- * Refresh token
+ * refresh token
  *
- * @param refreshToken Refresh token
+ * @param refreshToken refresh token
  */
 export function fetchRefreshToken(refreshToken: string) {
   return request<Api.Auth.LoginToken>({
-    url: '/auth/refreshToken',
+    url: '/auth/refresh-token',
     method: 'post',
     data: {
       refreshToken

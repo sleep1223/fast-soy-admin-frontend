@@ -11,10 +11,13 @@ const local: App.I18n.Schema = {
     add: 'Add',
     addSuccess: 'Add Success',
     backToHome: 'Back to home',
+    batchApprove: 'Batch Approve',
+    batchReject: 'Batch Reject',
     batchDelete: 'Batch Delete',
     cancel: 'Cancel',
     close: 'Close',
     check: 'Check',
+    selectAll: 'Select All',
     expandColumn: 'Expand Column',
     columnSetting: 'Column Setting',
     config: 'Config',
@@ -22,7 +25,14 @@ const local: App.I18n.Schema = {
     delete: 'Delete',
     deleteSuccess: 'Delete Success',
     confirmDelete: 'Are you sure you want to delete?',
+    approve: 'Approve',
+    approveSuccess: 'Approve Success',
+    confirmApprove: 'Are you sure you want to approve?',
+    reject: 'Reject',
+    rejectSuccess: 'Approve Reject',
+    confirmReject: 'Are you sure you want to reject?',
     edit: 'Edit',
+    view: 'View',
     warning: 'Warning',
     error: 'Error',
     index: 'Index',
@@ -36,6 +46,7 @@ const local: App.I18n.Schema = {
     operate: 'Operate',
     pleaseCheckValue: 'Please check whether the value is valid',
     refresh: 'Refresh',
+    refreshAPI: 'Refresh API',
     reset: 'Reset',
     search: 'Search',
     switch: 'Switch',
@@ -228,7 +239,82 @@ const local: App.I18n.Schema = {
     404: 'Page Not Found',
     500: 'Server Error',
     'iframe-page': 'Iframe',
-    home: 'Home'
+    home: 'Home',
+    document: 'Document',
+    document_project: 'Project Document',
+    'document_project-link': 'Project Document(External Link)',
+    document_video: 'Video Tutorial',
+    document_vue: 'Vue Document',
+    document_vite: 'Vite Document',
+    document_unocss: 'UnoCSS Document',
+    document_naive: 'Naive UI Document',
+    'document_pro-naive': 'Pro Naive UI Document',
+    document_antd: 'Ant Design Vue Document',
+    document_alova: 'Alova Document',
+    'user-center': 'User Center',
+    about: 'About',
+    function: 'System Function',
+    alova: 'Alova Example',
+    alova_request: 'Alova Request',
+    alova_scenes: 'Scenario Request',
+    'pro-naive': 'Pro Naive Example',
+    'pro-naive_form': 'Form',
+    'pro-naive_form_basic': 'Basic Form',
+    'pro-naive_form_query': 'Query Form',
+    'pro-naive_form_step': 'Step Form',
+    'pro-naive_table': 'Table',
+    'pro-naive_table_remote': 'Remote',
+    'pro-naive_table_row-edit': 'Row Edit',
+    function_tab: 'Tab',
+    'function_multi-tab': 'Multi Tab',
+    'function_hide-child': 'Hide Child',
+    'function_hide-child_one': 'Hide Child',
+    'function_hide-child_two': 'Two',
+    'function_hide-child_three': 'Three',
+    function_request: 'Request',
+    'function_toggle-auth': 'Toggle Auth',
+    'function_super-page': 'Super Admin Visible',
+    manage: 'System Manage',
+    manage_log: 'Log Manage',
+    manage_api: 'API Manage',
+    manage_user: 'User Manage',
+    'manage_user-detail': 'User Detail',
+    manage_role: 'Role Manage',
+    manage_menu: 'Menu Manage',
+    'multi-menu': 'Multi Menu',
+    'multi-menu_first': 'Menu One',
+    'multi-menu_first_child': 'Menu One Child',
+    'multi-menu_second': 'Menu Two',
+    'multi-menu_second_child': 'Menu Two Child',
+    'multi-menu_second_child_home': 'Menu Two Child Home',
+    exception: 'Exception',
+    exception_403: '403',
+    exception_404: '404',
+    exception_500: '500',
+    plugin: 'Plugin',
+    plugin_copy: 'Copy',
+    plugin_charts: 'Charts',
+    plugin_charts_echarts: 'ECharts',
+    plugin_charts_antv: 'AntV',
+    plugin_charts_vchart: 'VChart',
+    plugin_editor: 'Editor',
+    plugin_editor_quill: 'Quill',
+    plugin_editor_markdown: 'Markdown',
+    plugin_icon: 'Icon',
+    plugin_map: 'Map',
+    plugin_print: 'Print',
+    plugin_swiper: 'Swiper',
+    plugin_video: 'Video',
+    plugin_barcode: 'Barcode',
+    plugin_pinyin: 'pinyin',
+    plugin_excel: 'Excel',
+    plugin_pdf: 'PDF preview',
+    plugin_gantt: 'Gantt Chart',
+    plugin_gantt_dhtmlx: 'dhtmlxGantt',
+    plugin_gantt_vtable: 'VTableGantt',
+    plugin_typeit: 'Typeit',
+    plugin_tables: 'Tables',
+    plugin_tables_vtable: 'VTable'
   },
   page: {
     login: {
@@ -244,7 +330,7 @@ const local: App.I18n.Schema = {
         back: 'Back',
         validateSuccess: 'Verification passed',
         loginSuccess: 'Login successfully',
-        welcomeBack: 'Welcome back, {userName} !'
+        welcomeBack: 'Welcome back, {nickName} !'
       },
       pwdLogin: {
         title: 'Password Login',
@@ -277,6 +363,19 @@ const local: App.I18n.Schema = {
         title: 'Bind WeChat'
       }
     },
+    about: {
+      title: 'About',
+      introduction: `SoybeanAdmin is an elegant and powerful admin template, based on the latest front-end technology stack, including Vue3, Vite7, TypeScript, Pinia and UnoCSS. It has built-in rich theme configuration and components, strict code specifications, and an automated file routing system. In addition, it also uses the online mock data solution based on ApiFox. SoybeanAdmin provides you with a one-stop admin solution, no additional configuration, and out of the box. It is also a best practice for learning cutting-edge technologies quickly.`,
+      projectInfo: {
+        title: 'Project Info',
+        version: 'Version',
+        latestBuildTime: 'Latest Build Time',
+        githubLink: 'Github Link',
+        previewLink: 'Preview Link'
+      },
+      prdDep: 'Production Dependency',
+      devDep: 'Development Dependency'
+    },
     home: {
       branchDesc:
         'For the convenience of everyone in developing and updating the merge, we have streamlined the code of the main branch, only retaining the homepage menu, and the rest of the content has been moved to the example branch for maintenance. The preview address displays the content of the example branch.',
@@ -305,6 +404,357 @@ const local: App.I18n.Schema = {
         desc5: 'Soybean just wrote some of the workbench pages casually, and it was enough to see!'
       },
       creativity: 'Creativity'
+    },
+    function: {
+      tab: {
+        tabOperate: {
+          title: 'Tab Operation',
+          addTab: 'Add Tab',
+          addTabDesc: 'To about page',
+          closeTab: 'Close Tab',
+          closeCurrentTab: 'Close Current Tab',
+          closeAboutTab: 'Close "About" Tab',
+          addMultiTab: 'Add Multi Tab',
+          addMultiTabDesc1: 'To MultiTab page',
+          addMultiTabDesc2: 'To MultiTab page(with query params)'
+        },
+        tabTitle: {
+          title: 'Tab Title',
+          changeTitle: 'Change Title',
+          change: 'Change',
+          resetTitle: 'Reset Title',
+          reset: 'Reset'
+        }
+      },
+      multiTab: {
+        routeParam: 'Route Param',
+        backTab: 'Back function_tab'
+      },
+      toggleAuth: {
+        toggleAccount: 'Toggle Account',
+        authHook: 'Auth Hook Function `hasAuth`',
+        superAdminVisible: 'Super Admin Visible',
+        adminVisible: 'Admin Visible',
+        adminOrUserVisible: 'Admin and User Visible'
+      },
+      request: {
+        repeatedErrorOccurOnce: 'Repeated Request Error Occurs Once',
+        repeatedError: 'Repeated Request Error',
+        repeatedErrorMsg1: 'Custom Request Error 1',
+        repeatedErrorMsg2: 'Custom Request Error 2'
+      }
+    },
+    alova: {
+      scenes: {
+        captchaSend: 'Captcha Send',
+        autoRequest: 'Auto Request',
+        visibilityRequestTips: 'Automatically request when switching browser window',
+        pollingRequestTips: 'It will request every 3 seconds',
+        networkRequestTips: 'Automatically request after network reconnecting',
+        refreshTime: 'Refresh Time',
+        startRequest: 'Start Request',
+        stopRequest: 'Stop Request',
+        requestCrossComponent: 'Request Cross Component',
+        triggerAllRequest: 'Manually Trigger All Automated Requests'
+      }
+    },
+    proNaive: {
+      form: {
+        basic: {
+          title: 'Basic Example',
+          appName: 'ApplicationName',
+          appStatus: 'ApplicationStatus',
+          createTime: 'CreateTime',
+          responseDate: 'ResponseDate',
+          specificationInfo: 'SpecificationInfo',
+          specificate: 'Specificate',
+          specificationName: 'SpecificationName',
+          specificationValue: 'SpecificationValue',
+          specificationColorRed: 'Red',
+          specificationColorOrange: 'Orange',
+          addSpecificateItem: 'Add Specificate Item',
+          fillValue: 'FillValue',
+          reset: 'Reset',
+          submit: 'Submit',
+          add: 'Add',
+          delete: 'Delete',
+          color: 'Color',
+          normal: 'Normal',
+          anomaly: 'Anomaly'
+        },
+        query: {
+          title1: 'Query Example, which expands by default',
+          title2: 'Query Example, which fold by default, and two lines are retained when folding',
+          appName: 'ApplicationName',
+          appStatus: 'ApplicationStatus',
+          createTime: 'CreateTime',
+          responseDate: 'ResponseDate',
+          endDate: 'EndDate',
+          field: 'Field'
+        },
+        step: {
+          title: 'Step Form',
+          step1: {
+            title: 'Form 1',
+            field: 'Form 1 field',
+            nextStep: 'Next Step'
+          },
+          step2: {
+            title: 'Form 2',
+            field: 'Form 2 field',
+            prevStep: 'Prev Step',
+            submit: 'Submit'
+          }
+        }
+      },
+      table: {
+        remote: {
+          filterCondition: 'Filter Condition',
+          name: 'Name',
+          createTime: 'CreateTime',
+          responseTime: 'ResponseTime',
+          title: 'Remote Loading',
+          replicableText: 'Replicable Text',
+          tags: 'Tags',
+          dateFormatting: 'Date Formatting',
+          image: 'Image'
+        },
+        rowEdit: {
+          title: 'Edit Table',
+          reset: 'Reset',
+          submit: 'Submit',
+          edit: 'Edit',
+          delete: 'Delete',
+          save: 'Save',
+          task: 'Task',
+          score: 'Score',
+          time: 'Time',
+          name: 'Name',
+          action: 'Action'
+        }
+      }
+    },
+    manage: {
+      common: {
+        statusType: {
+          enable: 'Enable',
+          disable: 'Disable'
+        }
+      },
+      role: {
+        title: 'Role List',
+        roleName: 'Role Name',
+        roleCode: 'Role Code',
+        rolestatusType: 'Role statusType',
+        roleDesc: 'Role Description',
+        menuAuth: 'Menu Auth',
+        buttonAuth: 'Button Auth',
+        apiAuth: 'Api Auth',
+        form: {
+          roleName: 'Please enter role name',
+          roleCode: 'Please enter role code',
+          rolestatusType: 'Please select role statusType',
+          roleDesc: 'Please enter role description'
+        },
+        addRole: 'Add Role',
+        editRole: 'Edit Role'
+      },
+      user: {
+        title: 'User List',
+        userName: 'User Name',
+        password: 'Password',
+        userGender: 'Gender',
+        nickName: 'Nick Name',
+        userPhone: 'Phone Number',
+        userEmail: 'Email',
+        userStatusType: 'User statusType',
+        userRole: 'User Role',
+        form: {
+          userName: 'Please enter user name',
+          password: 'Please enter password',
+          userGender: 'Please select gender',
+          nickName: 'Please enter nick name',
+          userPhone: 'Please enter phone number',
+          userEmail: 'Please enter email',
+          userStatusType: 'Please select user statusType',
+          userRole: 'Please select user role'
+        },
+        addUser: 'Add User',
+        editUser: 'Edit User',
+        gender: {
+          male: 'Male',
+          female: 'Female',
+          unknow: 'Unknow'
+        }
+      },
+      menu: {
+        home: 'Home',
+        title: 'Menu List',
+        id: 'ID',
+        parentId: 'Parent ID',
+        menuType: 'Menu Type',
+        menuName: 'Menu Name',
+        routeName: 'Route Name',
+        routePath: 'Route Path',
+        pathParam: 'Path Param',
+        layout: 'Layout Component',
+        page: 'Page Component',
+        i18nKey: 'I18n Key',
+        icon: 'Icon',
+        localIcon: 'Local Icon',
+        iconTypeTitle: 'Icon Type',
+        order: 'Order',
+        constant: 'Constant',
+        keepAlive: 'Keep Alive',
+        href: 'Href',
+        hideInMenu: 'Hide In Menu',
+        activeMenu: 'Active Menu',
+        multiTab: 'Multi Tab',
+        fixedIndexInTab: 'Fixed Index In Tab',
+        query: 'Query Params',
+        button: 'Button',
+        buttonCode: 'Button Code',
+        buttonDesc: 'Button Desc',
+        menuStatusType: 'Menu statusType',
+        form: {
+          home: 'Please select home',
+          menuType: 'Please select menu type',
+          menuName: 'Please enter menu name',
+          routeName: 'Please enter route name',
+          routePath: 'Please enter route path',
+          pathParam: 'Please enter path param',
+          page: 'Please select page component',
+          layout: 'Please select layout component',
+          i18nKey: 'Please enter i18n key',
+          icon: 'Please enter iconify name',
+          localIcon: 'Please enter local icon name',
+          order: 'Please enter order',
+          keepAlive: 'Please select whether to cache route',
+          href: 'Please enter href',
+          hideInMenu: 'Please select whether to hide menu',
+          activeMenu: 'Please select route name of the highlighted menu',
+          multiTab: 'Please select whether to support multiple tabs',
+          fixedInTab: 'Please select whether to fix in the tab',
+          fixedIndexInTab: 'Please enter the index fixed in the tab',
+          queryKey: 'Please enter route parameter Key',
+          queryValue: 'Please enter route parameter Value',
+          button: 'Please select whether it is a button',
+          buttonCode: 'Please enter button code',
+          buttonDesc: 'Please enter button description',
+          menuStatusType: 'Please select menu statusType'
+        },
+        addMenu: 'Add Menu',
+        editMenu: 'Edit Menu',
+        addChildMenu: 'Add Child Menu',
+        type: {
+          directory: 'Directory',
+          menu: 'Menu'
+        },
+        iconType: {
+          iconify: 'Iconify Icon',
+          local: 'Local Icon'
+        }
+      },
+      log: {
+        title: '',
+        logType: '',
+        byUser: '',
+        logDetailType: '',
+        createTime: '',
+        requestDomain: '',
+        requestPath: '',
+        responseCode: '',
+        xRequestId: '',
+        requestParams: '',
+        responseData: '',
+        userAgent: '',
+        processTime: '',
+        ipAddress: '',
+        form: {
+          logType: '',
+          byUser: '',
+          logDetailType: '',
+          requestPath: '',
+          createTime: '',
+          responseCode: ''
+        },
+        viewLog: '',
+        logDetailTypes: {
+          SystemStart: '',
+          SystemStop: '',
+          UserLoginSuccess: '',
+          UserAuthRefreshTokenSuccess: '',
+          UserLoginGetUserInfo: '',
+          UserLoginUserNameVaild: '',
+          UserLoginErrorPassword: '',
+          UserLoginForbid: '',
+          ApiGetList: '',
+          ApiGetTree: '',
+          ApiRefresh: '',
+          ApiGetOne: '',
+          ApiCreateOne: '',
+          ApiUpdateOne: '',
+          ApiDeleteOne: '',
+          ApiBatchDelete: '',
+          MenuGetList: '',
+          MenuGetTree: '',
+          MenuGetPages: '',
+          MenuGetButtonsTree: '',
+          MenuGetOne: '',
+          MenuCreateOne: '',
+          MenuUpdateOne: '',
+          MenuDeleteOne: '',
+          MenuBatchDeleteOne: '',
+          RoleGetList: '',
+          RoleGetMenus: '',
+          RoleUpdateMenus: '',
+          RoleGetButtons: '',
+          RoleUpdateButtons: '',
+          RoleGetApis: '',
+          RoleUpdateApis: '',
+          RoleGetOne: '',
+          RoleCreateOne: '',
+          RoleUpdateOne: '',
+          RoleDeleteOne: '',
+          RoleBatchDeleteOne: '',
+          UserGetList: '',
+          UserGetOne: '',
+          UserCreateOne: '',
+          UserUpdateOne: '',
+          UserDeleteOne: '',
+          UserBatchDeleteOne: ''
+        },
+        logTypes: {
+          ApiLog: '',
+          UserLog: '',
+          AdminLog: '',
+          SystemLog: ''
+        }
+      },
+      api: {
+        title: '',
+        path: '',
+        method: '',
+        summary: '',
+        tags: '',
+        statusType: '',
+        form: {
+          path: '',
+          method: '',
+          summary: '',
+          tags: '',
+          statusType: ''
+        },
+        addApi: '',
+        editApi: '',
+        methods: {
+          GET: '',
+          POST: '',
+          PUT: '',
+          PATCH: '',
+          DELETE: ''
+        }
+      }
     }
   },
   form: {

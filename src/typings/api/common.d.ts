@@ -32,19 +32,24 @@ declare namespace Api {
     type EnableStatus = '1' | '2';
 
     /** common record */
+    /** common record */
     type CommonRecord<T = any> = {
       /** record id */
       id: number;
       /** record creator */
       createBy: string;
       /** record create time */
-      createTime: string;
+      createTime: number;
       /** record updater */
       updateBy: string;
       /** record update time */
-      updateTime: string;
+      updateTime: number;
       /** record status */
-      status: EnableStatus | null;
+      statusType: EnableStatus | null;
+      /** record fmt create time */
+      fmtCreateTime: string;
+      /** record fmt updateTime time */
+      fmtUpdateTime: string;
     } & T;
   }
 }

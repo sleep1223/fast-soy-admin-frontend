@@ -1,0 +1,225 @@
+<script setup lang="tsx">
+import { reactive } from 'vue';
+import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { apiMethodRecord, statusTypeRecord } from '@/constants/business';
+import { fetchBatchDeleteApi, fetchDeleteApi, fetchGetApiList, fetchRefreshAPI } from '@/service/api';
+import { useAppStore } from '@/store/modules/app';
+import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+import { useAuth } from '@/hooks/business/auth';
+import { $t } from '@/locales';
+import ApiOperateDrawer from './modules/api-operate-drawer.vue';
+import ApiSearch from './modules/api-search.vue';
+
+const appStore = useAppStore();
+
+const defaultSearchParams: Api.SystemManage.ApiSearchParams = {
+  current: 1,
+  size: 10,
+  statusType: null,
+  apiPath: null,
+  apiMethod: null,
+  summary: null,
+  tags: null
+};
+
+const searchParams: Api.SystemManage.ApiSearchParams = reactive({ ...defaultSearchParams });
+
+const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination } = useNaivePaginatedTable({
+  api: () => fetchGetApiList(searchParams),
+  transform: response => defaultTransform(response),
+  onPaginationParamsChange: params => {
+    searchParams.current = params.page;
+    searchParams.size = params.pageSize;
+  },
+  columns: () => [
+    {
+      type: 'selection',
+      align: 'center',
+      width: 48
+    },
+    {
+      key: 'index',
+      title: $t('common.index'),
+      align: 'center',
+      width: 64,
+      render: (_, index) => index + 1
+    },
+    {
+      key: 'apiPath',
+      title: $t('page.manage.api.path'),
+      align: 'center',
+      minWidth: 50
+    },
+    {
+      key: 'apiMethod',
+      title: $t('page.manage.api.method'),
+      align: 'center',
+      width: 100,
+      render: row => {
+        if (row.apiMethod === null) {
+          return null;
+        }
+
+        const tagMap: Record<Api.SystemManage.methods, NaiveUI.ThemeColor> = {
+          get: 'primary',
+          post: 'warning',
+          put: 'info',
+          patch: 'success',
+          delete: 'error'
+        };
+
+        const label = $t(apiMethodRecord[row.apiMethod]);
+
+        return <NTag type={tagMap[row.apiMethod]}>{label}</NTag>;
+      }
+    },
+    {
+      key: 'summary',
+      title: $t('page.manage.api.summary'),
+      align: 'center',
+      minWidth: 50
+    },
+    {
+      key: 'tags',
+      title: $t('page.manage.api.tags'),
+      align: 'center',
+      width: 300,
+      render: row => {
+        if (row.tags === null) {
+          return null;
+        }
+        return row.tags.map((tag, index) => (
+          <span>
+            <NTag type="error">{tag}</NTag>
+            {index < row.tags.length - 1 && <span style="margin-right: 4px;"> -&gt;</span>}
+          </span>
+        ));
+      }
+    },
+    {
+      key: 'statusType',
+      title: $t('page.manage.api.statusType'),
+      align: 'center',
+      width: 100,
+      render: row => {
+        if (row.statusType === null) {
+          return null;
+        }
+        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
+          1: 'success',
+          2: 'warning'
+        };
+        const label = $t(statusTypeRecord[row.statusType]);
+        return <NTag type={tagMap[row.statusType]}>{label}</NTag>;
+      }
+    },
+    {
+      key: 'operate',
+      title: $t('common.operate'),
+      align: 'center',
+      width: 130,
+      render: row => (
+        <div class="flex-center gap-8px">
+          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+            {$t('common.edit')}
+          </NButton>
+          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+            {{
+              default: () => $t('common.confirmDelete'),
+              trigger: () => (
+                <NButton type="error" ghost size="small">
+                  {$t('common.delete')}
+                </NButton>
+              )
+            }}
+          </NPopconfirm>
+        </div>
+      )
+    }
+  ]
+});
+
+const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onBatchDeleted, onDeleted } =
+  useTableOperate(data, 'id', getData);
+const { hasAuth } = useAuth();
+
+function resetSearchParams() {
+  Object.assign(searchParams, {
+    ...defaultSearchParams
+  });
+  getDataByPage(1);
+}
+
+async function handleRefreshAPI() {
+  await fetchRefreshAPI();
+  await getDataByPage(1);
+}
+
+async function handleBatchDelete() {
+  const { error } = await fetchBatchDeleteApi({ ids: checkedRowKeys.value });
+  if (!error) {
+    onBatchDeleted();
+  }
+}
+
+async function handleDelete(id: number) {
+  const { error } = await fetchDeleteApi({ id });
+  if (!error) {
+    onDeleted();
+  }
+}
+
+function edit(id: number) {
+  handleEdit(id);
+}
+</script>
+
+<template>
+  <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
+    <ApiSearch v-model:model="searchParams" @reset="resetSearchParams" @search="getData" />
+    <NCard :title="$t('page.manage.api.title')" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
+      <template #header-extra>
+        <TableHeaderOperation
+          v-model:columns="columnChecks"
+          :disabled-delete="checkedRowKeys.length === 0"
+          :loading="loading"
+          table-id="api"
+          @add="handleAdd"
+          @delete="handleBatchDelete"
+          @refresh="getData"
+        >
+          <template #default>
+            <NButton v-if="hasAuth('B_refreshAPI')" size="small" ghost type="primary" @click="handleRefreshAPI">
+              <template #icon>
+                <icon-ic-round-plus class="text-icon" />
+              </template>
+              {{ $t('common.refreshAPI') }}
+            </NButton>
+            <span></span>
+          </template>
+        </TableHeaderOperation>
+      </template>
+      <NDataTable
+        v-model:checked-row-keys="checkedRowKeys"
+        :columns="columns"
+        :data="data"
+        size="small"
+        :flex-height="!appStore.isMobile"
+        :scroll-x="962"
+        :loading="loading"
+        remote
+        :row-key="row => row.id"
+        :pagination="mobilePagination"
+        class="sm:h-full"
+      />
+      <ApiOperateDrawer
+        v-model:visible="drawerVisible"
+        :operate-type="operateType"
+        :row-data="editingData"
+        @submitted="getData"
+      />
+    </NCard>
+  </div>
+</template>
+
+<style scoped></style>

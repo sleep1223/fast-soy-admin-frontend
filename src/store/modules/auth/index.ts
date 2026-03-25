@@ -19,11 +19,12 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const { toLogin, redirectFromLogin } = useRouterPush(false);
   const { loading: loginLoading, startLoading, endLoading } = useLoading();
 
-  const token = ref(getToken());
+  const token = ref('');
 
   const userInfo: Api.Auth.UserInfo = reactive({
     userId: '',
     userName: '',
+    nickName: '',
     roles: [],
     buttons: []
   });
@@ -117,7 +118,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
         window.$notification?.success({
           title: $t('page.login.common.loginSuccess'),
-          content: $t('page.login.common.welcomeBack', { userName: userInfo.userName }),
+          content: $t('page.login.common.welcomeBack', { nickName: userInfo.nickName }),
           duration: 4500
         });
       }
@@ -159,9 +160,10 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   }
 
   async function initUserInfo() {
-    const hasToken = getToken();
+    const maybeToken = getToken();
 
-    if (hasToken) {
+    if (maybeToken) {
+      token.value = maybeToken;
       const pass = await getUserInfo();
 
       if (!pass) {
