@@ -53,7 +53,7 @@ export function fetchGetMenuButtonTree() {
 /** get log list */
 export function fetchGetLogList(data?: Api.SystemManage.LogSearchParams) {
   return request<Api.SystemManage.LogList>({
-    url: '/system-manage/logs/all/',
+    url: '/system-manage/logs/search',
     method: 'post',
     data
   });
