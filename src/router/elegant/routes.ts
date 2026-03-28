@@ -282,6 +282,62 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
+        name: 'manage_radar',
+        path: '/manage/radar',
+        meta: {
+          title: 'manage_radar',
+          i18nKey: 'route.manage_radar',
+          icon: 'mdi:radar',
+          order: 7
+        },
+        children: [
+          {
+            name: 'manage_radar_exceptions',
+            path: '/manage/radar/exceptions',
+            component: 'view.manage_radar_exceptions',
+            meta: {
+              title: 'manage_radar_exceptions',
+              i18nKey: 'route.manage_radar_exceptions',
+              icon: 'mdi:bug-outline',
+              order: 4
+            }
+          },
+          {
+            name: 'manage_radar_overview',
+            path: '/manage/radar/overview',
+            component: 'view.manage_radar_overview',
+            meta: {
+              title: 'manage_radar_overview',
+              i18nKey: 'route.manage_radar_overview',
+              icon: 'mdi:chart-box-outline',
+              order: 1
+            }
+          },
+          {
+            name: 'manage_radar_queries',
+            path: '/manage/radar/queries',
+            component: 'view.manage_radar_queries',
+            meta: {
+              title: 'manage_radar_queries',
+              i18nKey: 'route.manage_radar_queries',
+              icon: 'mdi:database-search',
+              order: 3
+            }
+          },
+          {
+            name: 'manage_radar_requests',
+            path: '/manage/radar/requests',
+            component: 'view.manage_radar_requests',
+            meta: {
+              title: 'manage_radar_requests',
+              i18nKey: 'route.manage_radar_requests',
+              icon: 'mdi:swap-horizontal',
+              order: 2
+            }
+          }
+        ]
+      },
+      {
         name: 'manage_role',
         path: '/manage/role',
         component: 'view.manage_role',

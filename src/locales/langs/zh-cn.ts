@@ -277,6 +277,11 @@ const local: App.I18n.Schema = {
     'manage_user-detail': '用户详情',
     manage_role: '角色管理',
     manage_menu: '菜单管理',
+    manage_radar: '性能监控',
+    manage_radar_overview: '监控概览',
+    manage_radar_requests: '请求列表',
+    manage_radar_queries: 'SQL查询',
+    manage_radar_exceptions: '异常列表',
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',
     'multi-menu_first_child': '菜单一子菜单',
@@ -749,6 +754,50 @@ const local: App.I18n.Schema = {
         iconType: {
           iconify: 'iconify图标',
           local: '本地图标'
+        }
+      },
+      radar: {
+        purge: '清理数据',
+        purgeConfirm: '确定清理24小时前的监控数据？',
+        purgeSuccess: '已清理记录数',
+        overview: {
+          title: '监控概览',
+          requestCount: '总请求数',
+          avgDuration: '平均耗时',
+          errorCount: '异常数',
+          errorRate: '异常率',
+          queryCount: 'SQL查询数',
+          slowQueryCount: '慢查询数',
+          userLogCount: '用户日志数'
+        },
+        requests: {
+          title: '请求列表',
+          method: '请求方法',
+          path: '请求路径',
+          status: '状态码',
+          duration: '耗时',
+          error: '异常',
+          createdAt: '时间',
+          detail: '请求详情',
+          queryParams: '查询参数',
+          minDuration: '最小耗时',
+          hasError: '是否异常'
+        },
+        queries: {
+          title: 'SQL查询列表',
+          operation: '操作类型',
+          connection: '连接',
+          slowOnly: '仅慢查询',
+          threshold: '阈值'
+        },
+        exceptions: {
+          title: '异常列表',
+          errorType: '异常类型',
+          errorMessage: '异常消息',
+          detail: '异常详情'
+        },
+        userLogs: {
+          title: '用户日志'
         }
       }
     }

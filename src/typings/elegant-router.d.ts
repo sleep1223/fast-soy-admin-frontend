@@ -56,6 +56,11 @@ declare module "@elegant-router/types" {
     "manage_api": "/manage/api";
     "manage_log": "/manage/log";
     "manage_menu": "/manage/menu";
+    "manage_radar": "/manage/radar";
+    "manage_radar_exceptions": "/manage/radar/exceptions";
+    "manage_radar_overview": "/manage/radar/overview";
+    "manage_radar_queries": "/manage/radar/queries";
+    "manage_radar_requests": "/manage/radar/requests";
     "manage_role": "/manage/role";
     "manage_user": "/manage/user";
     "manage_user-detail": "/manage/user-detail/:id";
@@ -196,6 +201,10 @@ declare module "@elegant-router/types" {
     | "manage_api"
     | "manage_log"
     | "manage_menu"
+    | "manage_radar_exceptions"
+    | "manage_radar_overview"
+    | "manage_radar_queries"
+    | "manage_radar_requests"
     | "manage_role"
     | "manage_user-detail"
     | "manage_user"

@@ -281,6 +281,11 @@ const local: App.I18n.Schema = {
     'manage_user-detail': 'User Detail',
     manage_role: 'Role Manage',
     manage_menu: 'Menu Manage',
+    manage_radar: 'Radar',
+    manage_radar_overview: 'Overview',
+    manage_radar_requests: 'Requests',
+    manage_radar_queries: 'SQL Queries',
+    manage_radar_exceptions: 'Exceptions',
     'multi-menu': 'Multi Menu',
     'multi-menu_first': 'Menu One',
     'multi-menu_first_child': 'Menu One Child',
@@ -753,6 +758,50 @@ const local: App.I18n.Schema = {
           PUT: '',
           PATCH: '',
           DELETE: ''
+        }
+      },
+      radar: {
+        purge: 'Purge Data',
+        purgeConfirm: 'Purge monitoring data older than 24 hours?',
+        purgeSuccess: 'Records purged',
+        overview: {
+          title: 'Overview',
+          requestCount: 'Total Requests',
+          avgDuration: 'Avg Duration',
+          errorCount: 'Errors',
+          errorRate: 'Error Rate',
+          queryCount: 'SQL Queries',
+          slowQueryCount: 'Slow Queries',
+          userLogCount: 'User Logs'
+        },
+        requests: {
+          title: 'Requests',
+          method: 'Method',
+          path: 'Path',
+          status: 'Status',
+          duration: 'Duration',
+          error: 'Error',
+          createdAt: 'Time',
+          detail: 'Request Detail',
+          queryParams: 'Query Params',
+          minDuration: 'Min Duration',
+          hasError: 'Has Error'
+        },
+        queries: {
+          title: 'SQL Queries',
+          operation: 'Operation',
+          connection: 'Connection',
+          slowOnly: 'Slow Only',
+          threshold: 'Threshold'
+        },
+        exceptions: {
+          title: 'Exceptions',
+          errorType: 'Error Type',
+          errorMessage: 'Error Message',
+          detail: 'Exception Detail'
+        },
+        userLogs: {
+          title: 'User Logs'
         }
       }
     }
