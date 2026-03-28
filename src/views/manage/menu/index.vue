@@ -5,7 +5,7 @@ import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { useBoolean } from '@sa/hooks';
 import { yesOrNoRecord } from '@/constants/common';
 import { menuTypeRecord, statusTypeRecord } from '@/constants/business';
-import { fetchGetAllPages, fetchGetMenuList } from '@/service/api';
+import { fetchBatchDeleteMenu, fetchDeleteMenu, fetchGetAllPages, fetchGetMenuList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -155,7 +155,7 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
           <NButton type="primary" ghost size="small" onClick={() => handleEdit(row)}>
             {$t('common.edit')}
           </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete()}>
+          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
               default: () => $t('common.confirmDelete'),
               trigger: () => (
@@ -181,13 +181,17 @@ function handleAdd() {
 }
 
 async function handleBatchDelete() {
-  // request
-  onBatchDeleted();
+  const { error } = await fetchBatchDeleteMenu({ ids: checkedRowKeys.value as number[] });
+  if (!error) {
+    onBatchDeleted();
+  }
 }
 
-function handleDelete() {
-  // request
-  onDeleted();
+async function handleDelete(id: number) {
+  const { error } = await fetchDeleteMenu({ id });
+  if (!error) {
+    onDeleted();
+  }
 }
 
 /** the edit menu data or the parent menu data when adding a child menu */

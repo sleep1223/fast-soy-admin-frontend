@@ -151,8 +151,10 @@ function resetSearchParams() {
 }
 
 async function handleRefreshAPI() {
-  await fetchRefreshAPI();
-  await getDataByPage(1);
+  const { error } = await fetchRefreshAPI();
+  if (!error) {
+    await getDataByPage(1);
+  }
 }
 
 async function handleBatchDelete() {

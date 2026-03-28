@@ -84,9 +84,8 @@ async function handleSubmit() {
     byRoleHomeId: byRoleHome.value,
     byRoleMenuIds: checks.value
   });
-  if (!error) {
-    window.$message?.success?.($t('common.modifySuccess'));
-  }
+  if (error) return;
+  window.$message?.success?.($t('common.modifySuccess'));
 
   closeModal();
 }

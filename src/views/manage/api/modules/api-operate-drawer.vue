@@ -82,14 +82,12 @@ async function handleSubmit() {
 
   if (props.operateType === 'add') {
     const { error } = await fetchAddApi(model);
-    if (!error) {
-      window.$message?.success($t('common.addSuccess'));
-    }
+    if (error) return;
+    window.$message?.success($t('common.addSuccess'));
   } else if (props.operateType === 'edit') {
     const { error } = await fetchUpdateApi(model);
-    if (!error) {
-      window.$message?.success($t('common.updateSuccess'));
-    }
+    if (error) return;
+    window.$message?.success($t('common.updateSuccess'));
   }
 
   closeDrawer();

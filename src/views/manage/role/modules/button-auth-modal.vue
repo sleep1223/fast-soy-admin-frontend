@@ -97,9 +97,8 @@ async function handleSubmit() {
     id: props.roleId,
     byRoleButtonIds: byRoleButtonIds.value.filter(item => typeof item === 'number')
   });
-  if (!error) {
-    window.$message?.success?.($t('common.modifySuccess'));
-  }
+  if (error) return;
+  window.$message?.success?.($t('common.modifySuccess'));
 
   closeModal();
 }

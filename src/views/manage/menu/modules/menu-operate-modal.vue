@@ -260,14 +260,12 @@ async function handleSubmit() {
 
   if (props.operateType === 'add' || props.operateType === 'addChild') {
     const { error } = await fetchAddMenu(model.value);
-    if (!error) {
-      window.$message?.success($t('common.addSuccess'));
-    }
+    if (error) return;
+    window.$message?.success($t('common.addSuccess'));
   } else if (props.operateType === 'edit') {
     const { error } = await fetchUpdateMenu(model.value);
-    if (!error) {
-      window.$message?.success($t('common.updateSuccess'));
-    }
+    if (error) return;
+    window.$message?.success($t('common.updateSuccess'));
   }
 
   closeDrawer();
