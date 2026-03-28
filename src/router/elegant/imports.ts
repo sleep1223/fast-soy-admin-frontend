@@ -33,7 +33,6 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   "function_toggle-auth": () => import("@/views/function/toggle-auth/index.vue"),
   home: () => import("@/views/home/index.vue"),
   manage_api: () => import("@/views/manage/api/index.vue"),
-  manage_log: () => import("@/views/manage/log/index.vue"),
   manage_menu: () => import("@/views/manage/menu/index.vue"),
   manage_radar_exceptions: () => import("@/views/manage/radar/exceptions/index.vue"),
   manage_radar_overview: () => import("@/views/manage/radar/overview/index.vue"),

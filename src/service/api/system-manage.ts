@@ -50,39 +50,6 @@ export function fetchGetMenuButtonTree() {
   });
 }
 
-/** get log list */
-export function fetchGetLogList(data?: Api.SystemManage.LogSearchParams) {
-  return request<Api.SystemManage.LogList>({
-    url: '/system-manage/logs/search',
-    method: 'post',
-    data
-  });
-}
-
-/** delete log */
-export function fetchDeleteLog(data?: Api.SystemManage.CommonDeleteParams) {
-  return request<Api.SystemManage.LogList>({
-    url: `/system-manage/logs/${data?.id}`,
-    method: 'delete'
-  });
-}
-
-export function fetchBatchDeleteLog(data?: Api.SystemManage.CommonBatchDeleteParams) {
-  return request<Api.SystemManage.LogList>({
-    url: '/system-manage/logs',
-    method: 'delete',
-    params: { ids: data?.ids.join(',') }
-  });
-}
-/** update log */
-export function fetchUpdateLog(data?: Api.SystemManage.LogUpdateParams) {
-  return request<Api.SystemManage.LogList, 'json'>({
-    url: `/system-manage/logs/${data?.id}`,
-    method: 'patch',
-    data
-  });
-}
-
 /** get api tree */
 export function fetchGetApiTree() {
   return request<Api.SystemManage.MenuTree[]>({

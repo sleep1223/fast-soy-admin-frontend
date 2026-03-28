@@ -54,7 +54,6 @@ declare module "@elegant-router/types" {
     "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
     "manage": "/manage";
     "manage_api": "/manage/api";
-    "manage_log": "/manage/log";
     "manage_menu": "/manage/menu";
     "manage_radar": "/manage/radar";
     "manage_radar_exceptions": "/manage/radar/exceptions";
@@ -199,7 +198,6 @@ declare module "@elegant-router/types" {
     | "function_toggle-auth"
     | "home"
     | "manage_api"
-    | "manage_log"
     | "manage_menu"
     | "manage_radar_exceptions"
     | "manage_radar_overview"
