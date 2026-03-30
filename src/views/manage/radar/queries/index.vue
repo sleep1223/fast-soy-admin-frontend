@@ -1,14 +1,18 @@
 <script setup lang="tsx">
 import { reactive, ref } from 'vue';
-import { NTag } from 'naive-ui';
-import { fetchRadarQueries } from '@/service/api';
+import { NButton, NTag } from 'naive-ui';
+import { fetchRadarQueries, fetchRadarRequestDetail } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { $t } from '@/locales';
+import RequestDetailDrawer from '../requests/modules/request-detail-drawer.vue';
 
 const appStore = useAppStore();
 
 const loading = ref(false);
 const data = ref<Api.Radar.QueryRecord[]>([]);
+const drawerVisible = ref(false);
+const detailData = ref<Api.Radar.RequestDetail | null>(null);
+const detailLoading = ref(false);
 
 const searchParams = reactive({
   page: 1,
@@ -47,37 +51,75 @@ async function loadData() {
   loading.value = false;
 }
 
+async function viewDetail(xRequestId: string | null) {
+  if (!xRequestId) return;
+  drawerVisible.value = true;
+  detailLoading.value = true;
+  const { error, data: result } = await fetchRadarRequestDetail(xRequestId);
+  if (!error) {
+    detailData.value = result;
+  }
+  detailLoading.value = false;
+}
+
 function getDurationTagType(ms: number): NaiveUI.ThemeColor {
   if (ms < 50) return 'success';
   if (ms < 100) return 'warning';
   return 'error';
 }
 
+function getOperationTagType(op: string | null): NaiveUI.ThemeColor {
+  if (!op) return 'default';
+  const map: Record<string, NaiveUI.ThemeColor> = {
+    SELECT: 'info',
+    INSERT: 'success',
+    UPDATE: 'warning',
+    DELETE: 'error'
+  };
+  return map[op.toUpperCase()] || 'default';
+}
+
+function getMethodTagType(method: string | null): NaiveUI.ThemeColor {
+  if (!method) return 'default';
+  const map: Record<string, NaiveUI.ThemeColor> = {
+    GET: 'success',
+    POST: 'info',
+    PUT: 'warning',
+    PATCH: 'warning',
+    DELETE: 'error'
+  };
+  return map[method.toUpperCase()] || 'default';
+}
+
 const columns = [
-  {
-    key: 'index',
-    title: $t('common.index'),
-    width: 64,
-    align: 'center' as const,
-    render: (_: Api.Radar.QueryRecord, index: number) => index + 1
-  },
   {
     key: 'operation',
     title: $t('page.manage.radar.queries.operation'),
     width: 100,
     align: 'center' as const,
-    render: (row: Api.Radar.QueryRecord) => <NTag size="small">{row.operation || '-'}</NTag>
+    render: (row: Api.Radar.QueryRecord) => (
+      <NTag type={getOperationTagType(row.operation)} size="small">
+        {row.operation || '-'}
+      </NTag>
+    )
   },
   {
     key: 'sqlText',
     title: 'SQL',
-    minWidth: 300,
+    minWidth: 280,
     ellipsis: { tooltip: true }
+  },
+  {
+    key: 'params',
+    title: 'Params',
+    width: 140,
+    ellipsis: { tooltip: true },
+    render: (row: Api.Radar.QueryRecord) => row.params || '-'
   },
   {
     key: 'durationMs',
     title: $t('page.manage.radar.requests.duration'),
-    width: 120,
+    width: 110,
     align: 'center' as const,
     render: (row: Api.Radar.QueryRecord) => (
       <NTag type={getDurationTagType(row.durationMs)} size="small">
@@ -86,9 +128,24 @@ const columns = [
     )
   },
   {
+    key: 'requestMethod',
+    title: $t('page.manage.radar.requests.method'),
+    width: 80,
+    align: 'center' as const,
+    render: (row: Api.Radar.QueryRecord) =>
+      row.requestMethod ? <NTag type={getMethodTagType(row.requestMethod)} size="small">{row.requestMethod}</NTag> : '-'
+  },
+  {
+    key: 'requestPath',
+    title: $t('page.manage.radar.requests.path'),
+    width: 180,
+    ellipsis: { tooltip: true },
+    render: (row: Api.Radar.QueryRecord) => row.requestPath || '-'
+  },
+  {
     key: 'connectionName',
     title: $t('page.manage.radar.queries.connection'),
-    width: 120,
+    width: 110,
     align: 'center' as const,
     render: (row: Api.Radar.QueryRecord) => row.connectionName || '-'
   },
@@ -97,6 +154,24 @@ const columns = [
     title: $t('page.manage.radar.requests.createdAt'),
     width: 180,
     align: 'center' as const
+  },
+  {
+    key: 'operate',
+    title: $t('common.operate'),
+    width: 80,
+    align: 'center' as const,
+    fixed: 'right' as const,
+    render: (row: Api.Radar.QueryRecord) => (
+      <NButton
+        type="primary"
+        ghost
+        size="small"
+        disabled={!row.xRequestId}
+        onClick={() => viewDetail(row.xRequestId)}
+      >
+        {$t('common.view')}
+      </NButton>
+    )
   }
 ];
 
@@ -150,7 +225,7 @@ loadData();
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="800"
+        :scroll-x="1200"
         :loading="loading"
         remote
         :row-key="(row: Api.Radar.QueryRecord) => row.id"
@@ -158,5 +233,6 @@ loadData();
         class="sm:h-full"
       />
     </NCard>
+    <RequestDetailDrawer v-model:visible="drawerVisible" :data="detailData" :loading="detailLoading" />
   </div>
 </template>

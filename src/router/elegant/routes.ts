@@ -294,6 +294,17 @@ export const generatedRoutes: GeneratedRoute[] = [
             }
           },
           {
+            name: 'manage_radar_monitor',
+            path: '/manage/radar/monitor',
+            component: 'view.manage_radar_monitor',
+            meta: {
+              title: 'manage_radar_monitor',
+              i18nKey: 'route.manage_radar_monitor',
+              icon: 'mdi:monitor-dashboard',
+              order: 5
+            }
+          },
+          {
             name: 'manage_radar_overview',
             path: '/manage/radar/overview',
             component: 'view.manage_radar_overview',

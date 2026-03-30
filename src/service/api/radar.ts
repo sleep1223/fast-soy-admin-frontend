@@ -38,10 +38,20 @@ const radarRequest = createFlatRequest(
 );
 
 /** get radar stats overview */
-export function fetchRadarStats() {
+export function fetchRadarStats(hours?: number) {
   return radarRequest<Api.Radar.Stats>({
     url: '/stats',
-    method: 'get'
+    method: 'get',
+    params: cleanParams({ hours })
+  });
+}
+
+/** get radar dashboard stats */
+export function fetchRadarDashboard(hours?: number) {
+  return radarRequest<Api.Radar.DashboardStats>({
+    url: '/dashboard',
+    method: 'get',
+    params: { hours: hours || 1 }
   });
 }
 

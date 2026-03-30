@@ -4,6 +4,7 @@ import { NButton, NTag } from 'naive-ui';
 import { fetchRadarExceptions } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { $t } from '@/locales';
+import AnsiTraceback from '@/components/common/ansi-traceback.vue';
 
 const appStore = useAppStore();
 
@@ -150,12 +151,7 @@ loadData();
             </NDescriptionsItem>
           </NDescriptions>
           <NDivider>Traceback</NDivider>
-          <NCode
-            v-if="selectedRow.errorTraceback"
-            :code="selectedRow.errorTraceback"
-            language="python"
-            word-wrap
-          />
+          <AnsiTraceback v-if="selectedRow.errorTraceback" :code="selectedRow.errorTraceback" />
           <NEmpty v-else />
         </template>
       </NDrawerContent>

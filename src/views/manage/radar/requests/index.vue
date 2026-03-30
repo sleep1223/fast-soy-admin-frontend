@@ -108,6 +108,13 @@ const columns = [
     ellipsis: { tooltip: true }
   },
   {
+    key: 'queryParams',
+    title: $t('page.manage.radar.requests.queryParams'),
+    width: 160,
+    ellipsis: { tooltip: true },
+    render: (row: Api.Radar.RequestRecord) => row.queryParams || '-'
+  },
+  {
     key: 'responseStatus',
     title: $t('page.manage.radar.requests.status'),
     width: 80,
@@ -124,6 +131,13 @@ const columns = [
     width: 100,
     align: 'center' as const,
     render: (row: Api.Radar.RequestRecord) => (row.durationMs !== null ? `${row.durationMs.toFixed(1)}ms` : '-')
+  },
+  {
+    key: 'clientIp',
+    title: $t('page.manage.radar.requests.clientIp'),
+    width: 130,
+    ellipsis: { tooltip: true },
+    render: (row: Api.Radar.RequestRecord) => row.clientIp || '-'
   },
   {
     key: 'errorType',
@@ -144,6 +158,7 @@ const columns = [
     title: $t('common.operate'),
     width: 80,
     align: 'center' as const,
+    fixed: 'right' as const,
     render: (row: Api.Radar.RequestRecord) => (
       <NButton type="primary" ghost size="small" onClick={() => viewDetail(row.xRequestId)}>
         {$t('common.view')}
@@ -229,7 +244,7 @@ loadData();
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="900"
+        :scroll-x="1200"
         :loading="loading"
         remote
         :row-key="(row: Api.Radar.RequestRecord) => row.xRequestId"

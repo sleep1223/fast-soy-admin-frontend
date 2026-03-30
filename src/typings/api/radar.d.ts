@@ -25,6 +25,7 @@ declare namespace Api {
       xRequestId: string;
       method: string;
       path: string;
+      clientIp: string | null;
       queryParams: string | null;
       responseStatus: number | null;
       durationMs: number | null;
@@ -64,6 +65,9 @@ declare namespace Api {
     interface QueryRecord {
       id: number;
       requestId: number;
+      xRequestId: string | null;
+      requestPath: string | null;
+      requestMethod: string | null;
       sqlText: string;
       params: string | null;
       operation: string | null;
@@ -137,6 +141,122 @@ declare namespace Api {
       sql?: string;
       start_offset_ms: number | null;
       duration_ms: number;
+    }
+
+    /** dashboard stats */
+    interface DashboardStats {
+      total_requests: number;
+      avg_response_time: number;
+      total_queries: number;
+      total_exceptions: number;
+      success_rate: number;
+      error_count: number;
+      error_rate: number;
+      p50: number;
+      p95: number;
+      p99: number;
+      avg_query_time: number;
+      distribution: Array<{
+        code: string;
+        count: number;
+      }>;
+      response_time_trend: Array<{
+        time: string;
+        avg_response_time: number;
+        request_count: number;
+      }>;
+      query_activity: Array<{
+        time: string;
+        query_count: number;
+        avg_duration: number;
+      }>;
+    }
+  }
+
+  namespace Monitor {
+    interface CpuInfo {
+      usage: number;
+      cores: number;
+      threads: number;
+    }
+
+    interface MemoryInfo {
+      usage: number;
+      used: number;
+      total: number;
+      available: number;
+    }
+
+    interface DiskIO {
+      usage: number;
+      used: number;
+      total: number;
+      read_speed: string;
+      write_speed: string;
+      total_read: string;
+      total_write: string;
+    }
+
+    interface NetworkIO {
+      active_connections: number;
+      total_connections: number;
+      upload_speed: string;
+      download_speed: string;
+      total_sent: string;
+      total_recv: string;
+    }
+
+    interface SystemStatus {
+      load_1min: number;
+      load_5min: number;
+      load_15min: number;
+      uptime: string;
+      uptime_seconds: number;
+      boot_time: string;
+      total_processes: number;
+      running_processes: number;
+      sleeping_processes: number;
+      online_users: number;
+      update_time: string;
+    }
+
+    interface BasicInfo {
+      hostname: string;
+      ip_address: string;
+      system: string;
+      platform: string;
+      architecture: string;
+      processor: string;
+      python_version: string;
+    }
+
+    interface ProcessInfo {
+      pid: number;
+      name: string;
+      cpu_percent: number;
+      memory_percent: number;
+      status: string;
+      create_time: string;
+    }
+
+    interface Overview {
+      basic_info: BasicInfo;
+      cpu: CpuInfo;
+      memory: MemoryInfo;
+      disk_io: DiskIO;
+      network_io: NetworkIO;
+      system_status: SystemStatus;
+      top_processes: ProcessInfo[];
+    }
+
+    interface Realtime {
+      cpu: CpuInfo;
+      memory: MemoryInfo;
+      disk_io: DiskIO;
+      network_io: NetworkIO;
+      system_status: SystemStatus;
+      top_processes: ProcessInfo[];
+      timestamp: string;
     }
   }
 }
