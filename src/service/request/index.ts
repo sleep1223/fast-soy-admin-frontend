@@ -122,6 +122,17 @@ export const request = createFlatRequest(
         return;
       }
 
+      // user custom codes (4000+): defer message, caller can cancel via error.cancelErrorMsg()
+      const codeNum = Number(backendErrorCode);
+      if (codeNum >= 4000) {
+        const timer = setTimeout(() => {
+          showErrorMsg(request.state, message);
+        }, 0);
+        (error as any).cancelErrorMsg = () => clearTimeout(timer);
+        return;
+      }
+
+      // system errors (1xxx) and business errors (2xxx): show message immediately
       showErrorMsg(request.state, message);
     }
   }

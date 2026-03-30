@@ -785,6 +785,117 @@ declare namespace App {
             };
           };
 
+          radar: {
+            purge: string;
+            purgeConfirm: string;
+            purgeSuccess: string;
+            overview: {
+              title: string;
+              requestCount: string;
+              avgDuration: string;
+              errorCount: string;
+              errorRate: string;
+              queryCount: string;
+              slowQueryCount: string;
+              userLogCount: string;
+            };
+            dashboard: {
+              totalRequests: string;
+              avgResponseTime: string;
+              dbQueries: string;
+              exceptions: string;
+              perfOverview: string;
+              successRate: string;
+              errors: string;
+              errorRate: string;
+              responseTime: string;
+              queryPerf: string;
+              requestDist: string;
+              responseTimeTrend: string;
+              queryActivity: string;
+            };
+            monitor: {
+              title: string;
+              autoRefresh: string;
+              paused: string;
+              cpuUsage: string;
+              cores: string;
+              threads: string;
+              memoryUsage: string;
+              used: string;
+              total: string;
+              diskUsage: string;
+              diskIO: string;
+              read: string;
+              write: string;
+              totalRead: string;
+              totalWrite: string;
+              networkIO: string;
+              activeConnections: string;
+              upload: string;
+              download: string;
+              totalSent: string;
+              totalRecv: string;
+              basicInfo: string;
+              hostname: string;
+              ipAddress: string;
+              os: string;
+              architecture: string;
+              processor: string;
+              pythonVersion: string;
+              systemStatus: string;
+              systemLoad: string;
+              loadAvg: string;
+              uptime: string;
+              bootTime: string;
+              processes: string;
+              running: string;
+              sleeping: string;
+              onlineUsers: string;
+              updateTime: string;
+              networkTrend: string;
+              topProcesses: string;
+              processName: string;
+              memPercent: string;
+              status: string;
+              createTime: string;
+            };
+            requests: {
+              title: string;
+              method: string;
+              path: string;
+              status: string;
+              duration: string;
+              error: string;
+              createdAt: string;
+              detail: string;
+              queryParams: string;
+              minDuration: string;
+              hasError: string;
+              xRequestId: string;
+              clientIp: string;
+              requestHeaders: string;
+              requestBody: string;
+              responseHeaders: string;
+              responseBody: string;
+            };
+            queries: {
+              title: string;
+              operation: string;
+              connection: string;
+              slowOnly: string;
+              threshold: string;
+            };
+            exceptions: {
+              title: string;
+              errorType: string;
+              errorMessage: string;
+              detail: string;
+            };
+            userLogs: {
+              title: string;
+            };
+          };
           menu: {
             home: string;
             title: string;
