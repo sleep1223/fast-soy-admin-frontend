@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { onActivated, onDeactivated, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { fetchRadarDashboard, fetchRadarPurge } from '@/service/api';
 import { useEcharts } from '@/hooks/common/echarts';
+import { usePolling } from '@/hooks/common/polling';
 import { $t } from '@/locales';
-
-const isActive = ref(false);
 
 const stats = ref<Api.Radar.DashboardStats | null>(null);
 const loading = ref(false);
@@ -26,7 +25,6 @@ const CODE_MAP: Record<string, { label: string; color: string }> = {
 
 function getCodeMeta(code: string) {
   if (CODE_MAP[code]) return CODE_MAP[code];
-  // Fallback: color by code prefix
   if (code.startsWith('0')) return { label: code, color: '#22c55e' };
   if (code.startsWith('40')) return { label: code, color: '#f59e0b' };
   if (code.startsWith('41')) return { label: code, color: '#f97316' };
@@ -243,20 +241,15 @@ async function handlePurge() {
   }
 }
 
-onMounted(() => {
-  loadDashboard();
-});
+const { active: autoRefresh, pause, resume } = usePolling(loadDashboard, 3000);
 
-onActivated(() => {
-  isActive.value = true;
-  if (!stats.value) {
-    loadDashboard();
+function toggleAutoRefresh(val: boolean) {
+  if (val) {
+    resume();
+  } else {
+    pause();
   }
-});
-
-onDeactivated(() => {
-  isActive.value = false;
-});
+}
 </script>
 
 <template>
@@ -266,6 +259,13 @@ onDeactivated(() => {
       <div class="flex items-center justify-between">
         <span class="text-lg font-bold">{{ $t('page.manage.radar.overview.title') }}</span>
         <NSpace>
+          <NSwitch :value="autoRefresh" size="small" @update:value="toggleAutoRefresh">
+            <template #checked>{{ $t('page.manage.radar.monitor.autoRefresh') }}</template>
+            <template #unchecked>{{ $t('page.manage.radar.monitor.paused') }}</template>
+          </NSwitch>
+          <NTag :type="autoRefresh ? 'success' : 'default'" size="small">
+            {{ autoRefresh ? $t('page.manage.radar.monitor.autoRefresh') : $t('page.manage.radar.monitor.paused') }}
+          </NTag>
           <NSelect
             :value="selectedHours"
             :options="timeOptions"

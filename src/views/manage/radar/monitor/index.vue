@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref } from 'vue';
+import { onActivated, onMounted, ref } from 'vue';
 import { fetchMonitorOverview, fetchMonitorRealtime } from '@/service/api';
+import { usePolling } from '@/hooks/common/polling';
 import { $t } from '@/locales';
 import SystemCards from './modules/system-cards.vue';
 import BasicInfo from './modules/basic-info.vue';
@@ -11,8 +12,6 @@ import ProcessTable from './modules/process-table.vue';
 const overviewData = ref<Api.Monitor.Overview | null>(null);
 const realtimeData = ref<Api.Monitor.Realtime | null>(null);
 const loading = ref(false);
-const autoRefresh = ref(true);
-let timer: ReturnType<typeof setInterval> | null = null;
 
 async function loadOverview() {
   loading.value = true;
@@ -30,33 +29,19 @@ async function loadRealtime() {
   }
 }
 
-function startAutoRefresh() {
-  stopAutoRefresh();
-  if (autoRefresh.value) {
-    timer = setInterval(loadRealtime, 3000);
-  }
-}
-
-function stopAutoRefresh() {
-  if (timer) {
-    clearInterval(timer);
-    timer = null;
-  }
-}
+const { active: autoRefresh, pause, resume } = usePolling(loadRealtime, 3000, { immediate: false });
 
 function toggleAutoRefresh(val: boolean) {
-  autoRefresh.value = val;
   if (val) {
-    startAutoRefresh();
+    resume();
   } else {
-    stopAutoRefresh();
+    pause();
   }
 }
 
 onMounted(async () => {
   await loadOverview();
   await loadRealtime();
-  startAutoRefresh();
 });
 
 onActivated(() => {
@@ -64,15 +49,6 @@ onActivated(() => {
     loadOverview();
     loadRealtime();
   }
-  startAutoRefresh();
-});
-
-onDeactivated(() => {
-  stopAutoRefresh();
-});
-
-onBeforeUnmount(() => {
-  stopAutoRefresh();
 });
 </script>
 
