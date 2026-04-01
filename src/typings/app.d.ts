@@ -776,6 +776,10 @@ declare namespace App {
               userStatusType: string;
               userRole: string;
             };
+            offline: string;
+            batchOffline: string;
+            confirmOffline: string;
+            offlineSuccess: string;
             addUser: string;
             editUser: string;
             gender: {

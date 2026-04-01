@@ -2,7 +2,7 @@
 import { reactive } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { statusTypeRecord, userGenderRecord } from '@/constants/business';
-import { fetchBatchDeleteUser, fetchDeleteUser, fetchGetUserList } from '@/service/api';
+import { fetchBatchDeleteUser, fetchBatchUserOffline, fetchDeleteUser, fetchGetUserList, fetchUserOffline } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -112,12 +112,22 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 130,
+      width: 195,
       render: row => (
         <div class="flex-center gap-8px">
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
           </NButton>
+          <NPopconfirm onPositiveClick={() => handleOffline(row.id)}>
+            {{
+              default: () => $t('page.manage.user.confirmOffline'),
+              trigger: () => (
+                <NButton type="warning" ghost size="small">
+                  {$t('page.manage.user.offline')}
+                </NButton>
+              )
+            }}
+          </NPopconfirm>
           <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
               default: () => $t('common.confirmDelete'),
@@ -154,6 +164,20 @@ async function handleBatchDelete() {
   }
 }
 
+async function handleOffline(id: number) {
+  const { error } = await fetchUserOffline(id);
+  if (!error) {
+    window.$message?.success($t('page.manage.user.offlineSuccess'));
+  }
+}
+
+async function handleBatchOffline() {
+  const { error } = await fetchBatchUserOffline({ ids: checkedRowKeys.value as number[] });
+  if (!error) {
+    window.$message?.success($t('page.manage.user.offlineSuccess'));
+  }
+}
+
 async function handleDelete(id: number) {
   // request
   const { error } = await fetchDeleteUser({ id });
@@ -179,7 +203,21 @@ function edit(id: number) {
           @add="handleAdd"
           @delete="handleBatchDelete"
           @refresh="getData"
-        />
+        >
+          <template #prefix>
+            <NPopconfirm @positive-click="handleBatchOffline">
+              <template #trigger>
+                <NButton size="small" ghost type="warning" :disabled="checkedRowKeys.length === 0">
+                  <template #icon>
+                    <icon-ic-round-logout class="text-icon" />
+                  </template>
+                  {{ $t('page.manage.user.batchOffline') }}
+                </NButton>
+              </template>
+              {{ $t('page.manage.user.confirmOffline') }}
+            </NPopconfirm>
+          </template>
+        </TableHeaderOperation>
       </template>
       <NDataTable
         v-model:checked-row-keys="checkedRowKeys"

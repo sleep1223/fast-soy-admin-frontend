@@ -604,6 +604,10 @@ const local: App.I18n.Schema = {
           userStatusType: '请选择用户状态',
           userRole: '请选择用户角色'
         },
+        offline: '下线',
+        batchOffline: '批量下线',
+        confirmOffline: '确认将该用户强制下线吗？',
+        offlineSuccess: '下线成功',
         addUser: '新增用户',
         editUser: '编辑用户',
         gender: {

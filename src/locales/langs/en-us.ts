@@ -584,6 +584,10 @@ const local: App.I18n.Schema = {
           userStatusType: 'Please select user statusType',
           userRole: 'Please select user role'
         },
+        offline: 'Offline',
+        batchOffline: 'Batch Offline',
+        confirmOffline: 'Are you sure to force this user offline?',
+        offlineSuccess: 'User has been forced offline',
         addUser: 'Add User',
         editUser: 'Edit User',
         gender: {

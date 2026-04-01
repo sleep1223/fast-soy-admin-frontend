@@ -150,6 +150,32 @@ export function fetchBatchDeleteUser(data?: Api.SystemManage.CommonBatchDeletePa
   });
 }
 
+/** offline user */
+export function fetchUserOffline(userId: number) {
+  return request({
+    url: `/system-manage/users/${userId}/offline`,
+    method: 'post'
+  });
+}
+
+/** batch offline users by ids */
+export function fetchBatchUserOffline(data: { ids: number[] }) {
+  return request({
+    url: '/system-manage/users/batch-offline',
+    method: 'post',
+    data
+  });
+}
+
+/** offline users by role codes */
+export function fetchOfflineByRole(roleCodes: string[]) {
+  return request({
+    url: '/system-manage/users/offline-by-role',
+    method: 'post',
+    data: roleCodes
+  });
+}
+
 /** add role */
 export function fetchAddRole(data?: Api.SystemManage.RoleUpdateParams) {
   return request<Api.SystemManage.RoleList, 'json'>({
