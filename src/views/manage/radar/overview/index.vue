@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onActivated, onDeactivated, onMounted, ref } from 'vue';
 import { fetchRadarDashboard, fetchRadarPurge } from '@/service/api';
 import { useEcharts } from '@/hooks/common/echarts';
 import { $t } from '@/locales';
+
+const isActive = ref(false);
 
 const stats = ref<Api.Radar.DashboardStats | null>(null);
 const loading = ref(false);
@@ -128,11 +130,11 @@ const { domRef: distChartRef, updateOptions: updateDistChart } = useEcharts(() =
   ]
 }));
 
-// Query Activity Chart
+// Database Activity Chart
 const { domRef: queryChartRef, updateOptions: updateQueryChart } = useEcharts(() => ({
   tooltip: {
     trigger: 'axis',
-    axisPointer: { type: 'cross', label: { backgroundColor: '#6a7985' } }
+    axisPointer: { type: 'line' }
   },
   legend: { data: ['查询数', '平均耗时'], top: '0' },
   grid: { left: '3%', right: '8%', bottom: '3%', top: '18%', containLabel: true },
@@ -144,15 +146,31 @@ const { domRef: queryChartRef, updateOptions: updateQueryChart } = useEcharts(()
   series: [
     {
       name: '查询数',
-      type: 'bar' as const,
+      type: 'line' as const,
+      smooth: true,
+      showSymbol: false,
       yAxisIndex: 0,
-      itemStyle: { color: 'rgba(251, 146, 60, 0.7)', borderRadius: [2, 2, 0, 0] },
+      areaStyle: {
+        color: {
+          type: 'linear' as const,
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
+          colorStops: [
+            { offset: 0, color: 'rgba(251, 146, 60, 0.3)' },
+            { offset: 1, color: 'rgba(251, 146, 60, 0.02)' }
+          ]
+        }
+      },
+      itemStyle: { color: '#fb923c' },
       data: [] as number[]
     },
     {
       name: '平均耗时',
       type: 'line' as const,
       smooth: true,
+      showSymbol: false,
       yAxisIndex: 1,
       areaStyle: {
         color: {
@@ -228,10 +246,21 @@ async function handlePurge() {
 onMounted(() => {
   loadDashboard();
 });
+
+onActivated(() => {
+  isActive.value = true;
+  if (!stats.value) {
+    loadDashboard();
+  }
+});
+
+onDeactivated(() => {
+  isActive.value = false;
+});
 </script>
 
 <template>
-  <div class="flex-col-stretch gap-16px overflow-hidden p-16px">
+  <div class="flex-col-stretch gap-16px overflow-y-auto p-16px">
     <!-- Header -->
     <NCard :bordered="false" size="small" class="card-wrapper">
       <div class="flex items-center justify-between">
@@ -334,13 +363,13 @@ onMounted(() => {
                   <NStatistic :label="$t('page.manage.radar.dashboard.totalRequests')" :value="stats.total_requests" />
                 </NGi>
                 <NGi>
-                  <NStatistic :label="$t('page.manage.radar.dashboard.errors')">
-                    <span :class="stats.error_count > 0 ? 'text-error' : ''">{{ stats.error_count }}</span>
+                  <NStatistic :label="$t('page.manage.radar.dashboard.errorRate')">
+                    <span :class="stats.error_rate > 5 ? 'text-error' : ''">{{ stats.error_rate }}%</span>
                   </NStatistic>
                 </NGi>
                 <NGi>
-                  <NStatistic :label="$t('page.manage.radar.dashboard.errorRate')">
-                    <span :class="stats.error_rate > 5 ? 'text-error' : ''">{{ stats.error_rate }}%</span>
+                  <NStatistic :label="$t('page.manage.radar.dashboard.rps')">
+                    <span>{{ stats.rps }}</span>
                   </NStatistic>
                 </NGi>
               </NGrid>

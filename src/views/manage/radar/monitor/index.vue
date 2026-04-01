@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref } from 'vue';
 import { fetchMonitorOverview, fetchMonitorRealtime } from '@/service/api';
 import { $t } from '@/locales';
 import SystemCards from './modules/system-cards.vue';
@@ -57,6 +57,18 @@ onMounted(async () => {
   await loadOverview();
   await loadRealtime();
   startAutoRefresh();
+});
+
+onActivated(() => {
+  if (!overviewData.value) {
+    loadOverview();
+    loadRealtime();
+  }
+  startAutoRefresh();
+});
+
+onDeactivated(() => {
+  stopAutoRefresh();
 });
 
 onBeforeUnmount(() => {

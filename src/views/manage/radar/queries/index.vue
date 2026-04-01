@@ -180,37 +180,41 @@ loadData();
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <NCard :title="$t('common.search')" :bordered="false" size="small" class="card-wrapper">
-      <NForm label-placement="left" :label-width="120">
-        <NGrid responsive="screen" item-responsive>
-          <NFormItemGi
-            span="24 s:12 m:6"
-            :label="$t('page.manage.radar.queries.slowOnly')"
-            class="pr-24px"
-          >
-            <NSwitch v-model:value="searchParams.slow_only" />
-          </NFormItemGi>
-          <NFormItemGi
-            span="24 s:12 m:6"
-            :label="$t('page.manage.radar.queries.threshold')"
-            class="pr-24px"
-          >
-            <NInputNumber v-model:value="searchParams.threshold_ms" :min="0">
-              <template #suffix>ms</template>
-            </NInputNumber>
-          </NFormItemGi>
-          <NFormItemGi span="24 m:6" class="pr-24px">
-            <NSpace class="w-full" justify="end">
-              <NButton type="primary" ghost @click="loadData">
-                <template #icon>
-                  <icon-ic-round-search class="text-icon" />
-                </template>
-                {{ $t('common.search') }}
-              </NButton>
-            </NSpace>
-          </NFormItemGi>
-        </NGrid>
-      </NForm>
+    <NCard :bordered="false" size="small" class="card-wrapper">
+      <NCollapse>
+        <NCollapseItem :title="$t('common.search')" name="query-search">
+          <NForm label-placement="left" :label-width="120">
+            <NGrid responsive="screen" item-responsive>
+              <NFormItemGi
+                span="24 s:12 m:6"
+                :label="$t('page.manage.radar.queries.slowOnly')"
+                class="pr-24px"
+              >
+                <NSwitch v-model:value="searchParams.slow_only" />
+              </NFormItemGi>
+              <NFormItemGi
+                span="24 s:12 m:6"
+                :label="$t('page.manage.radar.queries.threshold')"
+                class="pr-24px"
+              >
+                <NInputNumber v-model:value="searchParams.threshold_ms" :min="0">
+                  <template #suffix>ms</template>
+                </NInputNumber>
+              </NFormItemGi>
+              <NFormItemGi span="24 m:6" class="pr-24px">
+                <NSpace class="w-full" justify="end">
+                  <NButton type="primary" ghost @click="loadData">
+                    <template #icon>
+                      <icon-ic-round-search class="text-icon" />
+                    </template>
+                    {{ $t('common.search') }}
+                  </NButton>
+                </NSpace>
+              </NFormItemGi>
+            </NGrid>
+          </NForm>
+        </NCollapseItem>
+      </NCollapse>
     </NCard>
     <NCard :title="$t('page.manage.radar.queries.title')" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>

@@ -806,8 +806,8 @@ declare namespace App {
               exceptions: string;
               perfOverview: string;
               successRate: string;
-              errors: string;
               errorRate: string;
+              rps: string;
               responseTime: string;
               queryPerf: string;
               requestDist: string;
@@ -872,6 +872,7 @@ declare namespace App {
               queryParams: string;
               minDuration: string;
               hasError: string;
+              businessCode: string;
               xRequestId: string;
               clientIp: string;
               requestHeaders: string;
@@ -891,6 +892,9 @@ declare namespace App {
               errorType: string;
               errorMessage: string;
               detail: string;
+              status: string;
+              resolved: string;
+              unresolved: string;
             };
             userLogs: {
               title: string;

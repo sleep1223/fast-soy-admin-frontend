@@ -28,6 +28,7 @@ declare namespace Api {
       clientIp: string | null;
       queryParams: string | null;
       responseStatus: number | null;
+      businessCode: string | null;
       durationMs: number | null;
       errorType: string | null;
       errorMessage: string | null;
@@ -53,7 +54,7 @@ declare namespace Api {
       page?: number;
       page_size?: number;
       path_filter?: string | null;
-      status_filter?: number | null;
+      code_filter?: string | null;
       min_duration?: number | null;
       has_error?: boolean | null;
     }
@@ -98,6 +99,7 @@ declare namespace Api {
       errorMessage: string;
       errorTraceback: string | null;
       durationMs: number | null;
+      resolved: boolean;
       createdAt: number;
       fmtCreatedAt: string;
     }
@@ -106,6 +108,9 @@ declare namespace Api {
     interface ExceptionSearchParams {
       page?: number;
       page_size?: number;
+      path_filter?: string | null;
+      error_type?: string | null;
+      resolved?: boolean | null;
     }
 
     /** exception list */
@@ -150,8 +155,8 @@ declare namespace Api {
       total_queries: number;
       total_exceptions: number;
       success_rate: number;
-      error_count: number;
       error_rate: number;
+      rps: number;
       p50: number;
       p95: number;
       p99: number;

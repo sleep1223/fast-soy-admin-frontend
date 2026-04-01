@@ -19,7 +19,7 @@ const searchParams = reactive({
   page: 1,
   page_size: 20,
   path_filter: null as string | null,
-  status_filter: null as number | null,
+  code_filter: null as string | null,
   min_duration: null as number | null,
   has_error: null as boolean | null
 });
@@ -67,7 +67,7 @@ async function viewDetail(xRequestId: string) {
 
 function resetSearch() {
   searchParams.path_filter = null;
-  searchParams.status_filter = null;
+  searchParams.code_filter = null;
   searchParams.min_duration = null;
   searchParams.has_error = null;
   searchParams.page = 1;
@@ -86,11 +86,12 @@ function getMethodTagType(method: string): NaiveUI.ThemeColor {
   return map[method.toUpperCase()] || 'default';
 }
 
-function getStatusTagType(status: number | null): NaiveUI.ThemeColor {
-  if (!status) return 'default';
-  if (status < 300) return 'success';
-  if (status < 400) return 'warning';
-  return 'error';
+function getCodeTagType(code: string | null): NaiveUI.ThemeColor {
+  if (!code) return 'default';
+  if (code.startsWith('0')) return 'success';
+  if (code.startsWith('40')) return 'warning';
+  if (code.startsWith('5')) return 'error';
+  return 'default';
 }
 
 const columns = [
@@ -115,13 +116,13 @@ const columns = [
     render: (row: Api.Radar.RequestRecord) => row.queryParams || '-'
   },
   {
-    key: 'responseStatus',
-    title: $t('page.manage.radar.requests.status'),
-    width: 80,
+    key: 'businessCode',
+    title: $t('page.manage.radar.requests.businessCode'),
+    width: 90,
     align: 'center' as const,
     render: (row: Api.Radar.RequestRecord) => (
-      <NTag type={getStatusTagType(row.responseStatus)} size="small">
-        {row.responseStatus ?? '-'}
+      <NTag type={getCodeTagType(row.businessCode)} size="small">
+        {row.businessCode ?? '-'}
       </NTag>
     )
   },
@@ -172,64 +173,68 @@ loadData();
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <NCard :title="$t('common.search')" :bordered="false" size="small" class="card-wrapper">
-      <NForm label-placement="left" :label-width="100">
-        <NGrid responsive="screen" item-responsive>
-          <NFormItemGi
-            span="24 s:12 m:6"
-            :label="$t('page.manage.radar.requests.path')"
-            class="pr-24px"
-          >
-            <NInput v-model:value="searchParams.path_filter" clearable />
-          </NFormItemGi>
-          <NFormItemGi
-            span="24 s:12 m:6"
-            :label="$t('page.manage.radar.requests.status')"
-            class="pr-24px"
-          >
-            <NInputNumber v-model:value="searchParams.status_filter" clearable :min="100" :max="599" />
-          </NFormItemGi>
-          <NFormItemGi
-            span="24 s:12 m:6"
-            :label="$t('page.manage.radar.requests.minDuration')"
-            class="pr-24px"
-          >
-            <NInputNumber v-model:value="searchParams.min_duration" clearable :min="0">
-              <template #suffix>ms</template>
-            </NInputNumber>
-          </NFormItemGi>
-          <NFormItemGi
-            span="24 s:12 m:6"
-            :label="$t('page.manage.radar.requests.hasError')"
-            class="pr-24px"
-          >
-            <NSelect
-              v-model:value="searchParams.has_error"
-              clearable
-              :options="[
-                { label: $t('common.yesOrNo.yes'), value: true },
-                { label: $t('common.yesOrNo.no'), value: false }
-              ]"
-            />
-          </NFormItemGi>
-          <NFormItemGi span="24 m:6" class="pr-24px">
-            <NSpace class="w-full" justify="end">
-              <NButton @click="resetSearch">
-                <template #icon>
-                  <icon-ic-round-refresh class="text-icon" />
-                </template>
-                {{ $t('common.reset') }}
-              </NButton>
-              <NButton type="primary" ghost @click="loadData">
-                <template #icon>
-                  <icon-ic-round-search class="text-icon" />
-                </template>
-                {{ $t('common.search') }}
-              </NButton>
-            </NSpace>
-          </NFormItemGi>
-        </NGrid>
-      </NForm>
+    <NCard :bordered="false" size="small" class="card-wrapper">
+      <NCollapse>
+        <NCollapseItem :title="$t('common.search')" name="request-search">
+          <NForm label-placement="left" :label-width="100">
+            <NGrid responsive="screen" item-responsive>
+              <NFormItemGi
+                span="24 s:12 m:6"
+                :label="$t('page.manage.radar.requests.path')"
+                class="pr-24px"
+              >
+                <NInput v-model:value="searchParams.path_filter" clearable />
+              </NFormItemGi>
+              <NFormItemGi
+                span="24 s:12 m:6"
+                :label="$t('page.manage.radar.requests.businessCode')"
+                class="pr-24px"
+              >
+                <NInput v-model:value="searchParams.code_filter" clearable />
+              </NFormItemGi>
+              <NFormItemGi
+                span="24 s:12 m:6"
+                :label="$t('page.manage.radar.requests.minDuration')"
+                class="pr-24px"
+              >
+                <NInputNumber v-model:value="searchParams.min_duration" clearable :min="0">
+                  <template #suffix>ms</template>
+                </NInputNumber>
+              </NFormItemGi>
+              <NFormItemGi
+                span="24 s:12 m:6"
+                :label="$t('page.manage.radar.requests.hasError')"
+                class="pr-24px"
+              >
+                <NSelect
+                  v-model:value="(searchParams.has_error as any)"
+                  clearable
+                  :options="(([
+                    { label: $t('common.yesOrNo.yes'), value: true },
+                    { label: $t('common.yesOrNo.no'), value: false }
+                  ]) as any)"
+                />
+              </NFormItemGi>
+              <NFormItemGi span="24 m:6" class="pr-24px">
+                <NSpace class="w-full" justify="end">
+                  <NButton @click="resetSearch">
+                    <template #icon>
+                      <icon-ic-round-refresh class="text-icon" />
+                    </template>
+                    {{ $t('common.reset') }}
+                  </NButton>
+                  <NButton type="primary" ghost @click="loadData">
+                    <template #icon>
+                      <icon-ic-round-search class="text-icon" />
+                    </template>
+                    {{ $t('common.search') }}
+                  </NButton>
+                </NSpace>
+              </NFormItemGi>
+            </NGrid>
+          </NForm>
+        </NCollapseItem>
+      </NCollapse>
     </NCard>
     <NCard :title="$t('page.manage.radar.requests.title')" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>

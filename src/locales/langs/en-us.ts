@@ -705,13 +705,13 @@ const local: App.I18n.Schema = {
           exceptions: 'Exceptions',
           perfOverview: 'Performance Overview',
           successRate: 'Success Rate',
-          errors: 'Errors',
           errorRate: 'Error Rate',
+          rps: 'Requests/s',
           responseTime: 'Response Time',
           queryPerf: 'Query Performance',
           requestDist: 'Request Distribution',
           responseTimeTrend: 'Response Time Trend',
-          queryActivity: 'Query Activity'
+          queryActivity: 'Database Activity'
         },
         monitor: {
           title: 'System Monitor',
@@ -765,6 +765,7 @@ const local: App.I18n.Schema = {
           method: 'Method',
           path: 'Path',
           status: 'Status',
+          businessCode: 'Business Code',
           duration: 'Duration',
           error: 'Error',
           createdAt: 'Time',
@@ -790,7 +791,10 @@ const local: App.I18n.Schema = {
           title: 'Exceptions',
           errorType: 'Error Type',
           errorMessage: 'Error Message',
-          detail: 'Exception Detail'
+          detail: 'Exception Detail',
+          status: 'Status',
+          resolved: 'Resolved',
+          unresolved: 'Unresolved'
         },
         userLogs: {
           title: 'User Logs'

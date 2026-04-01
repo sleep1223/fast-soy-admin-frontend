@@ -277,7 +277,7 @@ const local: App.I18n.Schema = {
     manage_role: '角色管理',
     manage_menu: '菜单管理',
     manage_radar: '性能监控',
-    manage_radar_overview: '仪表板',
+    manage_radar_overview: '仪表盘',
     manage_radar_requests: '请求列表',
     manage_radar_queries: 'SQL查询',
     manage_radar_exceptions: '异常列表',
@@ -685,7 +685,7 @@ const local: App.I18n.Schema = {
         purgeConfirm: '确定清理24小时前的监控数据？',
         purgeSuccess: '已清理记录数',
         overview: {
-          title: '仪表板',
+          title: '仪表盘',
           requestCount: '总请求数',
           avgDuration: '平均耗时',
           errorCount: '异常数',
@@ -701,13 +701,13 @@ const local: App.I18n.Schema = {
           exceptions: '异常数',
           perfOverview: '性能概览',
           successRate: '成功率',
-          errors: '错误',
           errorRate: '错误率',
+          rps: '每秒请求数',
           responseTime: '响应时间',
           queryPerf: '查询性能',
           requestDist: '请求分布',
           responseTimeTrend: '响应时间趋势',
-          queryActivity: '查询活动'
+          queryActivity: '数据库活动'
         },
         monitor: {
           title: '系统监控',
@@ -761,6 +761,7 @@ const local: App.I18n.Schema = {
           method: '请求方法',
           path: '请求路径',
           status: '状态码',
+          businessCode: '业务码',
           duration: '耗时',
           error: '异常',
           createdAt: '时间',
@@ -786,7 +787,10 @@ const local: App.I18n.Schema = {
           title: '异常列表',
           errorType: '异常类型',
           errorMessage: '异常消息',
-          detail: '异常详情'
+          detail: '异常详情',
+          status: '处理状态',
+          resolved: '已处理',
+          unresolved: '未处理'
         },
         userLogs: {
           title: '用户日志'

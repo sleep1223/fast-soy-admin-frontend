@@ -181,7 +181,7 @@ function handleAdd() {
 }
 
 async function handleBatchDelete() {
-  const { error } = await fetchBatchDeleteMenu({ ids: checkedRowKeys.value as number[] });
+  const { error } = await fetchBatchDeleteMenu({ ids: checkedRowKeys.value as string[] });
   if (!error) {
     onBatchDeleted();
   }

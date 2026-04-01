@@ -1,3 +1,4 @@
+import type { AxiosResponse } from 'axios';
 import { createFlatRequest } from '@sa/axios';
 
 /** Remove null, undefined, and empty string values from params to avoid FastAPI 422 errors */
@@ -18,16 +19,16 @@ const radarRequest = createFlatRequest(
     baseURL: import.meta.env.DEV ? 'http://127.0.0.1:9999/__radar/api' : '/__radar/api'
   },
   {
-    transform(response) {
+    transform(response: AxiosResponse<App.Service.Response<any>>) {
       return response.data.data;
     },
     async onRequest(config) {
       return config;
     },
-    isBackendSuccess(response) {
+    isBackendSuccess(response: AxiosResponse<App.Service.Response<any>>) {
       return response.data.code === '0000';
     },
-    async onBackendFail(response) {
+    async onBackendFail(response: AxiosResponse<App.Service.Response<any>>) {
       const message = response.data?.msg || 'Error';
       window.$message?.error(message);
     },
@@ -104,6 +105,15 @@ export function fetchRadarExceptions(params?: Api.Radar.ExceptionSearchParams) {
     url: '/exceptions',
     method: 'get',
     params: cleanParams(params)
+  });
+}
+
+/** toggle exception resolved status */
+export function fetchRadarExceptionResolve(xRequestId: string, resolved: boolean) {
+  return radarRequest<null>({
+    url: `/exceptions/${xRequestId}/resolve`,
+    method: 'put',
+    data: { resolved }
   });
 }
 
