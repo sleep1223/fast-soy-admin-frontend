@@ -73,29 +73,12 @@ export function fetchRadarRequestDetail(xRequestId: string) {
   });
 }
 
-/** get radar request timeline */
-export function fetchRadarRequestTimeline(xRequestId: string) {
-  return radarRequest<Api.Radar.TimelineItem[]>({
-    url: `/requests/${xRequestId}/timeline`,
-    method: 'get'
-  });
-}
-
 /** get radar SQL query list */
 export function fetchRadarQueries(params?: Api.Radar.QuerySearchParams) {
   return radarRequest<Api.Radar.QueryList>({
     url: '/queries',
     method: 'get',
     params: cleanParams(params)
-  });
-}
-
-/** get radar slow queries */
-export function fetchRadarSlowQueries(limit?: number) {
-  return radarRequest<Api.Radar.QueryRecord[]>({
-    url: '/queries/slow',
-    method: 'get',
-    params: { limit }
   });
 }
 
@@ -114,15 +97,6 @@ export function fetchRadarExceptionResolve(xRequestId: string, resolved: boolean
     url: `/exceptions/${xRequestId}/resolve`,
     method: 'put',
     data: { resolved }
-  });
-}
-
-/** get radar user logs */
-export function fetchRadarUserLogs(params?: Api.Radar.UserLogSearchParams) {
-  return radarRequest<Api.Radar.UserLogList>({
-    url: '/user-logs',
-    method: 'get',
-    params: cleanParams(params)
   });
 }
 

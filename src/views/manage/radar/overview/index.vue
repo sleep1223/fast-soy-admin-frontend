@@ -273,9 +273,9 @@ function toggleAutoRefresh(val: boolean) {
             class="w-120px"
             @update:value="handleTimeChange"
           />
-          <NButton size="small" @click="loadDashboard">
+          <NButton size="small" :disabled="loading" @click="loadDashboard">
             <template #icon>
-              <icon-ic-round-refresh class="text-icon" />
+              <icon-ic-round-refresh class="text-icon" :class="{ 'animate-spin animate-duration-750': loading }" />
             </template>
             {{ $t('common.refresh') }}
           </NButton>

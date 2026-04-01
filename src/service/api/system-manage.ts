@@ -167,15 +167,6 @@ export function fetchBatchUserOffline(data: { ids: number[] }) {
   });
 }
 
-/** offline users by role codes */
-export function fetchOfflineByRole(roleCodes: string[]) {
-  return request({
-    url: '/system-manage/users/offline-by-role',
-    method: 'post',
-    data: roleCodes
-  });
-}
-
 /** add role */
 export function fetchAddRole(data?: Api.SystemManage.RoleUpdateParams) {
   return request<Api.SystemManage.RoleList, 'json'>({

@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { computed, reactive } from 'vue';
+import { useAuthStore } from '@/store/modules/auth';
 import { useRouterPush } from '@/hooks/common/router';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { useCaptcha } from '@/hooks/business/captcha';
+import { fetchCodeLogin } from '@/service/api';
 import { $t } from '@/locales';
 
 defineOptions({
   name: 'CodeLogin'
 });
 
+const authStore = useAuthStore();
 const { toggleLoginModule } = useRouterPush();
 const { formRef, validate } = useNaiveForm();
-const { label, isCounting, loading, getCaptcha } = useCaptcha();
+const { label, isCounting, loading: captchaLoading, getCaptcha } = useCaptcha();
 
 interface FormModel {
   phone: string;
@@ -34,8 +37,17 @@ const rules = computed<Record<keyof FormModel, App.Global.FormRule[]>>(() => {
 
 async function handleSubmit() {
   await validate();
-  // request
-  window.$message?.success($t('page.login.common.validateSuccess'));
+
+  const { data: loginToken, error } = await fetchCodeLogin(model.phone, model.code);
+
+  if (!error) {
+    await authStore.loginByToken(loginToken);
+    window.$notification?.success({
+      title: $t('page.login.common.loginSuccess'),
+      content: $t('page.login.common.welcomeBack', { nickName: authStore.userInfo.nickName }),
+      duration: 4500
+    });
+  }
 }
 </script>
 
@@ -47,7 +59,7 @@ async function handleSubmit() {
     <NFormItem path="code">
       <div class="w-full flex-y-center gap-16px">
         <NInput v-model:value="model.code" :placeholder="$t('page.login.common.codePlaceholder')" />
-        <NButton size="large" :disabled="isCounting" :loading="loading" @click="getCaptcha(model.phone)">
+        <NButton size="large" :disabled="isCounting" :loading="captchaLoading" @click="getCaptcha(model.phone)">
           {{ label }}
         </NButton>
       </div>

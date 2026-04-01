@@ -16,19 +16,3 @@ export function fetchMonitorRealtime() {
   });
 }
 
-/** get basic system info */
-export function fetchMonitorBasicInfo() {
-  return request<Api.Monitor.BasicInfo>({
-    url: '/monitor/basic-info',
-    method: 'get'
-  });
-}
-
-/** get top processes */
-export function fetchMonitorProcesses(limit?: number) {
-  return request<Api.Monitor.ProcessInfo[]>({
-    url: '/monitor/processes',
-    method: 'get',
-    params: { limit }
-  });
-}

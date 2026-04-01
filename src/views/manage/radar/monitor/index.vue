@@ -66,9 +66,9 @@ onActivated(() => {
           <NTag :type="autoRefresh ? 'success' : 'default'" size="small">
             {{ autoRefresh ? $t('page.manage.radar.monitor.autoRefresh') : $t('page.manage.radar.monitor.paused') }}
           </NTag>
-          <NButton size="small" @click="loadRealtime">
+          <NButton size="small" :disabled="loading" @click="loadRealtime">
             <template #icon>
-              <icon-ic-round-refresh class="text-icon" />
+              <icon-ic-round-refresh class="text-icon" :class="{ 'animate-spin animate-duration-750': loading }" />
             </template>
             {{ $t('common.refresh') }}
           </NButton>

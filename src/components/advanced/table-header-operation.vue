@@ -60,9 +60,9 @@ function refresh() {
         {{ $t('common.confirmDelete') }}
       </NPopconfirm>
     </slot>
-    <NButton size="small" @click="refresh">
+    <NButton size="small" :disabled="loading" @click="refresh">
       <template #icon>
-        <icon-mdi-refresh class="text-icon" :class="{ 'animate-spin': loading }" />
+        <icon-mdi-refresh class="text-icon" :class="{ 'animate-spin animate-duration-750': loading }" />
       </template>
       {{ $t('common.refresh') }}
     </NButton>

@@ -221,9 +221,9 @@ loadData();
     </NCard>
     <NCard :title="$t('page.manage.radar.exceptions.title')" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
-        <NButton size="small" :loading="loading" @click="loadData">
+        <NButton size="small" :disabled="loading" @click="loadData">
           <template #icon>
-            <icon-ic-round-refresh class="text-icon" />
+            <icon-ic-round-refresh class="text-icon" :class="{ 'animate-spin animate-duration-750': loading }" />
           </template>
         </NButton>
       </template>
