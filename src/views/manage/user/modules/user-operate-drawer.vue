@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+
 import { jsonClone } from '@sa/utils';
 import { statusTypeOptions, userGenderOptions } from '@/constants/business';
 import { fetchAddUser, fetchGetRoleList, fetchUpdateUser } from '@/service/api';
@@ -62,11 +63,14 @@ function createDefaultModel(): Model {
 
 type RuleKey = Extract<keyof Api.SystemManage.UserUpdateParams, 'userName' | 'password' | 'nickName' | 'statusType'>;
 
-const rules = ref<Record<RuleKey, App.Global.FormRule>>({
-  userName: defaultRequiredRule,
-  password: defaultRequiredRule,
-  nickName: defaultRequiredRule,
-  statusType: defaultRequiredRule
+const rules = computed<Record<RuleKey, App.Global.FormRule>>(() => {
+  const isAdd = props.operateType === 'add';
+  return {
+    userName: defaultRequiredRule,
+    password: isAdd ? defaultRequiredRule : {},
+    nickName: isAdd ? defaultRequiredRule : {},
+    statusType: defaultRequiredRule
+  };
 });
 
 /** the enabled role options */
@@ -89,6 +93,8 @@ function handleInitModel() {
 
   if (props.operateType === 'edit' && props.rowData) {
     Object.assign(model.value, jsonClone(props.rowData));
+    // 编辑时清空密码，不填则不修改
+    model.value.password = '';
   }
 }
 
@@ -98,14 +104,20 @@ function closeDrawer() {
 
 async function handleSubmit() {
   await validate();
-  // request
 
   if (props.operateType === 'add') {
     const { error } = await fetchAddUser(model.value);
     if (error) return;
     window.$message?.success($t('common.addSuccess'));
   } else if (props.operateType === 'edit') {
-    const { error } = await fetchUpdateUser(model.value);
+    // 编辑时过滤空字符串字段，实现部分更新
+    const payload: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(model.value)) {
+      if (value !== '' && value !== null) {
+        payload[key] = value;
+      }
+    }
+    const { error } = await fetchUpdateUser(payload);
     if (error) return;
     window.$message?.success($t('common.updateSuccess'));
   }
@@ -139,7 +151,12 @@ watch(visible, () => {
           />
         </NFormItem>
         <NFormItem :label="$t('page.manage.user.password')" path="password">
-          <NInput v-model:value="model.password" :placeholder="$t('page.manage.user.form.password')" />
+          <NInput
+            v-model:value="model.password"
+            type="password"
+            show-password-on="click"
+            :placeholder="operateType === 'edit' ? $t('page.manage.user.form.passwordEditHint') : $t('page.manage.user.form.password')"
+          />
         </NFormItem>
         <NFormItem :label="$t('page.manage.user.userGender')" path="userGender">
           <NRadioGroup v-model:value="model.userGender">

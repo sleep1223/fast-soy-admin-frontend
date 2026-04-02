@@ -109,6 +109,18 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       }
     },
     {
+      key: 'updatedInfo',
+      title: $t('page.manage.common.updatedInfo'),
+      align: 'center',
+      minWidth: 160,
+      render: row => (
+        <div class="flex-col-center gap-2px">
+          {row.updatedBy ? <span class="text-12px">{row.updatedBy}</span> : null}
+          {row.fmtUpdatedAt ? <span class="text-12px text-gray-400">{row.fmtUpdatedAt}</span> : null}
+        </div>
+      )
+    },
+    {
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
@@ -225,7 +237,7 @@ function edit(id: number) {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="962"
+        :scroll-x="1122"
         :loading="loading"
         remote
         :row-key="row => row.id"

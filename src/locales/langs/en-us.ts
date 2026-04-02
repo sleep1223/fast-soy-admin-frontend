@@ -544,7 +544,12 @@ const local: App.I18n.Schema = {
         statusType: {
           enable: 'Enable',
           disable: 'Disable'
-        }
+        },
+        updatedInfo: 'Updated Info',
+        updatedBy: 'Updated By',
+        updatedAt: 'Updated At',
+        createdBy: 'Created By',
+        createdAt: 'Created At'
       },
       role: {
         title: 'Role List',
@@ -577,6 +582,7 @@ const local: App.I18n.Schema = {
         form: {
           userName: 'Please enter user name',
           password: 'Please enter password',
+          passwordEditHint: 'Leave blank to keep current password',
           userGender: 'Please select gender',
           nickName: 'Please enter nick name',
           userPhone: 'Please enter phone number',

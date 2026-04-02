@@ -540,7 +540,12 @@ const local: App.I18n.Schema = {
         statusType: {
           enable: '启用',
           disable: '禁用'
-        }
+        },
+        updatedInfo: '更新信息',
+        updatedBy: '更新人',
+        updatedAt: '更新时间',
+        createdBy: '创建人',
+        createdAt: '创建时间'
       },
       role: {
         title: '角色列表',
@@ -597,6 +602,7 @@ const local: App.I18n.Schema = {
         form: {
           userName: '请输入用户名',
           password: '请输入密码',
+          passwordEditHint: '不填则不修改密码',
           userGender: '请选择性别',
           nickName: '请输入昵称',
           userPhone: '请输入手机号',
