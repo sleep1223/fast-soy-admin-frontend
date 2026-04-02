@@ -3,7 +3,7 @@ import { request } from '../request';
 /** get system monitor overview */
 export function fetchMonitorOverview() {
   return request<Api.Monitor.Overview>({
-    url: '/monitor/overview',
+    url: '/system-manage/monitor/overview',
     method: 'get'
   });
 }
@@ -11,7 +11,7 @@ export function fetchMonitorOverview() {
 /** get system monitor realtime data */
 export function fetchMonitorRealtime() {
   return request<Api.Monitor.Realtime>({
-    url: '/monitor/realtime',
+    url: '/system-manage/monitor/realtime',
     method: 'get'
   });
 }
