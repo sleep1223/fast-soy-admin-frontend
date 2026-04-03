@@ -1,65 +1,68 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed, onMounted, ref } from 'vue';
 import { useLoading } from '@sa/hooks';
-import { useAppStore } from '@/store/modules/app';
+import { fetchGetUserList } from '@/service/api';
 import { useAuthStore } from '@/store/modules/auth';
-import { useTabStore } from '@/store/modules/tab';
 import { useAuth } from '@/hooks/business/auth';
 import { $t } from '@/locales';
 
-const route = useRoute();
-const appStore = useAppStore();
 const authStore = useAuthStore();
-const tabStore = useTabStore();
 const { hasAuth } = useAuth();
 const { loading, startLoading, endLoading } = useLoading();
 
-type AccountKey = 'super' | 'admin' | 'user';
+const isSuperAdmin = computed(() => authStore.userInfo.roles.includes('R_SUPER'));
 
-interface Account {
-  key: AccountKey;
-  label: string;
+interface SwitchableUser {
+  id: number;
   userName: string;
-  password: string;
+  nickName: string;
 }
 
-const accounts = computed<Account[]>(() => [
-  {
-    key: 'super',
-    label: $t('page.login.pwdLogin.superAdmin'),
-    userName: 'Super',
-    password: '123456'
-  },
-  {
-    key: 'admin',
-    label: $t('page.login.pwdLogin.admin'),
-    userName: 'Admin',
-    password: '123456'
-  },
-  {
-    key: 'user',
-    label: $t('page.login.pwdLogin.user'),
-    userName: 'User',
-    password: '123456'
+const switchableUsers = ref<SwitchableUser[]>([]);
+const switchingId = ref<number | null>(null);
+
+async function loadUsers() {
+  if (!isSuperAdmin.value) return;
+  const { data, error } = await fetchGetUserList({ current: 1, size: 50 });
+  if (!error && data) {
+    switchableUsers.value = (data.records || [])
+      .filter((u: any) => String(u.id) !== authStore.userInfo.userId)
+      .map((u: any) => ({ id: u.id, userName: u.userName, nickName: u.nickName }));
   }
-]);
-
-const loginAccount = ref<AccountKey>('super');
-
-async function handleToggleAccount(account: Account) {
-  loginAccount.value = account.key;
-
-  startLoading();
-  await authStore.login(account.userName, account.password, false);
-  tabStore.initTabStore(route);
-  endLoading();
-  appStore.reloadPage();
 }
+
+async function handleImpersonate(user: SwitchableUser) {
+  switchingId.value = user.id;
+  startLoading();
+  await authStore.impersonate(user.id);
+  endLoading();
+  switchingId.value = null;
+  loadUsers();
+}
+
+async function handleExitImpersonate() {
+  startLoading();
+  await authStore.exitImpersonate();
+  endLoading();
+  loadUsers();
+}
+
+onMounted(loadUsers);
 </script>
 
 <template>
   <NSpace vertical :size="16">
+    <!-- Impersonation status card -->
+    <NCard v-if="authStore.impersonating" :bordered="false" size="small" segmented class="card-wrapper">
+      <NAlert type="warning" :title="$t('page.manage.user.impersonate.actingAs', { name: authStore.userInfo.nickName || authStore.userInfo.userName })">
+        <template #action>
+          <NButton type="warning" size="small" :loading="loading" @click="handleExitImpersonate">
+            {{ $t('page.manage.user.impersonate.exit') }}
+          </NButton>
+        </template>
+      </NAlert>
+    </NCard>
+
     <NCard :title="$t('route.function_toggle-auth')" :bordered="false" size="small" segmented class="card-wrapper">
       <NDescriptions bordered :column="1">
         <NDescriptionsItem :label="$t('page.manage.user.userRole')">
@@ -67,18 +70,19 @@ async function handleToggleAccount(account: Account) {
             <NTag v-for="role in authStore.userInfo.roles" :key="role">{{ role }}</NTag>
           </NSpace>
         </NDescriptionsItem>
-        <NDescriptionsItem ions-item :label="$t('page.function.toggleAuth.toggleAccount')">
+        <NDescriptionsItem v-if="isSuperAdmin" :label="$t('page.function.toggleAuth.toggleAccount')">
           <NSpace>
             <NButton
-              v-for="account in accounts"
-              :key="account.key"
-              :loading="loading && loginAccount === account.key"
-              :disabled="loading && loginAccount !== account.key"
-              @click="handleToggleAccount(account)"
+              v-for="user in switchableUsers"
+              :key="user.id"
+              :loading="loading && switchingId === user.id"
+              :disabled="loading && switchingId !== user.id"
+              @click="handleImpersonate(user)"
             >
-              {{ account.label }}
+              {{ user.nickName || user.userName }}
             </NButton>
           </NSpace>
+          <NEmpty v-if="switchableUsers.length === 0" size="small" />
         </NDescriptionsItem>
       </NDescriptions>
     </NCard>

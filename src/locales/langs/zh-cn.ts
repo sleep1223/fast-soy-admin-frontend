@@ -618,6 +618,15 @@ const local: App.I18n.Schema = {
         batchOffline: '批量下线',
         confirmOffline: '确认将该用户强制下线吗？',
         offlineSuccess: '下线成功',
+        impersonate: {
+          button: '模拟登录',
+          confirm: '确认以 {name} 的身份模拟登录吗？',
+          switchSuccess: '模拟登录成功',
+          nowActingAs: '当前正在模拟用户 {name}',
+          actingAs: '模拟中: {name}',
+          exit: '退出模拟',
+          exitSuccess: '已退出模拟登录'
+        },
         addUser: '新增用户',
         editUser: '编辑用户',
         gender: {

@@ -18,7 +18,7 @@ function loginOrRegister() {
   toLogin();
 }
 
-type DropdownKey = 'user-center' | 'logout';
+type DropdownKey = 'user-center' | 'logout' | 'exit-impersonate';
 
 type DropdownOption =
   | {
@@ -41,13 +41,22 @@ const options = computed(() => {
     {
       type: 'divider',
       key: 'divider'
-    },
-    {
-      label: $t('common.logout'),
-      key: 'logout',
-      icon: SvgIconVNode({ icon: 'ph:sign-out', fontSize: 18 })
     }
   ];
+
+  if (authStore.impersonating) {
+    opts.push({
+      label: $t('page.manage.user.impersonate.exit'),
+      key: 'exit-impersonate',
+      icon: SvgIconVNode({ icon: 'ph:arrow-u-up-left', fontSize: 18 })
+    });
+  }
+
+  opts.push({
+    label: $t('common.logout'),
+    key: 'logout',
+    icon: SvgIconVNode({ icon: 'ph:sign-out', fontSize: 18 })
+  });
 
   return opts;
 });
@@ -64,9 +73,15 @@ function logout() {
   });
 }
 
+async function handleExitImpersonate() {
+  await authStore.exitImpersonate();
+}
+
 function handleDropdown(key: DropdownKey) {
   if (key === 'logout') {
     logout();
+  } else if (key === 'exit-impersonate') {
+    handleExitImpersonate();
   } else {
     // If your other options are jumps from other routes, they will be directly supported here
     routerPushByKey(key);

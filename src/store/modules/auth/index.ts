@@ -2,14 +2,14 @@ import { computed, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { defineStore } from 'pinia';
 import { useLoading } from '@sa/hooks';
-import { fetchGetUserInfo, fetchLogin } from '@/service/api';
+import { fetchGetUserInfo, fetchImpersonate, fetchLogin } from '@/service/api';
 import { useRouterPush } from '@/hooks/common/router';
 import { localStg } from '@/utils/storage';
 import { SetupStoreId } from '@/enum';
 import { $t } from '@/locales';
 import { useRouteStore } from '../route';
 import { useTabStore } from '../tab';
-import { clearAuthStorage, getToken } from './shared';
+import { clearAuthStorage, getToken, getOriginalToken, setOriginalToken, clearOriginalToken } from './shared';
 
 export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const route = useRoute();
@@ -20,6 +20,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const { loading: loginLoading, startLoading, endLoading } = useLoading();
 
   const token = ref('');
+  const impersonating = ref(Boolean(getOriginalToken().token));
 
   const userInfo: Api.Auth.UserInfo = reactive({
     userId: '',
@@ -153,6 +154,9 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
       // update store
       Object.assign(userInfo, info);
 
+      // sync impersonation state from backend
+      impersonating.value = Boolean(info.impersonating);
+
       return true;
     }
 
@@ -172,15 +176,89 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     }
   }
 
+  /**
+   * Impersonate a user (admin only)
+   *
+   * @param userId Target user id
+   */
+  async function impersonate(userId: number) {
+    const { data: loginToken, error } = await fetchImpersonate(userId);
+
+    if (!error) {
+      // Only save original tokens if not already impersonating (prevent chain overwrite)
+      if (!impersonating.value) {
+        const currentToken = localStg.get('token') || '';
+        const currentRefreshToken = localStg.get('refreshToken') || '';
+        setOriginalToken(currentToken, currentRefreshToken);
+      }
+
+      const pass = await loginByToken(loginToken);
+
+      if (pass) {
+        impersonating.value = true;
+        tabStore.initTabStore(route);
+        await routeStore.initAuthRoute();
+
+        window.$notification?.warning({
+          title: $t('page.manage.user.impersonate.switchSuccess'),
+          content: $t('page.manage.user.impersonate.nowActingAs', { name: userInfo.nickName || userInfo.userName }),
+          duration: 4500
+        });
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /** Exit impersonation and restore original admin session */
+  async function exitImpersonate() {
+    const originalToken = getOriginalToken();
+
+    if (!originalToken.token) {
+      return false;
+    }
+
+    // Restore original tokens
+    const pass = await loginByToken({
+      token: originalToken.token,
+      refreshToken: originalToken.refreshToken
+    });
+
+    // Always clear impersonation state, even if loginByToken fails (token expired)
+    clearOriginalToken();
+    impersonating.value = false;
+
+    if (pass) {
+      tabStore.initTabStore(route);
+      await routeStore.initAuthRoute();
+
+      window.$notification?.success({
+        title: $t('page.manage.user.impersonate.exitSuccess'),
+        duration: 3000
+      });
+
+      return true;
+    }
+
+    // Original token expired — force full logout
+    await resetStore();
+    return false;
+  }
+
   return {
     token,
     userInfo,
+    impersonating,
     isStaticSuper,
     isLogin,
     loginLoading,
     resetStore,
     login,
     loginByToken,
-    initUserInfo
+    initUserInfo,
+    impersonate,
+    exitImpersonate
   };
 });

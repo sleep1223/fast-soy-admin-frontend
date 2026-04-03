@@ -39,5 +39,9 @@ declare namespace StorageType {
     };
     /** The last login user id */
     lastLoginUserId: string;
+    /** The original admin token saved during impersonation */
+    originalToken: string;
+    /** The original admin refresh token saved during impersonation */
+    originalRefreshToken: string;
   }
 }

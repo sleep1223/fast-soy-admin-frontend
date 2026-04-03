@@ -16,6 +16,10 @@ declare namespace Api {
       nickName: string;
       roles: string[];
       buttons: string[];
+      /** Whether the current session is an impersonation */
+      impersonating?: boolean;
+      /** The original admin user id who initiated impersonation */
+      impersonatorId?: number;
     }
   }
 }

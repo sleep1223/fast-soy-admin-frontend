@@ -598,6 +598,15 @@ const local: App.I18n.Schema = {
         batchOffline: 'Batch Offline',
         confirmOffline: 'Are you sure to force this user offline?',
         offlineSuccess: 'User has been forced offline',
+        impersonate: {
+          button: 'Impersonate',
+          confirm: 'Are you sure to impersonate as {name}?',
+          switchSuccess: 'Impersonation started',
+          nowActingAs: 'Now acting as {name}',
+          actingAs: 'Impersonating: {name}',
+          exit: 'Exit Impersonation',
+          exitSuccess: 'Impersonation ended'
+        },
         addUser: 'Add User',
         editUser: 'Edit User',
         gender: {

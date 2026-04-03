@@ -63,3 +63,11 @@ export function fetchRegister(data: { phone: string; code: string; password: str
     data
   });
 }
+
+/** impersonate user (admin only) */
+export function fetchImpersonate(userId: number) {
+  return request<Api.Auth.LoginToken>({
+    url: `/auth/impersonate/${userId}`,
+    method: 'post'
+  });
+}

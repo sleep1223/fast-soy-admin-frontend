@@ -1,15 +1,18 @@
 <script setup lang="tsx">
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { statusTypeRecord, userGenderRecord } from '@/constants/business';
 import { fetchBatchDeleteUser, fetchBatchUserOffline, fetchDeleteUser, fetchGetUserList, fetchUserOffline } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
+import { useAuthStore } from '@/store/modules/auth';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
 import UserOperateDrawer from './modules/user-operate-drawer.vue';
 import UserSearch from './modules/user-search.vue';
 
 const appStore = useAppStore();
+const authStore = useAuthStore();
+const isSuperAdmin = computed(() => authStore.userInfo.roles.includes('R_SUPER'));
 
 const searchParams: Api.SystemManage.UserSearchParams = reactive({
   current: 1,
@@ -124,9 +127,21 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 195,
+      width: 260,
       render: row => (
         <div class="flex-center gap-8px">
+          {isSuperAdmin.value && String(row.id) !== authStore.userInfo.userId ? (
+            <NPopconfirm onPositiveClick={() => handleImpersonate(row.id)}>
+              {{
+                default: () => $t('page.manage.user.impersonate.confirm', { name: row.userName }),
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    {$t('page.manage.user.impersonate.button')}
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          ) : null}
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
           </NButton>
@@ -188,6 +203,10 @@ async function handleBatchOffline() {
   if (!error) {
     window.$message?.success($t('page.manage.user.offlineSuccess'));
   }
+}
+
+async function handleImpersonate(id: number) {
+  await authStore.impersonate(id);
 }
 
 async function handleDelete(id: number) {
