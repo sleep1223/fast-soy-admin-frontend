@@ -286,6 +286,10 @@ const local: App.I18n.Schema = {
     manage_radar_queries: 'SQL Queries',
     manage_radar_exceptions: 'Exceptions',
     manage_radar_monitor: 'System Monitor',
+    hr: 'HR Management',
+    hr_employee: 'Employee',
+    hr_department: 'Department',
+    hr_skill: 'Skill',
     'multi-menu': 'Multi Menu',
     'multi-menu_first': 'Menu One',
     'multi-menu_first_child': 'Menu One Child',
@@ -809,6 +813,62 @@ const local: App.I18n.Schema = {
         userLogs: {
           title: 'User Logs'
         }
+      }
+    },
+    hr: {
+      common: {
+        status: 'Status',
+        form: {
+          status: 'Please select status'
+        }
+      },
+      employee: {
+        title: 'Employee List',
+        name: 'Name',
+        userName: 'Username',
+        employeeNo: 'Employee No.',
+        email: 'Email',
+        phone: 'Phone',
+        position: 'Position',
+        department: 'Department',
+        skills: 'Skills',
+        form: {
+          name: 'Please enter name',
+          userName: 'Please enter username (phone)',
+          email: 'Please enter email',
+          phone: 'Please enter phone',
+          position: 'Please enter position',
+          department: 'Please select department',
+          skills: 'Please select skills'
+        },
+        addEmployee: 'Add Employee',
+        editEmployee: 'Edit Employee'
+      },
+      department: {
+        title: 'Department List',
+        name: 'Department Name',
+        code: 'Department Code',
+        description: 'Description',
+        form: {
+          name: 'Please enter department name',
+          code: 'Please enter department code',
+          description: 'Please enter description'
+        },
+        addDepartment: 'Add Department',
+        editDepartment: 'Edit Department'
+      },
+      skill: {
+        title: 'Skill List',
+        name: 'Skill Name',
+        category: 'Category',
+        description: 'Description',
+        form: {
+          name: 'Please enter skill name',
+          category: 'Please enter category',
+          description: 'Please enter description'
+        },
+        addSkill: 'Add Skill',
+        editSkill: 'Edit Skill'
       }
     }
   },

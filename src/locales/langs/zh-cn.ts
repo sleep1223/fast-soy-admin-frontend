@@ -282,6 +282,10 @@ const local: App.I18n.Schema = {
     manage_radar_queries: 'SQL查询',
     manage_radar_exceptions: '异常列表',
     manage_radar_monitor: '系统监控',
+    hr: 'HR管理',
+    hr_employee: '员工管理',
+    hr_department: '部门管理',
+    hr_skill: '技能管理',
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',
     'multi-menu_first_child': '菜单一子菜单',
@@ -805,6 +809,62 @@ const local: App.I18n.Schema = {
         userLogs: {
           title: '用户日志'
         }
+      }
+    },
+    hr: {
+      common: {
+        status: '状态',
+        form: {
+          status: '请选择状态'
+        }
+      },
+      employee: {
+        title: '员工列表',
+        name: '姓名',
+        userName: '用户名',
+        employeeNo: '工号',
+        email: '邮箱',
+        phone: '电话',
+        position: '职位',
+        department: '部门',
+        skills: '技能',
+        form: {
+          name: '请输入姓名',
+          userName: '请输入用户名(手机号)',
+          email: '请输入邮箱',
+          phone: '请输入电话',
+          position: '请输入职位',
+          department: '请选择部门',
+          skills: '请选择技能'
+        },
+        addEmployee: '新增员工',
+        editEmployee: '编辑员工'
+      },
+      department: {
+        title: '部门列表',
+        name: '部门名称',
+        code: '部门编码',
+        description: '描述',
+        form: {
+          name: '请输入部门名称',
+          code: '请输入部门编码',
+          description: '请输入描述'
+        },
+        addDepartment: '新增部门',
+        editDepartment: '编辑部门'
+      },
+      skill: {
+        title: '技能列表',
+        name: '技能名称',
+        category: '分类',
+        description: '描述',
+        form: {
+          name: '请输入技能名称',
+          category: '请输入分类',
+          description: '请输入描述'
+        },
+        addSkill: '新增技能',
+        editSkill: '编辑技能'
       }
     }
   },

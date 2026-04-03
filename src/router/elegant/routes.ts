@@ -214,6 +214,44 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
+    name: 'hr',
+    path: '/hr',
+    component: 'layout.base',
+    meta: {
+      title: 'hr',
+      i18nKey: 'route.hr'
+    },
+    children: [
+      {
+        name: 'hr_department',
+        path: '/hr/department',
+        component: 'view.hr_department',
+        meta: {
+          title: 'hr_department',
+          i18nKey: 'route.hr_department'
+        }
+      },
+      {
+        name: 'hr_employee',
+        path: '/hr/employee',
+        component: 'view.hr_employee',
+        meta: {
+          title: 'hr_employee',
+          i18nKey: 'route.hr_employee'
+        }
+      },
+      {
+        name: 'hr_skill',
+        path: '/hr/skill',
+        component: 'view.hr_skill',
+        meta: {
+          title: 'hr_skill',
+          i18nKey: 'route.hr_skill'
+        }
+      }
+    ]
+  },
+  {
     name: 'iframe-page',
     path: '/iframe-page/:url',
     component: 'layout.base$view.iframe-page',

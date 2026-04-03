@@ -50,6 +50,10 @@ declare module "@elegant-router/types" {
     "function_tab": "/function/tab";
     "function_toggle-auth": "/function/toggle-auth";
     "home": "/home";
+    "hr": "/hr";
+    "hr_department": "/hr/department";
+    "hr_employee": "/hr/employee";
+    "hr_skill": "/hr/skill";
     "iframe-page": "/iframe-page/:url";
     "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
     "manage": "/manage";
@@ -156,6 +160,7 @@ declare module "@elegant-router/types" {
     | "alova"
     | "function"
     | "home"
+    | "hr"
     | "iframe-page"
     | "login"
     | "manage"
@@ -198,6 +203,9 @@ declare module "@elegant-router/types" {
     | "function_tab"
     | "function_toggle-auth"
     | "home"
+    | "hr_department"
+    | "hr_employee"
+    | "hr_skill"
     | "manage_api"
     | "manage_menu"
     | "manage_radar_exceptions"
