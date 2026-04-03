@@ -34,43 +34,7 @@ const title = computed(() => $t('common.edit') + $t('page.manage.role.buttonAuth
 const tree = shallowRef<Api.SystemManage.ButtonTree[]>([]);
 
 async function getButtonTree() {
-  // request
-  tree.value = [
-    {
-      id: 32,
-      label: '关于',
-      pId: 0,
-      children: [
-        {
-          id: 2,
-          label: 'button1',
-          pId: 32
-        }
-      ]
-    },
-    {
-      id: 26,
-      label: '系统管理',
-      pId: 0,
-      children: [
-        {
-          id: 27,
-          label: 'API管理',
-          pId: 26,
-          children: [
-            {
-              id: 3,
-              label: 'B_refreshAPI',
-              pId: 27
-            }
-          ]
-        }
-      ]
-    }
-  ];
-
   const { error, data } = await fetchGetMenuButtonTree();
-
   if (!error) {
     tree.value = data;
   }
@@ -79,10 +43,6 @@ async function getButtonTree() {
 const byRoleButtonIds = shallowRef<number[]>([]);
 
 async function getChecks() {
-  // console.log(props.roleId);
-  // request
-  // checks.value = [1, 2, 3, 4, 5];
-  byRoleButtonIds.value = [1, 2, 3];
   const { error, data } = await fetchGetRoleButton({ id: props.roleId });
   if (!error) {
     byRoleButtonIds.value = data.byRoleButtonIds || [];

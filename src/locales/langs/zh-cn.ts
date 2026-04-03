@@ -785,6 +785,7 @@ const local: App.I18n.Schema = {
           path: '请求路径',
           status: '状态码',
           businessCode: '业务码',
+          businessMsg: '业务消息',
           duration: '耗时',
           error: '异常',
           createdAt: '时间',

@@ -278,10 +278,16 @@ declare namespace Api {
     };
 
     type ButtonTree = {
-      id: number;
+      id: number | string;
       label: string;
       pId: number;
       children?: ButtonTree[];
+    };
+
+    type ApiTree = {
+      id: number | string;
+      summary: string;
+      children?: ApiTree[];
     };
   }
 }

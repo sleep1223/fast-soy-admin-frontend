@@ -29,6 +29,7 @@ declare namespace Api {
       queryParams: string | null;
       responseStatus: number | null;
       businessCode: string | null;
+      businessMsg: string | null;
       durationMs: number | null;
       errorType: string | null;
       errorMessage: string | null;

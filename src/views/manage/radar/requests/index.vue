@@ -127,6 +127,13 @@ const columns = [
     )
   },
   {
+    key: 'businessMsg',
+    title: $t('page.manage.radar.requests.businessMsg'),
+    width: 160,
+    ellipsis: { tooltip: true },
+    render: (row: Api.Radar.RequestRecord) => row.businessMsg || '-'
+  },
+  {
     key: 'durationMs',
     title: $t('page.manage.radar.requests.duration'),
     width: 100,

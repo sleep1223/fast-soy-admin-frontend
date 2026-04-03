@@ -789,6 +789,7 @@ const local: App.I18n.Schema = {
           path: 'Path',
           status: 'Status',
           businessCode: 'Business Code',
+          businessMsg: 'Message',
           duration: 'Duration',
           error: 'Error',
           createdAt: 'Time',

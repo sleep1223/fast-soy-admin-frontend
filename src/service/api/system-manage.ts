@@ -52,7 +52,7 @@ export function fetchGetMenuButtonTree() {
 
 /** get api tree */
 export function fetchGetApiTree() {
-  return request<Api.SystemManage.MenuTree[]>({
+  return request<Api.SystemManage.ApiTree[]>({
     url: '/system-manage/apis/tree/',
     method: 'get'
   });
