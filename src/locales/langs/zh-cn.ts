@@ -285,7 +285,7 @@ const local: App.I18n.Schema = {
     hr: 'HR管理',
     hr_employee: '员工管理',
     hr_department: '部门管理',
-    hr_skill: '技能管理',
+    hr_skill: '标签管理',
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',
     'multi-menu_first_child': '菜单一子菜单',
@@ -837,7 +837,7 @@ const local: App.I18n.Schema = {
         phone: '电话',
         position: '职位',
         department: '部门',
-        skills: '技能',
+        skills: '标签',
         form: {
           name: '请输入姓名',
           userName: '请输入用户名(手机号)',
@@ -845,7 +845,7 @@ const local: App.I18n.Schema = {
           phone: '请输入电话',
           position: '请输入职位',
           department: '请选择部门',
-          skills: '请选择技能'
+          skills: '请选择标签'
         },
         addEmployee: '新增员工',
         editEmployee: '编辑员工'
@@ -864,17 +864,17 @@ const local: App.I18n.Schema = {
         editDepartment: '编辑部门'
       },
       skill: {
-        title: '技能列表',
-        name: '技能名称',
+        title: '标签列表',
+        name: '标签名称',
         category: '分类',
         description: '描述',
         form: {
-          name: '请输入技能名称',
+          name: '请输入标签名称',
           category: '请输入分类',
           description: '请输入描述'
         },
-        addSkill: '新增技能',
-        editSkill: '编辑技能'
+        addSkill: '新增标签',
+        editSkill: '编辑标签'
       }
     }
   },
