@@ -199,7 +199,7 @@ async function handleOffline(id: number) {
 }
 
 async function handleBatchOffline() {
-  const { error } = await fetchBatchUserOffline({ ids: checkedRowKeys.value as number[] });
+  const { error } = await fetchBatchUserOffline({ ids: checkedRowKeys.value });
   if (!error) {
     window.$message?.success($t('page.manage.user.offlineSuccess'));
   }

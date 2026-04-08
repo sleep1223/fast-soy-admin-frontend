@@ -73,7 +73,7 @@ const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedR
   useTableOperate(data, 'id', getData);
 
 async function handleBatchDelete() {
-  const { error } = await fetchBatchDeleteDepartment({ ids: checkedRowKeys.value as number[] });
+  const { error } = await fetchBatchDeleteDepartment({ ids: checkedRowKeys.value.map(k => Number(k)) });
   if (!error) onBatchDeleted();
 }
 

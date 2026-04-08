@@ -153,7 +153,7 @@ declare global {
   const IconCarbonStop: typeof import('~icons/carbon/stop')['default']
   const IconGridiconsFullscreen: typeof import('~icons/gridicons/fullscreen')['default']
   const IconGridiconsFullscreenExit: typeof import('~icons/gridicons/fullscreen-exit')['default']
-  const 'IconIc:roundPlus': typeof import('~icons/ic/round-plus')['default']
+  // 'IconIc:roundPlus' — invalid identifier, duplicated below as IconIcRoundPlus
   const IconIcRoundContentCopy: typeof import('~icons/ic/round-content-copy')['default']
   const IconIcRoundDelete: typeof import('~icons/ic/round-delete')['default']
   const IconIcRoundLogout: typeof import('~icons/ic/round-logout')['default']

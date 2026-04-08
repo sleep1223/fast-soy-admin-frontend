@@ -54,12 +54,13 @@ onMounted(loadUsers);
   <NSpace vertical :size="16">
     <!-- Impersonation status card -->
     <NCard v-if="authStore.impersonating" :bordered="false" size="small" segmented class="card-wrapper">
-      <NAlert type="warning" :title="$t('page.manage.user.impersonate.actingAs', { name: authStore.userInfo.nickName || authStore.userInfo.userName })">
-        <template #action>
-          <NButton type="warning" size="small" :loading="loading" @click="handleExitImpersonate">
-            {{ $t('page.manage.user.impersonate.exit') }}
-          </NButton>
-        </template>
+      <NAlert
+        type="warning"
+        :title="$t('page.manage.user.impersonate.actingAs', { name: authStore.userInfo.nickName || authStore.userInfo.userName })"
+      >
+        <NButton type="warning" size="small" :loading="loading" @click="handleExitImpersonate">
+          {{ $t('page.manage.user.impersonate.exit') }}
+        </NButton>
       </NAlert>
     </NCard>
 

@@ -15,12 +15,9 @@ const {
   fetchRadarDashboard,
   fetchRadarRequests,
   fetchRadarRequestDetail,
-  fetchRadarRequestTimeline,
   fetchRadarQueries,
-  fetchRadarSlowQueries,
   fetchRadarExceptions,
   fetchRadarExceptionResolve,
-  fetchRadarUserLogs,
   fetchRadarPurge
 } = await import('../radar');
 
@@ -122,16 +119,6 @@ describe('Radar API Service', () => {
     });
   });
 
-  describe('fetchRadarRequestTimeline', () => {
-    it('should call with request id in URL', async () => {
-      await fetchRadarRequestTimeline('abc-123');
-      expect(mockRequest).toHaveBeenCalledWith({
-        url: '/requests/abc-123/timeline',
-        method: 'get'
-      });
-    });
-  });
-
   describe('fetchRadarQueries', () => {
     it('should call with cleaned params', async () => {
       await fetchRadarQueries({ page: 1, page_size: 20, slow_only: true, threshold_ms: 100 });
@@ -148,17 +135,6 @@ describe('Radar API Service', () => {
         url: '/queries',
         method: 'get',
         params: { page: 1, page_size: 20 }
-      });
-    });
-  });
-
-  describe('fetchRadarSlowQueries', () => {
-    it('should pass limit param', async () => {
-      await fetchRadarSlowQueries(10);
-      expect(mockRequest).toHaveBeenCalledWith({
-        url: '/queries/slow',
-        method: 'get',
-        params: { limit: 10 }
       });
     });
   });
@@ -199,26 +175,6 @@ describe('Radar API Service', () => {
         url: '/exceptions/req-001/resolve',
         method: 'put',
         data: { resolved: false }
-      });
-    });
-  });
-
-  describe('fetchRadarUserLogs', () => {
-    it('should call with level filter', async () => {
-      await fetchRadarUserLogs({ page: 1, page_size: 20, level: 'ERROR' });
-      expect(mockRequest).toHaveBeenCalledWith({
-        url: '/user-logs',
-        method: 'get',
-        params: { page: 1, page_size: 20, level: 'ERROR' }
-      });
-    });
-
-    it('should strip null level', async () => {
-      await fetchRadarUserLogs({ page: 1, page_size: 20, level: null });
-      expect(mockRequest).toHaveBeenCalledWith({
-        url: '/user-logs',
-        method: 'get',
-        params: { page: 1, page_size: 20 }
       });
     });
   });

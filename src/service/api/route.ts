@@ -16,5 +16,9 @@ export function fetchGetUserRoutes() {
  * @param routeName route name
  */
 export function fetchIsRouteExist(routeName: string) {
-  return request<boolean>({ url: `/route/${routeName}/exists` });
+  return request<boolean>({
+    url: '/route/exists',
+    method: 'get',
+    params: { name: routeName }
+  });
 }

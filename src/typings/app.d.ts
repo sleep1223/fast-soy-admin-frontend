@@ -713,6 +713,11 @@ declare namespace App {
               enable: string;
               disable: string;
             };
+            updatedInfo: string;
+            updatedBy: string;
+            updatedAt: string;
+            createdBy: string;
+            createdAt: string;
           };
           role: {
             title: string;
@@ -769,6 +774,7 @@ declare namespace App {
             form: {
               userName: string;
               password: string;
+              passwordEditHint: string;
               userGender: string;
               nickName: string;
               userPhone: string;
@@ -780,6 +786,15 @@ declare namespace App {
             batchOffline: string;
             confirmOffline: string;
             offlineSuccess: string;
+            impersonate: {
+              button: string;
+              confirm: string;
+              switchSuccess: string;
+              nowActingAs: string;
+              actingAs: string;
+              exit: string;
+              exitSuccess: string;
+            };
             addUser: string;
             editUser: string;
             gender: {
@@ -877,6 +892,7 @@ declare namespace App {
               minDuration: string;
               hasError: string;
               businessCode: string;
+              businessMsg: string;
               xRequestId: string;
               clientIp: string;
               requestHeaders: string;
@@ -970,6 +986,62 @@ declare namespace App {
             iconType: {
               iconify: string;
               local: string;
+            };
+          };
+        };
+        hr: {
+          common: {
+            status: string;
+            form: {
+              status: string;
+            };
+          };
+          department: {
+            title: string;
+            name: string;
+            code: string;
+            description: string;
+            addDepartment: string;
+            editDepartment: string;
+            form: {
+              name: string;
+              code: string;
+              description: string;
+            };
+          };
+          employee: {
+            title: string;
+            userName: string;
+            name: string;
+            employeeNo: string;
+            email: string;
+            phone: string;
+            position: string;
+            department: string;
+            skills: string;
+            addEmployee: string;
+            editEmployee: string;
+            form: {
+              userName: string;
+              name: string;
+              email: string;
+              phone: string;
+              position: string;
+              department: string;
+              skills: string;
+            };
+          };
+          skill: {
+            title: string;
+            name: string;
+            category: string;
+            description: string;
+            addSkill: string;
+            editSkill: string;
+            form: {
+              name: string;
+              category: string;
+              description: string;
             };
           };
         };

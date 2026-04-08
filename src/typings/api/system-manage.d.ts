@@ -11,7 +11,7 @@ declare namespace Api {
     type CommonDeleteParams = { id: number | string };
 
     /** common batch delete params */
-    type CommonBatchDeleteParams = { ids: string[] };
+    type CommonBatchDeleteParams = { ids: Array<number | string> };
 
     /** role */
     type Role = Common.CommonRecord<{
@@ -266,6 +266,11 @@ declare namespace Api {
 
     /** menu update params */
     type MenuUpdateParams = CommonType.RecordNullable<Pick<Api.SystemManage.Menu, 'id'>> & MenuAddParams;
+
+    /** menu search params */
+    type MenuSearchParams = CommonType.RecordNullable<
+      Pick<Api.SystemManage.Menu, 'menuName' | 'menuType' | 'statusType'> & CommonSearchParams
+    >;
 
     /** menu list */
     type MenuList = Common.PaginatingQueryRecord<Menu>;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { fetchCustomBackendError } from '@/service/api';
+import { fetchCustomBackendError } from '@/service-alova/api';
 import { $t } from '@/locales';
 
 async function logout() {

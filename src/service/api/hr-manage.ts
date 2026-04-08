@@ -3,9 +3,9 @@ import { request } from '../request';
 // ---- Employee ----
 export function fetchGetEmployeeList(data?: Api.HrManage.EmployeeSearchParams) {
   return request<Api.HrManage.EmployeeList>({
-    url: '/business/hr/employees/all/',
+    url: '/business/hr/employees/search',
     method: 'post',
-    data
+    data: data ?? {}
   });
 }
 
@@ -43,9 +43,9 @@ export function fetchBatchDeleteEmployee(data?: Api.HrManage.CommonBatchDeletePa
 // ---- Department ----
 export function fetchGetDepartmentList(data?: Api.HrManage.DepartmentSearchParams) {
   return request<Api.HrManage.DepartmentList>({
-    url: '/business/hr/departments/all/',
+    url: '/business/hr/departments/search',
     method: 'post',
-    data
+    data: data ?? {}
   });
 }
 
@@ -88,11 +88,11 @@ export function fetchBatchDeleteDepartment(data?: Api.HrManage.CommonBatchDelete
 }
 
 // ---- Skill ----
-export function fetchGetSkillList(params?: Api.HrManage.SkillSearchParams) {
+export function fetchGetSkillList(data?: Api.HrManage.SkillSearchParams) {
   return request<Api.HrManage.SkillList>({
-    url: '/business/hr/skills',
-    method: 'get',
-    params
+    url: '/business/hr/skills/search',
+    method: 'post',
+    data: data ?? {}
   });
 }
 
