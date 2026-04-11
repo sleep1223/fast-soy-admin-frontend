@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { jsonClone } from '@sa/utils';
-import { fetchAddEmployee, fetchGetSkillList, fetchUpdateEmployee } from '@/service/api';
+import { fetchAddEmployee, fetchGetEmployee, fetchUpdateEmployee } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 
@@ -11,6 +10,7 @@ interface Props {
   operateType: NaiveUI.TableOperateType;
   rowData?: Api.HrManage.Employee | null;
   departmentOptions: { label: string; value: number }[];
+  skillOptions: { label: string; value: number }[];
 }
 
 const props = defineProps<Props>();
@@ -55,20 +55,14 @@ const editRules: Record<string, App.Global.FormRule> = {
   name: defaultRequiredRule
 };
 
-const skillOptions = ref<{ label: string; value: number }[]>([]);
-
-async function loadSkills() {
-  const { data } = await fetchGetSkillList({ current: 1, size: 999 });
-  if (data?.records) {
-    skillOptions.value = data.records.map((s: Api.HrManage.Skill) => ({ label: s.name, value: s.id }));
-  }
-}
-
-function handleInitModel() {
+async function handleInitModel() {
   addModel.value = createAddModel();
   editModel.value = createEditModel();
   if (props.operateType === 'edit' && props.rowData) {
-    Object.assign(editModel.value, jsonClone(props.rowData));
+    const { data } = await fetchGetEmployee(props.rowData.id);
+    if (data) {
+      Object.assign(editModel.value, data);
+    }
   }
 }
 
@@ -95,7 +89,6 @@ watch(visible, () => {
   if (visible.value) {
     handleInitModel();
     restoreValidation();
-    loadSkills();
   }
 });
 </script>
@@ -118,7 +111,7 @@ watch(visible, () => {
           <NSelect v-model:value="addModel.departmentId" :options="departmentOptions" clearable :placeholder="$t('page.hr.employee.form.department')" />
         </NFormItem>
         <NFormItem :label="$t('page.hr.employee.skills')">
-          <NSelect v-model:value="addModel.skillIds" :options="skillOptions" multiple clearable :placeholder="$t('page.hr.employee.form.skills')" />
+          <NSelect v-model:value="addModel.skillIds" :options="props.skillOptions" multiple clearable :placeholder="$t('page.hr.employee.form.skills')" />
         </NFormItem>
       </NForm>
       <!-- Edit form -->
@@ -136,7 +129,7 @@ watch(visible, () => {
           <NInput v-model:value="editModel.position" :placeholder="$t('page.hr.employee.form.position')" />
         </NFormItem>
         <NFormItem :label="$t('page.hr.employee.skills')">
-          <NSelect v-model:value="editModel.skillIds" :options="skillOptions" multiple clearable :placeholder="$t('page.hr.employee.form.skills')" />
+          <NSelect v-model:value="editModel.skillIds" :options="props.skillOptions" multiple clearable :placeholder="$t('page.hr.employee.form.skills')" />
         </NFormItem>
       </NForm>
       <template #footer>

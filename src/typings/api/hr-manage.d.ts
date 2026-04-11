@@ -15,6 +15,7 @@ declare namespace Api {
       userId: number | null;
       departmentId: number;
       departmentName?: string;
+      skillIds?: number[];
       skillNames?: string[];
     }>;
 

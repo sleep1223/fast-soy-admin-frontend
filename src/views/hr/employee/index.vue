@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { statusTypeRecord } from '@/constants/business';
-import { fetchBatchDeleteEmployee, fetchDeleteEmployee, fetchGetDepartmentList, fetchGetEmployeeList } from '@/service/api';
+import { fetchBatchDeleteEmployee, fetchDeleteEmployee, fetchGetDepartmentList, fetchGetEmployeeList, fetchGetSkillList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -94,12 +94,19 @@ function edit(id: number) {
   handleEdit(id);
 }
 
-// Load departments for search filter
+// Load departments & skills for search filter and edit form
 const departmentOptions = ref<{ label: string; value: number }[]>([]);
+const skillOptions = ref<{ label: string; value: number }[]>([]);
 onMounted(async () => {
-  const { data: deptData } = await fetchGetDepartmentList({ current: 1, size: 999 });
+  const [{ data: deptData }, { data: skillData }] = await Promise.all([
+    fetchGetDepartmentList({ current: 1, size: 999 }),
+    fetchGetSkillList({ current: 1, size: 999 })
+  ]);
   if (deptData?.records) {
     departmentOptions.value = deptData.records.map((d: Api.HrManage.Department) => ({ label: d.name, value: d.id }));
+  }
+  if (skillData?.records) {
+    skillOptions.value = skillData.records.map((s: Api.HrManage.Skill) => ({ label: s.name, value: s.id }));
   }
 });
 </script>
@@ -136,6 +143,7 @@ onMounted(async () => {
         :operate-type="operateType"
         :row-data="editingData"
         :department-options="departmentOptions"
+        :skill-options="skillOptions"
         @submitted="getDataByPage"
       />
     </NCard>

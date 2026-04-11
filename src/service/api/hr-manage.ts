@@ -9,6 +9,13 @@ export function fetchGetEmployeeList(data?: Api.HrManage.EmployeeSearchParams) {
   });
 }
 
+export function fetchGetEmployee(id: number) {
+  return request<Api.HrManage.Employee>({
+    url: `/business/hr/employees/${id}`,
+    method: 'get'
+  });
+}
+
 export function fetchAddEmployee(data?: Api.HrManage.EmployeeAddParams) {
   return request<null, 'json'>({
     url: '/business/hr/employees',
