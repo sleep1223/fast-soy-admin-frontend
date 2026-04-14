@@ -10,7 +10,7 @@ interface Props {
   operateType: NaiveUI.TableOperateType;
   rowData?: Api.HrManage.Employee | null;
   departmentOptions: { label: string; value: number }[];
-  skillOptions: { label: string; value: number }[];
+  tagOptions: { label: string; value: number }[];
 }
 
 const props = defineProps<Props>();
@@ -38,11 +38,11 @@ const addModel = ref(createAddModel());
 const editModel = ref(createEditModel());
 
 function createAddModel(): Api.HrManage.EmployeeAddParams {
-  return { userName: '', name: '', email: '', userGender: null, departmentId: null, skillIds: [] };
+  return { userName: '', name: '', email: '', userGender: null, departmentId: null, tagIds: [] };
 }
 
 function createEditModel(): Api.HrManage.EmployeeUpdateParams {
-  return { id: undefined, name: '', email: '', phone: '', position: '', status: '1', skillIds: [] };
+  return { id: undefined, name: '', email: '', phone: '', position: '', status: '1', tagIds: [] };
 }
 
 const addRules: Record<string, App.Global.FormRule> = {
@@ -110,8 +110,8 @@ watch(visible, () => {
         <NFormItem :label="$t('page.hr.employee.department')" path="departmentId">
           <NSelect v-model:value="addModel.departmentId" :options="departmentOptions" clearable :placeholder="$t('page.hr.employee.form.department')" />
         </NFormItem>
-        <NFormItem :label="$t('page.hr.employee.skills')">
-          <NSelect v-model:value="addModel.skillIds" :options="props.skillOptions" multiple clearable :placeholder="$t('page.hr.employee.form.skills')" />
+        <NFormItem :label="$t('page.hr.employee.tags')">
+          <NSelect v-model:value="addModel.tagIds" :options="props.tagOptions" multiple clearable :placeholder="$t('page.hr.employee.form.tags')" />
         </NFormItem>
       </NForm>
       <!-- Edit form -->
@@ -128,8 +128,8 @@ watch(visible, () => {
         <NFormItem :label="$t('page.hr.employee.position')">
           <NInput v-model:value="editModel.position" :placeholder="$t('page.hr.employee.form.position')" />
         </NFormItem>
-        <NFormItem :label="$t('page.hr.employee.skills')">
-          <NSelect v-model:value="editModel.skillIds" :options="props.skillOptions" multiple clearable :placeholder="$t('page.hr.employee.form.skills')" />
+        <NFormItem :label="$t('page.hr.employee.tags')">
+          <NSelect v-model:value="editModel.tagIds" :options="props.tagOptions" multiple clearable :placeholder="$t('page.hr.employee.form.tags')" />
         </NFormItem>
       </NForm>
       <template #footer>

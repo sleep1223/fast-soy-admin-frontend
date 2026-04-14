@@ -94,42 +94,50 @@ export function fetchBatchDeleteDepartment(data?: Api.HrManage.CommonBatchDelete
   });
 }
 
-// ---- Skill ----
-export function fetchGetSkillList(data?: Api.HrManage.SkillSearchParams) {
-  return request<Api.HrManage.SkillList>({
-    url: '/business/hr/skills/search',
+// ---- Tag ----
+export function fetchGetTagList(data?: Api.HrManage.TagSearchParams) {
+  return request<Api.HrManage.TagList>({
+    url: '/business/hr/tags/search',
     method: 'post',
     data: data ?? {}
   });
 }
 
-export function fetchAddSkill(data?: Api.HrManage.SkillAddParams) {
+export function fetchAddTag(data?: Api.HrManage.TagAddParams) {
   return request<null, 'json'>({
-    url: '/business/hr/skills',
+    url: '/business/hr/tags',
     method: 'post',
     data
   });
 }
 
-export function fetchUpdateSkill(data?: Api.HrManage.SkillUpdateParams) {
+export function fetchUpdateTag(data?: Api.HrManage.TagUpdateParams) {
   return request<null, 'json'>({
-    url: `/business/hr/skills/${data?.id}`,
+    url: `/business/hr/tags/${data?.id}`,
     method: 'patch',
     data
   });
 }
 
-export function fetchDeleteSkill(data?: Api.HrManage.CommonDeleteParams) {
+export function fetchDeleteTag(data?: Api.HrManage.CommonDeleteParams) {
   return request<null>({
-    url: `/business/hr/skills/${data?.id}`,
+    url: `/business/hr/tags/${data?.id}`,
     method: 'delete'
   });
 }
 
-export function fetchBatchDeleteSkill(data?: Api.HrManage.CommonBatchDeleteParams) {
+export function fetchBatchDeleteTag(data?: Api.HrManage.CommonBatchDeleteParams) {
   return request<null>({
-    url: '/business/hr/skills',
+    url: '/business/hr/tags',
     method: 'delete',
     data
+  });
+}
+
+// ---- Dictionary Options ----
+export function fetchGetDictOptions(dictType: string) {
+  return request<{ label: string; value: string }[]>({
+    url: `/system-manage/dictionaries/${dictType}/options`,
+    method: 'get'
   });
 }

@@ -1,17 +1,27 @@
 <script setup lang="ts">
-import { toRaw } from 'vue';
+import { onMounted, ref, toRaw } from 'vue';
 import { jsonClone } from '@sa/utils';
+import { fetchGetDictOptions } from '@/service/api';
 import { $t } from '@/locales';
 
-defineOptions({ name: 'SkillSearch' });
+defineOptions({ name: 'TagSearch' });
 
 interface Emits {
   (e: 'search'): void;
 }
 
 const emit = defineEmits<Emits>();
-const model = defineModel<Api.HrManage.SkillSearchParams>('model', { required: true });
+const model = defineModel<Api.HrManage.TagSearchParams>('model', { required: true });
 const defaultModel = jsonClone(toRaw(model.value));
+
+const categoryOptions = ref<{ label: string; value: string }[]>([]);
+
+onMounted(async () => {
+  const { data } = await fetchGetDictOptions('skill_category');
+  if (data) {
+    categoryOptions.value = data;
+  }
+});
 
 function resetModel() {
   Object.assign(model.value, defaultModel);
@@ -24,15 +34,20 @@ function search() {
 
 <template>
   <NCard :bordered="false" size="small" class="card-wrapper">
-    <NCollapse :default-expanded-names="['skill-search']">
-      <NCollapseItem :title="$t('common.search')" name="skill-search">
+    <NCollapse :default-expanded-names="['tag-search']">
+      <NCollapseItem :title="$t('common.search')" name="tag-search">
         <NForm :model="model" label-placement="left" :label-width="80">
           <NGrid responsive="screen" item-responsive>
-            <NFormItemGi span="24 s:12 m:6" :label="$t('page.hr.skill.name')" path="name" class="pr-24px">
-              <NInput v-model:value="model.name" :placeholder="$t('page.hr.skill.form.name')" />
+            <NFormItemGi span="24 s:12 m:6" :label="$t('page.hr.tag.name')" path="name" class="pr-24px">
+              <NInput v-model:value="model.name" :placeholder="$t('page.hr.tag.form.name')" />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:6" :label="$t('page.hr.skill.category')" path="category" class="pr-24px">
-              <NInput v-model:value="model.category" :placeholder="$t('page.hr.skill.form.category')" />
+            <NFormItemGi span="24 s:12 m:6" :label="$t('page.hr.tag.category')" path="category" class="pr-24px">
+              <NSelect
+                v-model:value="model.category"
+                :options="categoryOptions"
+                clearable
+                :placeholder="$t('page.hr.tag.form.category')"
+              />
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:6">
               <NSpace class="w-full" justify="end">

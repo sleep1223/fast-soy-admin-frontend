@@ -289,7 +289,7 @@ const local: App.I18n.Schema = {
     hr: 'HR Management',
     hr_employee: 'Employee',
     hr_department: 'Department',
-    hr_skill: 'Tag Management',
+    hr_tag: 'Tag Management',
     'multi-menu': 'Multi Menu',
     'multi-menu_first': 'Menu One',
     'multi-menu_first_child': 'Menu One Child',
@@ -841,7 +841,7 @@ const local: App.I18n.Schema = {
         phone: 'Phone',
         position: 'Position',
         department: 'Department',
-        skills: 'Tags',
+        tags: 'Tags',
         form: {
           name: 'Please enter name',
           userName: 'Please enter username (phone)',
@@ -849,7 +849,7 @@ const local: App.I18n.Schema = {
           phone: 'Please enter phone',
           position: 'Please enter position',
           department: 'Please select department',
-          skills: 'Please select tags'
+          tags: 'Please select tags'
         },
         addEmployee: 'Add Employee',
         editEmployee: 'Edit Employee'
@@ -867,18 +867,18 @@ const local: App.I18n.Schema = {
         addDepartment: 'Add Department',
         editDepartment: 'Edit Department'
       },
-      skill: {
+      tag: {
         title: 'Tag List',
         name: 'Tag Name',
         category: 'Category',
         description: 'Description',
         form: {
           name: 'Please enter tag name',
-          category: 'Please enter category',
+          category: 'Please select category',
           description: 'Please enter description'
         },
-        addSkill: 'Add Tag',
-        editSkill: 'Edit Tag'
+        addTag: 'Add Tag',
+        editTag: 'Edit Tag'
       }
     }
   },

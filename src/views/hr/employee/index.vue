@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { statusTypeRecord } from '@/constants/business';
-import { fetchBatchDeleteEmployee, fetchDeleteEmployee, fetchGetDepartmentList, fetchGetEmployeeList, fetchGetSkillList } from '@/service/api';
+import { fetchBatchDeleteEmployee, fetchDeleteEmployee, fetchGetDepartmentList, fetchGetEmployeeList, fetchGetTagList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -35,10 +35,10 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
     { key: 'position', title: $t('page.hr.employee.position'), minWidth: 100 },
     { key: 'departmentName', title: $t('page.hr.employee.department'), align: 'center', minWidth: 100 },
     {
-      key: 'skillNames',
-      title: $t('page.hr.employee.skills'),
+      key: 'tagNames',
+      title: $t('page.hr.employee.tags'),
       minWidth: 150,
-      render: row => (row.skillNames || []).map((s: string) => <NTag size="small" class="mr-4px">{s}</NTag>)
+      render: row => (row.tagNames || []).map((s: string) => <NTag size="small" class="mr-4px">{s}</NTag>)
     },
     {
       key: 'status',
@@ -94,19 +94,19 @@ function edit(id: number) {
   handleEdit(id);
 }
 
-// Load departments & skills for search filter and edit form
+// Load departments & tags for search filter and edit form
 const departmentOptions = ref<{ label: string; value: number }[]>([]);
-const skillOptions = ref<{ label: string; value: number }[]>([]);
+const tagOptions = ref<{ label: string; value: number }[]>([]);
 onMounted(async () => {
-  const [{ data: deptData }, { data: skillData }] = await Promise.all([
+  const [{ data: deptData }, { data: tagData }] = await Promise.all([
     fetchGetDepartmentList({ current: 1, size: 999 }),
-    fetchGetSkillList({ current: 1, size: 999 })
+    fetchGetTagList({ current: 1, size: 999 })
   ]);
   if (deptData?.records) {
     departmentOptions.value = deptData.records.map((d: Api.HrManage.Department) => ({ label: d.name, value: d.id }));
   }
-  if (skillData?.records) {
-    skillOptions.value = skillData.records.map((s: Api.HrManage.Skill) => ({ label: s.name, value: s.id }));
+  if (tagData?.records) {
+    tagOptions.value = tagData.records.map((s: Api.HrManage.Tag) => ({ label: s.name, value: s.id }));
   }
 });
 </script>
@@ -143,7 +143,7 @@ onMounted(async () => {
         :operate-type="operateType"
         :row-data="editingData"
         :department-options="departmentOptions"
-        :skill-options="skillOptions"
+        :tag-options="tagOptions"
         @submitted="getDataByPage"
       />
     </NCard>

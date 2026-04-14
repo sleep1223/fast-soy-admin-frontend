@@ -15,8 +15,8 @@ declare namespace Api {
       userId: number | null;
       departmentId: number;
       departmentName?: string;
-      skillIds?: number[];
-      skillNames?: string[];
+      tagIds?: number[];
+      tagNames?: string[];
     }>;
 
     type EmployeeAddParams = {
@@ -25,7 +25,7 @@ declare namespace Api {
       email: string;
       userGender?: string | null;
       departmentId?: number | null;
-      skillIds?: number[] | null;
+      tagIds?: number[] | null;
     };
 
     type EmployeeUpdateParams = { id?: number } & {
@@ -34,7 +34,7 @@ declare namespace Api {
       phone?: string | null;
       position?: string | null;
       status?: string | null;
-      skillIds?: number[] | null;
+      tagIds?: number[] | null;
     };
 
     type EmployeeSearchParams = CommonType.RecordNullable<
@@ -84,28 +84,28 @@ declare namespace Api {
       employeeCount: number;
     };
 
-    // ---- Skill ----
-    type Skill = Common.CommonRecord<{
+    // ---- Tag ----
+    type Tag = Common.CommonRecord<{
       name: string;
       category: string;
       description: string | null;
     }>;
 
-    type SkillAddParams = {
+    type TagAddParams = {
       name: string;
       category: string;
       description?: string | null;
     };
 
-    type SkillUpdateParams = { id?: number } & Partial<SkillAddParams>;
+    type TagUpdateParams = { id?: number } & Partial<TagAddParams>;
 
-    type SkillSearchParams = CommonType.RecordNullable<
+    type TagSearchParams = CommonType.RecordNullable<
       {
         name?: string;
         category?: string;
       } & CommonSearchParams
     >;
 
-    type SkillList = Common.PaginatingQueryRecord<Skill>;
+    type TagList = Common.PaginatingQueryRecord<Tag>;
   }
 }

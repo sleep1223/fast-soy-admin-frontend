@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { jsonClone } from '@sa/utils';
-import { fetchAddSkill, fetchUpdateSkill } from '@/service/api';
+import { fetchAddTag, fetchGetDictOptions, fetchUpdateTag } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 
-defineOptions({ name: 'SkillOperateDrawer' });
+defineOptions({ name: 'TagOperateDrawer' });
 
 interface Props {
   operateType: NaiveUI.TableOperateType;
-  rowData?: Api.HrManage.Skill | null;
+  rowData?: Api.HrManage.Tag | null;
 }
 
 const props = defineProps<Props>();
@@ -25,15 +25,24 @@ const { defaultRequiredRule } = useFormRules();
 
 const title = computed(() => {
   const titles: Record<NaiveUI.TableOperateType, string> = {
-    add: $t('page.hr.skill.addSkill'),
-    edit: $t('page.hr.skill.editSkill')
+    add: $t('page.hr.tag.addTag'),
+    edit: $t('page.hr.tag.editTag')
   };
   return titles[props.operateType];
 });
 
 const model = ref(createDefaultModel());
 
-function createDefaultModel(): Api.HrManage.SkillAddParams {
+const categoryOptions = ref<{ label: string; value: string }[]>([]);
+
+onMounted(async () => {
+  const { data } = await fetchGetDictOptions('skill_category');
+  if (data) {
+    categoryOptions.value = data;
+  }
+});
+
+function createDefaultModel(): Api.HrManage.TagAddParams {
   return { name: '', category: '', description: '' };
 }
 
@@ -56,11 +65,11 @@ function closeDrawer() {
 async function handleSubmit() {
   await validate();
   if (props.operateType === 'add') {
-    const { error } = await fetchAddSkill(model.value);
+    const { error } = await fetchAddTag(model.value);
     if (error) return;
     window.$message?.success($t('common.addSuccess'));
   } else {
-    const { error } = await fetchUpdateSkill({ id: props.rowData?.id, ...model.value });
+    const { error } = await fetchUpdateTag({ id: props.rowData?.id, ...model.value });
     if (error) return;
     window.$message?.success($t('common.updateSuccess'));
   }
@@ -80,14 +89,19 @@ watch(visible, () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="360">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <NForm ref="formRef" :model="model" :rules="rules">
-        <NFormItem :label="$t('page.hr.skill.name')" path="name">
-          <NInput v-model:value="model.name" :placeholder="$t('page.hr.skill.form.name')" />
+        <NFormItem :label="$t('page.hr.tag.name')" path="name">
+          <NInput v-model:value="model.name" :placeholder="$t('page.hr.tag.form.name')" />
         </NFormItem>
-        <NFormItem :label="$t('page.hr.skill.category')" path="category">
-          <NInput v-model:value="model.category" :placeholder="$t('page.hr.skill.form.category')" />
+        <NFormItem :label="$t('page.hr.tag.category')" path="category">
+          <NSelect
+            v-model:value="model.category"
+            :options="categoryOptions"
+            clearable
+            :placeholder="$t('page.hr.tag.form.category')"
+          />
         </NFormItem>
-        <NFormItem :label="$t('page.hr.skill.description')">
-          <NInput v-model:value="model.description" type="textarea" :placeholder="$t('page.hr.skill.form.description')" />
+        <NFormItem :label="$t('page.hr.tag.description')">
+          <NInput v-model:value="model.description" type="textarea" :placeholder="$t('page.hr.tag.form.description')" />
         </NFormItem>
       </NForm>
       <template #footer>

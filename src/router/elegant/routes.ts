@@ -241,12 +241,12 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
-        name: 'hr_skill',
-        path: '/hr/skill',
-        component: 'view.hr_skill',
+        name: 'hr_tag',
+        path: '/hr/tag',
+        component: 'view.hr_tag',
         meta: {
-          title: 'hr_skill',
-          i18nKey: 'route.hr_skill'
+          title: 'hr_tag',
+          i18nKey: 'route.hr_tag'
         }
       }
     ]

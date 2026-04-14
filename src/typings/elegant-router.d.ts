@@ -53,7 +53,7 @@ declare module "@elegant-router/types" {
     "hr": "/hr";
     "hr_department": "/hr/department";
     "hr_employee": "/hr/employee";
-    "hr_skill": "/hr/skill";
+    "hr_tag": "/hr/tag";
     "iframe-page": "/iframe-page/:url";
     "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
     "manage": "/manage";
@@ -205,7 +205,7 @@ declare module "@elegant-router/types" {
     | "home"
     | "hr_department"
     | "hr_employee"
-    | "hr_skill"
+    | "hr_tag"
     | "manage_api"
     | "manage_menu"
     | "manage_radar_exceptions"

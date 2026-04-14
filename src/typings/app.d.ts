@@ -1018,7 +1018,7 @@ declare namespace App {
             phone: string;
             position: string;
             department: string;
-            skills: string;
+            tags: string;
             addEmployee: string;
             editEmployee: string;
             form: {
@@ -1028,16 +1028,16 @@ declare namespace App {
               phone: string;
               position: string;
               department: string;
-              skills: string;
+              tags: string;
             };
           };
-          skill: {
+          tag: {
             title: string;
             name: string;
             category: string;
             description: string;
-            addSkill: string;
-            editSkill: string;
+            addTag: string;
+            editTag: string;
             form: {
               name: string;
               category: string;

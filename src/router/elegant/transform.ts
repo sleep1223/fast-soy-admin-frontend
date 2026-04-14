@@ -199,7 +199,7 @@ const routeMap: RouteMap = {
   "hr": "/hr",
   "hr_department": "/hr/department",
   "hr_employee": "/hr/employee",
-  "hr_skill": "/hr/skill",
+  "hr_tag": "/hr/tag",
   "iframe-page": "/iframe-page/:url",
   "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?",
   "manage": "/manage",
