@@ -1,15 +1,24 @@
 <script setup lang="tsx">
 import { onMounted, reactive, ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { statusTypeRecord } from '@/constants/business';
-import { fetchBatchDeleteEmployee, fetchDeleteEmployee, fetchGetDepartmentList, fetchGetEmployeeList, fetchGetTagList } from '@/service/api';
+import { employeeNextStatus, employeeStatusRecord, employeeStatusTagType, employeeTransitionLabel } from '@/constants/business';
+import {
+  fetchBatchDeleteEmployee,
+  fetchDeleteEmployee,
+  fetchGetDepartmentList,
+  fetchGetEmployeeList,
+  fetchGetTagList,
+  fetchTransitionEmployee
+} from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+import { useAuth } from '@/hooks/business/auth';
 import { $t } from '@/locales';
 import EmployeeOperateDrawer from './modules/employee-operate-drawer.vue';
 import EmployeeSearch from './modules/employee-search.vue';
 
 const appStore = useAppStore();
+const { hasAuth } = useAuth();
 
 const searchParams: Api.HrManage.EmployeeSearchParams = reactive({
   current: 1,
@@ -44,35 +53,54 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       key: 'status',
       title: $t('page.hr.common.status'),
       align: 'center',
-      width: 80,
+      width: 90,
       render: row => {
         if (!row.status) return null;
-        const tagMap: Record<string, NaiveUI.ThemeColor> = { 1: 'success', 2: 'warning' };
-        return <NTag type={tagMap[row.status]}>{$t(statusTypeRecord[row.status as Api.Common.EnableStatus])}</NTag>;
+        return <NTag type={employeeStatusTagType[row.status]}>{$t(employeeStatusRecord[row.status])}</NTag>;
       }
     },
     {
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 130,
-      render: row => (
-        <div class="flex-center gap-8px">
-          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
-            {$t('common.edit')}
-          </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
-            {{
-              default: () => $t('common.confirmDelete'),
-              trigger: () => (
-                <NButton type="error" ghost size="small">
-                  {$t('common.delete')}
-                </NButton>
-              )
-            }}
-          </NPopconfirm>
-        </div>
-      )
+      width: 220,
+      render: row => {
+        const next = employeeNextStatus[row.status];
+        const label = next ? employeeTransitionLabel[row.status] : null;
+        return (
+          <div class="flex-center gap-8px">
+            {next && label && hasAuth('B_HR_EMP_TRANSITION') && (
+              <NPopconfirm onPositiveClick={() => handleTransition(row.id, next)}>
+                {{
+                  default: () => $t('page.hr.employee.transition.confirm'),
+                  trigger: () => (
+                    <NButton type="info" ghost size="small">
+                      {$t(label)}
+                    </NButton>
+                  )
+                }}
+              </NPopconfirm>
+            )}
+            {hasAuth('B_HR_EMP_EDIT') && (
+              <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+                {$t('common.edit')}
+              </NButton>
+            )}
+            {hasAuth('B_HR_EMP_DELETE') && (
+              <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+                {{
+                  default: () => $t('common.confirmDelete'),
+                  trigger: () => (
+                    <NButton type="error" ghost size="small">
+                      {$t('common.delete')}
+                    </NButton>
+                  )
+                }}
+              </NPopconfirm>
+            )}
+          </div>
+        );
+      }
     }
   ]
 });
@@ -88,6 +116,13 @@ async function handleBatchDelete() {
 async function handleDelete(id: string) {
   const { error } = await fetchDeleteEmployee({ id });
   if (!error) onDeleted();
+}
+
+async function handleTransition(id: string, toState: Api.HrManage.EmployeeStatus) {
+  const { error } = await fetchTransitionEmployee(id, { toState });
+  if (error) return;
+  window.$message?.success($t('page.hr.employee.transition.success'));
+  getData();
 }
 
 function edit(id: string) {
@@ -116,14 +151,21 @@ onMounted(async () => {
     <EmployeeSearch v-model:model="searchParams" :department-options="departmentOptions" @search="getDataByPage" />
     <NCard :title="$t('page.hr.employee.title')" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
-        <TableHeaderOperation
-          v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
-          :loading="loading"
-          @add="handleAdd"
-          @delete="handleBatchDelete"
-          @refresh="getData"
-        />
+        <TableHeaderOperation v-model:columns="columnChecks" :loading="loading" @refresh="getData">
+          <NButton v-if="hasAuth('B_HR_EMP_CREATE')" size="small" ghost type="primary" @click="handleAdd">
+            <template #icon><icon-ic-round-plus class="text-icon" /></template>
+            {{ $t('common.add') }}
+          </NButton>
+          <NPopconfirm v-if="hasAuth('B_HR_EMP_DELETE')" @positive-click="handleBatchDelete">
+            <template #trigger>
+              <NButton size="small" ghost type="error" :disabled="checkedRowKeys.length === 0">
+                <template #icon><icon-ic-round-delete class="text-icon" /></template>
+                {{ $t('common.batchDelete') }}
+              </NButton>
+            </template>
+            {{ $t('common.confirmDelete') }}
+          </NPopconfirm>
+        </TableHeaderOperation>
       </template>
       <NDataTable
         v-model:checked-row-keys="checkedRowKeys"

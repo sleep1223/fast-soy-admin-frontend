@@ -5,13 +5,23 @@ declare namespace Api {
     type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size'>;
 
     // ---- Employee ----
+    /**
+     * employee onboarding state
+     *
+     * - `pending`: 待入职
+     * - `onboarding`: 入职中
+     * - `active`: 在职
+     * - `resigned`: 已离职
+     */
+    type EmployeeStatus = 'pending' | 'onboarding' | 'active' | 'resigned';
+
     type Employee = Common.CommonRecord<{
       name: string;
       employeeNo: string;
       email: string | null;
       phone: string | null;
       position: string | null;
-      status: string;
+      status: EmployeeStatus;
       userId: string | null;
       departmentId: string;
       departmentName?: string;
@@ -33,32 +43,21 @@ declare namespace Api {
       email?: string | null;
       phone?: string | null;
       position?: string | null;
-      status?: string | null;
       tagIds?: string[] | null;
     };
 
     type EmployeeSearchParams = CommonType.RecordNullable<
       {
         name?: string;
-        status?: string;
+        status?: EmployeeStatus;
         departmentId?: string;
       } & CommonSearchParams
     >;
 
     type EmployeeList = Common.PaginatingQueryRecord<Employee>;
 
-    /**
-     * employee state transition target
-     *
-     * - `pending`: 待入职
-     * - `onboarding`: 入职中
-     * - `active`: 在职
-     * - `resigned`: 已离职
-     */
-    type EmployeeTransitionState = 'pending' | 'onboarding' | 'active' | 'resigned';
-
     type EmployeeTransitionParams = {
-      toState: EmployeeTransitionState;
+      toState: EmployeeStatus;
     };
 
     // ---- Department ----

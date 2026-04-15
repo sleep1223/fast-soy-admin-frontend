@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toRaw } from 'vue';
 import { jsonClone } from '@sa/utils';
-import { statusTypeOptions } from '@/constants/business';
+import { employeeStatusOptions } from '@/constants/business';
 import { translateOptions } from '@/utils/common';
 import { $t } from '@/locales';
 
@@ -43,7 +43,7 @@ function search() {
               <NSelect v-model:value="model.departmentId" :options="departmentOptions" clearable :placeholder="$t('page.hr.employee.form.department')" />
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:6" :label="$t('page.hr.common.status')" path="status" class="pr-24px">
-              <NSelect v-model:value="model.status" :options="translateOptions(statusTypeOptions)" clearable :placeholder="$t('page.hr.common.form.status')" />
+              <NSelect v-model:value="model.status" :options="translateOptions(employeeStatusOptions)" clearable :placeholder="$t('page.hr.employee.form.status')" />
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:6">
               <NSpace class="w-full" justify="end">

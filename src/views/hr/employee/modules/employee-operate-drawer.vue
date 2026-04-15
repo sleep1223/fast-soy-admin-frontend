@@ -42,7 +42,7 @@ function createAddModel(): Api.HrManage.EmployeeAddParams {
 }
 
 function createEditModel(): Api.HrManage.EmployeeUpdateParams {
-  return { id: undefined, name: '', email: '', phone: '', position: '', status: '1', tagIds: [] };
+  return { id: undefined, name: '', email: '', phone: '', position: '', tagIds: [] };
 }
 
 const addRules: Record<string, App.Global.FormRule> = {

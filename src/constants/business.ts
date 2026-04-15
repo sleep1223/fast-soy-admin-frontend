@@ -38,3 +38,35 @@ export const menuIconTypeRecord: Record<Api.SystemManage.IconType, App.I18n.I18n
 };
 
 export const menuIconTypeOptions = transformRecordToOption(menuIconTypeRecord);
+
+export const employeeStatusRecord: Record<Api.HrManage.EmployeeStatus, App.I18n.I18nKey> = {
+  pending: 'page.hr.employee.status.pending',
+  onboarding: 'page.hr.employee.status.onboarding',
+  active: 'page.hr.employee.status.active',
+  resigned: 'page.hr.employee.status.resigned'
+};
+
+export const employeeStatusOptions = transformRecordToOption(employeeStatusRecord);
+
+export const employeeStatusTagType: Record<Api.HrManage.EmployeeStatus, NaiveUI.ThemeColor> = {
+  pending: 'warning',
+  onboarding: 'info',
+  active: 'success',
+  resigned: 'default'
+};
+
+/**
+ * 员工状态机的下一个目标状态。
+ * pending → onboarding → active → resigned；resigned 为终态。
+ */
+export const employeeNextStatus: Partial<Record<Api.HrManage.EmployeeStatus, Api.HrManage.EmployeeStatus>> = {
+  pending: 'onboarding',
+  onboarding: 'active',
+  active: 'resigned'
+};
+
+export const employeeTransitionLabel: Partial<Record<Api.HrManage.EmployeeStatus, App.I18n.I18nKey>> = {
+  pending: 'page.hr.employee.transition.toOnboarding',
+  onboarding: 'page.hr.employee.transition.toActive',
+  active: 'page.hr.employee.transition.toResigned'
+};

@@ -845,7 +845,21 @@ const local: App.I18n.Schema = {
           phone: '请输入电话',
           position: '请输入职位',
           department: '请选择部门',
-          tags: '请选择标签'
+          tags: '请选择标签',
+          status: '请选择员工状态'
+        },
+        status: {
+          pending: '待入职',
+          onboarding: '入职中',
+          active: '在职',
+          resigned: '已离职'
+        },
+        transition: {
+          toOnboarding: '办理入职',
+          toActive: '确认转正',
+          toResigned: '办理离职',
+          confirm: '确认变更员工状态吗？',
+          success: '员工状态更新成功'
         },
         addEmployee: '新增员工',
         editEmployee: '编辑员工'

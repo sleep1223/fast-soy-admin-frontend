@@ -1029,6 +1029,20 @@ declare namespace App {
               position: string;
               department: string;
               tags: string;
+              status: string;
+            };
+            status: {
+              pending: string;
+              onboarding: string;
+              active: string;
+              resigned: string;
+            };
+            transition: {
+              toOnboarding: string;
+              toActive: string;
+              toResigned: string;
+              confirm: string;
+              success: string;
             };
           };
           tag: {

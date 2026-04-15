@@ -5,11 +5,13 @@ import { statusTypeRecord } from '@/constants/business';
 import { fetchBatchDeleteDepartment, fetchDeleteDepartment, fetchGetDepartmentList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+import { useAuth } from '@/hooks/business/auth';
 import { $t } from '@/locales';
 import DepartmentOperateDrawer from './modules/department-operate-drawer.vue';
 import DepartmentSearch from './modules/department-search.vue';
 
 const appStore = useAppStore();
+const { hasAuth } = useAuth();
 
 const searchParams: Api.HrManage.DepartmentSearchParams = reactive({
   current: 1,
@@ -50,19 +52,23 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       width: 130,
       render: row => (
         <div class="flex-center gap-8px">
-          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
-            {$t('common.edit')}
-          </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
-            {{
-              default: () => $t('common.confirmDelete'),
-              trigger: () => (
-                <NButton type="error" ghost size="small">
-                  {$t('common.delete')}
-                </NButton>
-              )
-            }}
-          </NPopconfirm>
+          {hasAuth('B_HR_DEPT_EDIT') && (
+            <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+              {$t('common.edit')}
+            </NButton>
+          )}
+          {hasAuth('B_HR_DEPT_DELETE') && (
+            <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+              {{
+                default: () => $t('common.confirmDelete'),
+                trigger: () => (
+                  <NButton type="error" ghost size="small">
+                    {$t('common.delete')}
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          )}
         </div>
       )
     }
@@ -92,14 +98,21 @@ function edit(id: string) {
     <DepartmentSearch v-model:model="searchParams" @search="getDataByPage" />
     <NCard :title="$t('page.hr.department.title')" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
-        <TableHeaderOperation
-          v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
-          :loading="loading"
-          @add="handleAdd"
-          @delete="handleBatchDelete"
-          @refresh="getData"
-        />
+        <TableHeaderOperation v-model:columns="columnChecks" :loading="loading" @refresh="getData">
+          <NButton v-if="hasAuth('B_HR_DEPT_CREATE')" size="small" ghost type="primary" @click="handleAdd">
+            <template #icon><icon-ic-round-plus class="text-icon" /></template>
+            {{ $t('common.add') }}
+          </NButton>
+          <NPopconfirm v-if="hasAuth('B_HR_DEPT_DELETE')" @positive-click="handleBatchDelete">
+            <template #trigger>
+              <NButton size="small" ghost type="error" :disabled="checkedRowKeys.length === 0">
+                <template #icon><icon-ic-round-delete class="text-icon" /></template>
+                {{ $t('common.batchDelete') }}
+              </NButton>
+            </template>
+            {{ $t('common.confirmDelete') }}
+          </NPopconfirm>
+        </TableHeaderOperation>
       </template>
       <NDataTable
         v-model:checked-row-keys="checkedRowKeys"

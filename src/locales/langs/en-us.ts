@@ -849,7 +849,21 @@ const local: App.I18n.Schema = {
           phone: 'Please enter phone',
           position: 'Please enter position',
           department: 'Please select department',
-          tags: 'Please select tags'
+          tags: 'Please select tags',
+          status: 'Please select employee status'
+        },
+        status: {
+          pending: 'Pending',
+          onboarding: 'Onboarding',
+          active: 'Active',
+          resigned: 'Resigned'
+        },
+        transition: {
+          toOnboarding: 'Start Onboarding',
+          toActive: 'Mark Active',
+          toResigned: 'Mark Resigned',
+          confirm: 'Confirm employee status change?',
+          success: 'Employee status updated'
         },
         addEmployee: 'Add Employee',
         editEmployee: 'Edit Employee'
