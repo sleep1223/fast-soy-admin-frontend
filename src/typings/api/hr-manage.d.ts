@@ -47,6 +47,20 @@ declare namespace Api {
 
     type EmployeeList = Common.PaginatingQueryRecord<Employee>;
 
+    /**
+     * employee state transition target
+     *
+     * - `pending`: 待入职
+     * - `onboarding`: 入职中
+     * - `active`: 在职
+     * - `resigned`: 已离职
+     */
+    type EmployeeTransitionState = 'pending' | 'onboarding' | 'active' | 'resigned';
+
+    type EmployeeTransitionParams = {
+      toState: EmployeeTransitionState;
+    };
+
     // ---- Department ----
     type Department = Common.CommonRecord<{
       name: string;

@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { onMounted, ref, toRaw } from 'vue';
+import { toRaw } from 'vue';
 import { jsonClone } from '@sa/utils';
-import { fetchGetDictOptions } from '@/service/api';
 import { $t } from '@/locales';
 
 defineOptions({ name: 'TagSearch' });
+
+interface Props {
+  categoryOptions: Api.SystemManage.DictionaryOption[];
+}
+
+defineProps<Props>();
 
 interface Emits {
   (e: 'search'): void;
@@ -13,15 +18,6 @@ interface Emits {
 const emit = defineEmits<Emits>();
 const model = defineModel<Api.HrManage.TagSearchParams>('model', { required: true });
 const defaultModel = jsonClone(toRaw(model.value));
-
-const categoryOptions = ref<{ label: string; value: string }[]>([]);
-
-onMounted(async () => {
-  const { data } = await fetchGetDictOptions('skill_category');
-  if (data) {
-    categoryOptions.value = data;
-  }
-});
 
 function resetModel() {
   Object.assign(model.value, defaultModel);

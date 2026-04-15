@@ -71,3 +71,12 @@ export function fetchImpersonate(userId: number) {
     method: 'post'
   });
 }
+
+/** update password for the current user */
+export function fetchUpdatePassword(data: Api.Auth.UpdatePasswordParams) {
+  return request<null, 'json'>({
+    url: '/auth/password',
+    method: 'patch',
+    data
+  });
+}

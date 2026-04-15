@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { jsonClone } from '@sa/utils';
-import { fetchAddTag, fetchGetDictOptions, fetchUpdateTag } from '@/service/api';
+import { fetchAddTag, fetchUpdateTag } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 
@@ -10,6 +10,7 @@ defineOptions({ name: 'TagOperateDrawer' });
 interface Props {
   operateType: NaiveUI.TableOperateType;
   rowData?: Api.HrManage.Tag | null;
+  categoryOptions: Api.SystemManage.DictionaryOption[];
 }
 
 const props = defineProps<Props>();
@@ -32,15 +33,6 @@ const title = computed(() => {
 });
 
 const model = ref(createDefaultModel());
-
-const categoryOptions = ref<{ label: string; value: string }[]>([]);
-
-onMounted(async () => {
-  const { data } = await fetchGetDictOptions('skill_category');
-  if (data) {
-    categoryOptions.value = data;
-  }
-});
 
 function createDefaultModel(): Api.HrManage.TagAddParams {
   return { name: '', category: '', description: '' };
@@ -95,7 +87,7 @@ watch(visible, () => {
         <NFormItem :label="$t('page.hr.tag.category')" path="category">
           <NSelect
             v-model:value="model.category"
-            :options="categoryOptions"
+            :options="props.categoryOptions"
             clearable
             :placeholder="$t('page.hr.tag.form.category')"
           />

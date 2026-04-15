@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { computed, reactive } from 'vue';
+import { computed, ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { statusTypeRecord, userGenderRecord } from '@/constants/business';
 import { fetchBatchDeleteUser, fetchBatchUserOffline, fetchDeleteUser, fetchGetUserList, fetchUserOffline } from '@/service/api';
@@ -14,7 +14,7 @@ const appStore = useAppStore();
 const authStore = useAuthStore();
 const isSuperAdmin = computed(() => authStore.userInfo.roles.includes('R_SUPER'));
 
-const searchParams: Api.SystemManage.UserSearchParams = reactive({
+const searchParams = ref<Api.SystemManage.UserSearchParams>({
   current: 1,
   size: 10,
   userName: null,
@@ -27,11 +27,11 @@ const searchParams: Api.SystemManage.UserSearchParams = reactive({
   statusType: null
 });
 const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination } = useNaivePaginatedTable({
-  api: () => fetchGetUserList(searchParams),
+  api: () => fetchGetUserList(searchParams.value),
   transform: response => defaultTransform(response),
   onPaginationParamsChange: params => {
-    searchParams.current = params.page;
-    searchParams.size = params.pageSize;
+    searchParams.value.current = params.page;
+    searchParams.value.size = params.pageSize;
   },
   columns: () => [
     {

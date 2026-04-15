@@ -300,3 +300,55 @@ export function fetchUpdateMenu(data?: Api.SystemManage.MenuUpdateParams) {
     data
   });
 }
+
+/** get dictionary list */
+export function fetchGetDictionaryList(data?: Api.SystemManage.DictionarySearchParams) {
+  return request<Api.SystemManage.DictionaryList>({
+    url: '/system-manage/dictionaries/search',
+    method: 'post',
+    data: data ?? {}
+  });
+}
+
+/** get dictionary detail */
+export function fetchGetDictionary(id: number) {
+  return request<Api.SystemManage.Dictionary>({
+    url: `/system-manage/dictionaries/${id}`,
+    method: 'get'
+  });
+}
+
+/** add dictionary */
+export function fetchAddDictionary(data?: Api.SystemManage.DictionaryAddParams) {
+  return request<null, 'json'>({
+    url: '/system-manage/dictionaries',
+    method: 'post',
+    data
+  });
+}
+
+/** update dictionary */
+export function fetchUpdateDictionary(data?: Api.SystemManage.DictionaryUpdateParams) {
+  return request<null, 'json'>({
+    url: `/system-manage/dictionaries/${data?.id}`,
+    method: 'patch',
+    data
+  });
+}
+
+/** delete dictionary */
+export function fetchDeleteDictionary(data?: Api.SystemManage.CommonDeleteParams) {
+  return request<null>({
+    url: `/system-manage/dictionaries/${data?.id}`,
+    method: 'delete'
+  });
+}
+
+/** batch delete dictionary */
+export function fetchBatchDeleteDictionary(data?: Api.SystemManage.CommonBatchDeleteParams) {
+  return request<null>({
+    url: '/system-manage/dictionaries',
+    method: 'delete',
+    data: { ids: data?.ids }
+  });
+}

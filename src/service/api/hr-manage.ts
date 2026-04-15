@@ -47,6 +47,15 @@ export function fetchBatchDeleteEmployee(data?: Api.HrManage.CommonBatchDeletePa
   });
 }
 
+/** employee state transition */
+export function fetchTransitionEmployee(empId: number, data: Api.HrManage.EmployeeTransitionParams) {
+  return request<null, 'json'>({
+    url: `/business/hr/employees/${empId}/transition`,
+    method: 'post',
+    data
+  });
+}
+
 // ---- Department ----
 export function fetchGetDepartmentList(data?: Api.HrManage.DepartmentSearchParams) {
   return request<Api.HrManage.DepartmentList>({
@@ -136,7 +145,7 @@ export function fetchBatchDeleteTag(data?: Api.HrManage.CommonBatchDeleteParams)
 
 // ---- Dictionary Options ----
 export function fetchGetDictOptions(dictType: string) {
-  return request<{ label: string; value: string }[]>({
+  return request<Api.SystemManage.DictionaryOption[]>({
     url: `/system-manage/dictionaries/${dictType}/options`,
     method: 'get'
   });

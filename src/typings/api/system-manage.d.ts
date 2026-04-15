@@ -294,5 +294,55 @@ declare namespace Api {
       summary: string;
       children?: ApiTree[];
     };
+
+    /**
+     * dictionary status
+     *
+     * - "0": all
+     * - "1": enable
+     * - "2": disable
+     * - "3": invalid
+     */
+    type DictionaryStatus = '0' | '1' | '2' | '3';
+
+    /** dictionary */
+    type Dictionary = Omit<
+      Common.CommonRecord<{
+        /** dict type, e.g. `tag_category` */
+        dictType: string;
+        /** display label */
+        label: string;
+        /** stored value */
+        value: string;
+        /** order */
+        order: number | null;
+        /** dictionary status */
+        status: DictionaryStatus | null;
+        /** remark */
+        remark: string | null;
+      }>,
+      'statusType'
+    >;
+
+    /** dictionary add params */
+    type DictionaryAddParams = Pick<
+      Api.SystemManage.Dictionary,
+      'dictType' | 'label' | 'value' | 'order' | 'status' | 'remark'
+    >;
+
+    /** dictionary update params */
+    type DictionaryUpdateParams = CommonType.RecordNullable<Pick<Api.SystemManage.Dictionary, 'id'>> &
+      DictionaryAddParams;
+
+    /** dictionary search params */
+    type DictionarySearchParams = CommonType.RecordNullable<
+      Pick<Api.SystemManage.Dictionary, 'dictType' | 'label' | 'status'> & CommonSearchParams
+    >;
+
+    /** dictionary list */
+    type DictionaryList = Common.PaginatingQueryRecord<Dictionary>;
+
+    /** dictionary option (for dropdowns) */
+    type DictionaryOption = { label: string; value: string };
   }
 }

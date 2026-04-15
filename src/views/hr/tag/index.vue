@@ -1,7 +1,7 @@
 <script setup lang="tsx">
-import { reactive } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { NButton, NPopconfirm } from 'naive-ui';
-import { fetchBatchDeleteTag, fetchDeleteTag, fetchGetTagList } from '@/service/api';
+import { fetchBatchDeleteTag, fetchDeleteTag, fetchGetDictOptions, fetchGetTagList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -17,7 +17,13 @@ const searchParams: Api.HrManage.TagSearchParams = reactive({
   category: null
 });
 
+const categoryOptions = ref<Api.SystemManage.DictionaryOption[]>([]);
+const categoryLabelMap = computed(() =>
+  Object.fromEntries(categoryOptions.value.map(o => [o.value, o.label]))
+);
+
 const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
+  immediate: false,
   api: () => fetchGetTagList(searchParams),
   transform: response => defaultTransform(response),
   onPaginationParamsChange: params => {
@@ -28,7 +34,13 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
     { type: 'selection', align: 'center', width: 48 },
     { key: 'index', title: $t('common.index'), width: 64, align: 'center', render: (_, index) => index + 1 },
     { key: 'name', title: $t('page.hr.tag.name'), align: 'center', minWidth: 120 },
-    { key: 'category', title: $t('page.hr.tag.category'), align: 'center', minWidth: 100 },
+    {
+      key: 'category',
+      title: $t('page.hr.tag.category'),
+      align: 'center',
+      minWidth: 100,
+      render: row => categoryLabelMap.value[row.category] ?? row.category
+    },
     { key: 'description', title: $t('page.hr.tag.description'), minWidth: 200 },
     {
       key: 'operate',
@@ -59,6 +71,12 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
 const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onBatchDeleted, onDeleted } =
   useTableOperate(data, 'id', getData);
 
+onMounted(async () => {
+  const { data: dictData } = await fetchGetDictOptions('tag_category');
+  if (dictData) categoryOptions.value = dictData;
+  await getData();
+});
+
 async function handleBatchDelete() {
   const { error } = await fetchBatchDeleteTag({ ids: checkedRowKeys.value.map(k => Number(k)) });
   if (!error) onBatchDeleted();
@@ -76,7 +94,7 @@ function edit(id: number) {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <TagSearch v-model:model="searchParams" @search="getDataByPage" />
+    <TagSearch v-model:model="searchParams" :category-options="categoryOptions" @search="getDataByPage" />
     <NCard :title="$t('page.hr.tag.title')" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation
@@ -105,6 +123,7 @@ function edit(id: number) {
         v-model:visible="drawerVisible"
         :operate-type="operateType"
         :row-data="editingData"
+        :category-options="categoryOptions"
         @submitted="getDataByPage"
       />
     </NCard>

@@ -8,6 +8,8 @@ declare namespace Api {
     interface LoginToken {
       token: string;
       refreshToken: string;
+      /** Only present on /auth/login response; true when user must change password before continuing */
+      mustChangePassword?: boolean;
     }
 
     interface UserInfo {
@@ -20,6 +22,12 @@ declare namespace Api {
       impersonating?: boolean;
       /** The original admin user id who initiated impersonation */
       impersonatorId?: number;
+    }
+
+    /** update password params */
+    interface UpdatePasswordParams {
+      oldPassword: string;
+      newPassword: string;
     }
   }
 }
