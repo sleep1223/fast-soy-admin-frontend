@@ -81,22 +81,22 @@ const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedR
   useTableOperate(data, 'id', getData);
 
 async function handleBatchDelete() {
-  const { error } = await fetchBatchDeleteEmployee({ ids: checkedRowKeys.value.map(k => Number(k)) });
+  const { error } = await fetchBatchDeleteEmployee({ ids: checkedRowKeys.value.map(k => String(k)) });
   if (!error) onBatchDeleted();
 }
 
-async function handleDelete(id: number) {
+async function handleDelete(id: string) {
   const { error } = await fetchDeleteEmployee({ id });
   if (!error) onDeleted();
 }
 
-function edit(id: number) {
+function edit(id: string) {
   handleEdit(id);
 }
 
 // Load departments & tags for search filter and edit form
-const departmentOptions = ref<{ label: string; value: number }[]>([]);
-const tagOptions = ref<{ label: string; value: number }[]>([]);
+const departmentOptions = ref<{ label: string; value: string }[]>([]);
+const tagOptions = ref<{ label: string; value: string }[]>([]);
 onMounted(async () => {
   const [{ data: deptData }, { data: tagData }] = await Promise.all([
     fetchGetDepartmentList({ current: 1, size: 999 }),

@@ -187,7 +187,7 @@ async function handleBatchDelete() {
   }
 }
 
-async function handleDelete(id: number) {
+async function handleDelete(id: string) {
   const { error } = await fetchDeleteMenu({ id });
   if (!error) {
     onDeleted();

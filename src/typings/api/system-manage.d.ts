@@ -8,10 +8,10 @@ declare namespace Api {
     type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size'>;
 
     /** common delete params */
-    type CommonDeleteParams = { id: number | string };
+    type CommonDeleteParams = { id: string };
 
     /** common batch delete params */
-    type CommonBatchDeleteParams = { ids: Array<number | string> };
+    type CommonBatchDeleteParams = { ids: string[] };
 
     /** role */
     type Role = Common.CommonRecord<{
@@ -22,7 +22,7 @@ declare namespace Api {
       /** role description */
       roleDesc: string;
       /** role home */
-      byRoleHomeId: number;
+      byRoleHomeId: string;
     }>;
 
     /** role add params */
@@ -44,9 +44,9 @@ declare namespace Api {
 
     /** role authorized */
     type RoleAuthorized = Api.SystemManage.Role & {
-      byRoleMenuIds: number[];
-      byRoleApiIds: number[];
-      byRoleButtonIds: number[];
+      byRoleMenuIds: string[];
+      byRoleApiIds: string[];
+      byRoleButtonIds: string[];
     };
 
     /** get role authorized params */
@@ -199,8 +199,8 @@ declare namespace Api {
     >;
 
     type Menu = Common.CommonRecord<{
-      /** parent menu id */
-      parentId: number;
+      /** parent menu id (sqid string; `0` for root) */
+      parentId: string | number;
       /** menu type */
       menuType: MenuType;
       /** menu name */
@@ -276,21 +276,21 @@ declare namespace Api {
     type MenuList = Common.PaginatingQueryRecord<Menu>;
 
     type MenuTree = {
-      id: number;
+      id: string | number;
       label: string;
-      pId: number;
+      pId: string | number;
       children?: MenuTree[];
     };
 
     type ButtonTree = {
-      id: number | string;
+      id: string | number;
       label: string;
-      pId: number;
+      pId: string | number;
       children?: ButtonTree[];
     };
 
     type ApiTree = {
-      id: number | string;
+      id: string | number;
       summary: string;
       children?: ApiTree[];
     };

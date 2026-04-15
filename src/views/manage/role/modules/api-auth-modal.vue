@@ -9,7 +9,7 @@ defineOptions({
 
 interface Props {
   /** the roleId */
-  roleId: number;
+  roleId: string;
 }
 
 const props = defineProps<Props>();
@@ -33,7 +33,7 @@ async function getTree() {
   }
 }
 
-const byRoleApiIds = shallowRef<number[]>([]);
+const byRoleApiIds = shallowRef<string[]>([]);
 
 async function getChecks() {
   const { error, data } = await fetchGetRoleApi({ id: props.roleId });
@@ -47,7 +47,7 @@ async function handleSubmit() {
   // request
   const { error } = await fetchUpdateRoleApi({
     id: props.roleId,
-    byRoleApiIds: byRoleApiIds.value.filter(item => typeof item === 'number')
+    byRoleApiIds: byRoleApiIds.value.filter(item => typeof item === 'string')
   });
   if (error) return;
   window.$message?.success?.($t('common.modifySuccess'));

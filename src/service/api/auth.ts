@@ -65,7 +65,7 @@ export function fetchRegister(data: { phone: string; code: string; password: str
 }
 
 /** impersonate user (admin only) */
-export function fetchImpersonate(userId: number) {
+export function fetchImpersonate(userId: string) {
   return request<Api.Auth.LoginToken>({
     url: `/auth/impersonate/${userId}`,
     method: 'post'

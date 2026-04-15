@@ -33,8 +33,8 @@ declare namespace Api {
 
     /** common record */
     type CommonRecord<T = any> = {
-      /** record id */
-      id: number;
+      /** record id (sqid-encoded string) */
+      id: string;
       /** record creator */
       createdBy: string;
       /** record create time */

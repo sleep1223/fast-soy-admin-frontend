@@ -9,7 +9,7 @@ export function fetchGetEmployeeList(data?: Api.HrManage.EmployeeSearchParams) {
   });
 }
 
-export function fetchGetEmployee(id: number) {
+export function fetchGetEmployee(id: string) {
   return request<Api.HrManage.Employee>({
     url: `/business/hr/employees/${id}`,
     method: 'get'
@@ -48,7 +48,7 @@ export function fetchBatchDeleteEmployee(data?: Api.HrManage.CommonBatchDeletePa
 }
 
 /** employee state transition */
-export function fetchTransitionEmployee(empId: number, data: Api.HrManage.EmployeeTransitionParams) {
+export function fetchTransitionEmployee(empId: string, data: Api.HrManage.EmployeeTransitionParams) {
   return request<null, 'json'>({
     url: `/business/hr/employees/${empId}/transition`,
     method: 'post',

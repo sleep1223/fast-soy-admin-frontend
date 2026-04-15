@@ -9,8 +9,8 @@ defineOptions({ name: 'EmployeeOperateDrawer' });
 interface Props {
   operateType: NaiveUI.TableOperateType;
   rowData?: Api.HrManage.Employee | null;
-  departmentOptions: { label: string; value: number }[];
-  tagOptions: { label: string; value: number }[];
+  departmentOptions: { label: string; value: string }[];
+  tagOptions: { label: string; value: string }[];
 }
 
 const props = defineProps<Props>();

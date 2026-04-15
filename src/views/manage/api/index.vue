@@ -164,14 +164,14 @@ async function handleBatchDelete() {
   }
 }
 
-async function handleDelete(id: number) {
+async function handleDelete(id: string) {
   const { error } = await fetchDeleteApi({ id });
   if (!error) {
     onDeleted();
   }
 }
 
-function edit(id: number) {
+function edit(id: string) {
   handleEdit(id);
 }
 </script>

@@ -21,7 +21,7 @@ declare namespace Api {
 
     /** request record (camelCase from backend to_dict) */
     interface RequestRecord {
-      id: number;
+      id: string;
       xRequestId: string;
       method: string;
       path: string;
@@ -65,8 +65,8 @@ declare namespace Api {
 
     /** SQL query record (camelCase from backend to_dict) */
     interface QueryRecord {
-      id: number;
-      requestId: number;
+      id: string;
+      requestId: string;
       xRequestId: string | null;
       requestPath: string | null;
       requestMethod: string | null;
@@ -119,8 +119,8 @@ declare namespace Api {
 
     /** user log record (camelCase from backend to_dict) */
     interface UserLogRecord {
-      id: number;
-      requestId: number | null;
+      id: string;
+      requestId: string | null;
       level: string;
       message: string;
       data: string | null;

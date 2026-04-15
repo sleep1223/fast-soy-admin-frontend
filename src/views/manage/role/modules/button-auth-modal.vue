@@ -9,7 +9,7 @@ defineOptions({
 
 interface Props {
   /** the roleId */
-  roleId: number;
+  roleId: string;
 }
 
 const props = defineProps<Props>();
@@ -40,7 +40,7 @@ async function getButtonTree() {
   }
 }
 
-const byRoleButtonIds = shallowRef<number[]>([]);
+const byRoleButtonIds = shallowRef<string[]>([]);
 
 async function getChecks() {
   const { error, data } = await fetchGetRoleButton({ id: props.roleId });
@@ -55,7 +55,7 @@ async function handleSubmit() {
 
   const { error } = await fetchUpdateRoleButton({
     id: props.roleId,
-    byRoleButtonIds: byRoleButtonIds.value.filter(item => typeof item === 'number')
+    byRoleButtonIds: byRoleButtonIds.value.filter(item => typeof item === 'string')
   });
   if (error) return;
   window.$message?.success?.($t('common.modifySuccess'));

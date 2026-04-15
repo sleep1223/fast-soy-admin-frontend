@@ -78,16 +78,16 @@ onMounted(async () => {
 });
 
 async function handleBatchDelete() {
-  const { error } = await fetchBatchDeleteTag({ ids: checkedRowKeys.value.map(k => Number(k)) });
+  const { error } = await fetchBatchDeleteTag({ ids: checkedRowKeys.value.map(k => String(k)) });
   if (!error) onBatchDeleted();
 }
 
-async function handleDelete(id: number) {
+async function handleDelete(id: string) {
   const { error } = await fetchDeleteTag({ id });
   if (!error) onDeleted();
 }
 
-function edit(id: number) {
+function edit(id: string) {
   handleEdit(id);
 }
 </script>

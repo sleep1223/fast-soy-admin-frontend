@@ -8,7 +8,7 @@ import { $t } from '@/locales';
 defineOptions({ name: 'EmployeeSearch' });
 
 interface Props {
-  departmentOptions: { label: string; value: number }[];
+  departmentOptions: { label: string; value: string }[];
 }
 
 defineProps<Props>();

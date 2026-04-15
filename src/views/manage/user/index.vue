@@ -191,7 +191,7 @@ async function handleBatchDelete() {
   }
 }
 
-async function handleOffline(id: number) {
+async function handleOffline(id: string) {
   const { error } = await fetchUserOffline(id);
   if (!error) {
     window.$message?.success($t('page.manage.user.offlineSuccess'));
@@ -205,11 +205,11 @@ async function handleBatchOffline() {
   }
 }
 
-async function handleImpersonate(id: number) {
+async function handleImpersonate(id: string) {
   await authStore.impersonate(id);
 }
 
-async function handleDelete(id: number) {
+async function handleDelete(id: string) {
   // request
   const { error } = await fetchDeleteUser({ id });
   if (!error) {
@@ -217,7 +217,7 @@ async function handleDelete(id: number) {
   }
 }
 
-function edit(id: number) {
+function edit(id: string) {
   handleEdit(id);
 }
 </script>

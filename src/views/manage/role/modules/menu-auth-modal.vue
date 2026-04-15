@@ -9,8 +9,8 @@ defineOptions({
 
 interface Props {
   /** the roleId */
-  roleId: number;
-  byRoleHomeId: number;
+  roleId: string;
+  byRoleHomeId: string;
 }
 
 const props = defineProps<Props>();
@@ -25,10 +25,9 @@ function closeModal() {
 
 const title = computed(() => $t('common.edit') + $t('page.manage.role.menuAuth'));
 
-const byRoleHome = shallowRef(0);
-byRoleHome.value = 0;
+const byRoleHome = shallowRef<string>('');
 
-async function updateHome(val: number) {
+async function updateHome(val: string) {
   // request
   byRoleHome.value = val;
   await fetchUpdateRoleMenu({ id: props.roleId, byRoleHomeId: val });
@@ -63,14 +62,14 @@ async function getMenuTree() {
   }
 }
 
-const checks = shallowRef<number[]>([]);
+const checks = shallowRef<string[]>([]);
 
 async function getChecks() {
   // request
 
   const { error, data } = await fetchGetRoleMenu({ id: props.roleId });
   if (!error) {
-    checks.value = data.byRoleMenuIds || [1, 2, 3, 4, 5];
+    checks.value = data.byRoleMenuIds || [];
     byRoleHome.value = data.byRoleHomeId || props.byRoleHomeId;
   }
 }

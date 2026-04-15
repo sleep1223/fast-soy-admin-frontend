@@ -13,13 +13,13 @@ const { loading, startLoading, endLoading } = useLoading();
 const isSuperAdmin = computed(() => authStore.userInfo.roles.includes('R_SUPER'));
 
 interface SwitchableUser {
-  id: number;
+  id: string;
   userName: string;
   nickName: string;
 }
 
 const switchableUsers = ref<SwitchableUser[]>([]);
-const switchingId = ref<number | null>(null);
+const switchingId = ref<string | null>(null);
 
 async function loadUsers() {
   if (!isSuperAdmin.value) return;

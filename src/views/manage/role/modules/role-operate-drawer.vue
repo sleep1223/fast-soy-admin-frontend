@@ -54,7 +54,7 @@ function createDefaultModel(): Api.SystemManage.RoleAddParams {
     roleName: '',
     roleCode: '',
     roleDesc: '',
-    byRoleHomeId: 0,
+    byRoleHomeId: '',
     statusType: null
   };
 }
@@ -67,7 +67,7 @@ const rules: Record<RuleKey, App.Global.FormRule> = {
   statusType: defaultRequiredRule
 };
 
-const roleId = computed(() => props.rowData?.id || -1);
+const roleId = computed(() => props.rowData?.id || '');
 
 const isEdit = computed(() => props.operateType === 'edit');
 

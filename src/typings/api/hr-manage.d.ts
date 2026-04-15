@@ -1,7 +1,7 @@
 declare namespace Api {
   namespace HrManage {
-    type CommonDeleteParams = { id: number };
-    type CommonBatchDeleteParams = { ids: number[] };
+    type CommonDeleteParams = { id: string };
+    type CommonBatchDeleteParams = { ids: string[] };
     type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size'>;
 
     // ---- Employee ----
@@ -12,10 +12,10 @@ declare namespace Api {
       phone: string | null;
       position: string | null;
       status: string;
-      userId: number | null;
-      departmentId: number;
+      userId: string | null;
+      departmentId: string;
       departmentName?: string;
-      tagIds?: number[];
+      tagIds?: string[];
       tagNames?: string[];
     }>;
 
@@ -24,24 +24,24 @@ declare namespace Api {
       name: string;
       email: string;
       userGender?: string | null;
-      departmentId?: number | null;
-      tagIds?: number[] | null;
+      departmentId?: string | null;
+      tagIds?: string[] | null;
     };
 
-    type EmployeeUpdateParams = { id?: number } & {
+    type EmployeeUpdateParams = { id?: string } & {
       name?: string | null;
       email?: string | null;
       phone?: string | null;
       position?: string | null;
       status?: string | null;
-      tagIds?: number[] | null;
+      tagIds?: string[] | null;
     };
 
     type EmployeeSearchParams = CommonType.RecordNullable<
       {
         name?: string;
         status?: string;
-        departmentId?: number;
+        departmentId?: string;
       } & CommonSearchParams
     >;
 
@@ -66,7 +66,7 @@ declare namespace Api {
       name: string;
       code: string;
       description: string | null;
-      managerId: number | null;
+      managerId: string | null;
       status: string;
     }>;
 
@@ -74,11 +74,11 @@ declare namespace Api {
       name: string;
       code: string;
       description?: string | null;
-      managerId?: number | null;
+      managerId?: string | null;
       status?: string | null;
     };
 
-    type DepartmentUpdateParams = { id?: number } & Partial<DepartmentAddParams>;
+    type DepartmentUpdateParams = { id?: string } & Partial<DepartmentAddParams>;
 
     type DepartmentSearchParams = CommonType.RecordNullable<
       {
@@ -91,7 +91,7 @@ declare namespace Api {
     type DepartmentList = Common.PaginatingQueryRecord<Department>;
 
     type DepartmentStat = {
-      id: number;
+      id: string;
       name: string;
       code: string;
       managerName: string | null;
@@ -111,7 +111,7 @@ declare namespace Api {
       description?: string | null;
     };
 
-    type TagUpdateParams = { id?: number } & Partial<TagAddParams>;
+    type TagUpdateParams = { id?: string } & Partial<TagAddParams>;
 
     type TagSearchParams = CommonType.RecordNullable<
       {

@@ -134,7 +134,7 @@ async function handleBatchDelete() {
   }
 }
 
-async function handleDelete(id: number) {
+async function handleDelete(id: string) {
   // request
   const { error } = await fetchDeleteRole({ id });
   if (!error) {
@@ -142,7 +142,7 @@ async function handleDelete(id: number) {
   }
 }
 
-function edit(id: number) {
+function edit(id: string) {
   handleEdit(id);
 }
 </script>

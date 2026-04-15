@@ -155,7 +155,7 @@ export function fetchBatchDeleteUser(data?: Api.SystemManage.CommonBatchDeletePa
 }
 
 /** offline user */
-export function fetchUserOffline(userId: number) {
+export function fetchUserOffline(userId: string) {
   return request({
     url: `/system-manage/users/${userId}/offline`,
     method: 'post'
@@ -311,7 +311,7 @@ export function fetchGetDictionaryList(data?: Api.SystemManage.DictionarySearchP
 }
 
 /** get dictionary detail */
-export function fetchGetDictionary(id: number) {
+export function fetchGetDictionary(id: string) {
   return request<Api.SystemManage.Dictionary>({
     url: `/system-manage/dictionaries/${id}`,
     method: 'get'

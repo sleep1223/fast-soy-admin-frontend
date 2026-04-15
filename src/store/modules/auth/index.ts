@@ -181,7 +181,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
    *
    * @param userId Target user id
    */
-  async function impersonate(userId: number) {
+  async function impersonate(userId: string) {
     const { data: loginToken, error } = await fetchImpersonate(userId);
 
     if (!error) {
