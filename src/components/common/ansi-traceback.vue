@@ -66,6 +66,7 @@ const html = computed(() => {
 </script>
 
 <template>
+  <!-- eslint-disable-next-line vue/no-v-html -- html is produced by ansi-to-html from trusted server-side traceback -->
   <pre class="ansi-traceback" v-html="html" />
 </template>
 

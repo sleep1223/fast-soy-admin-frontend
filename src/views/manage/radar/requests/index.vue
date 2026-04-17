@@ -259,7 +259,7 @@ loadData();
         :scroll-x="1200"
         :loading="loading"
         remote
-        :row-key="(row: Api.Radar.RequestRecord) => row.xRequestId"
+        :row-key="row => row.xRequestId"
         :pagination="pagination"
         class="sm:h-full"
       />

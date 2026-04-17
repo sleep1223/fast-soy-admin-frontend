@@ -232,7 +232,7 @@ loadData();
         :scroll-x="1200"
         :loading="loading"
         remote
-        :row-key="(row: Api.Radar.QueryRecord) => row.id"
+        :row-key="row => row.id"
         :pagination="pagination"
         class="sm:h-full"
       />

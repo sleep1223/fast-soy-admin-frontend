@@ -73,6 +73,6 @@ const columns = computed<DataTableColumns<Api.Monitor.ProcessInfo>>(() => [
 
 <template>
   <NCard :title="$t('page.manage.radar.monitor.topProcesses')" :bordered="false" size="small" class="card-wrapper">
-    <NDataTable :columns="columns" :data="processes" :row-key="(row: Api.Monitor.ProcessInfo) => row.pid" size="small" :scroll-x="700" />
+    <NDataTable :columns="columns" :data="processes" :row-key="row => row.pid" size="small" :scroll-x="700" />
   </NCard>
 </template>
