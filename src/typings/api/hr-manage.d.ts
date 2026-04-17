@@ -21,6 +21,7 @@ declare namespace Api {
       email: string | null;
       phone: string | null;
       position: string | null;
+      avatar: string | null;
       status: EmployeeStatus;
       userId: string | null;
       departmentId: string;
@@ -43,6 +44,7 @@ declare namespace Api {
       email?: string | null;
       phone?: string | null;
       position?: string | null;
+      avatar?: string | null;
       tagIds?: string[] | null;
     };
 

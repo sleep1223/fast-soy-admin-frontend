@@ -1,13 +1,11 @@
 <script setup lang="tsx">
 import { reactive } from 'vue';
-import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { NTag } from 'naive-ui';
 import { apiMethodRecord, statusTypeRecord } from '@/constants/business';
-import { fetchBatchDeleteApi, fetchDeleteApi, fetchGetApiList, fetchRefreshAPI } from '@/service/api';
+import { fetchGetApiList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
-import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
-import { useAuth } from '@/hooks/business/auth';
+import { defaultTransform, useNaivePaginatedTable } from '@/hooks/common/table';
 import { $t } from '@/locales';
-import ApiOperateDrawer from './modules/api-operate-drawer.vue';
 import ApiSearch from './modules/api-search.vue';
 
 const appStore = useAppStore();
@@ -32,11 +30,6 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
     searchParams.size = params.pageSize;
   },
   columns: () => [
-    {
-      type: 'selection',
-      align: 'center',
-      width: 48
-    },
     {
       key: 'index',
       title: $t('common.index'),
@@ -112,67 +105,15 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
         const label = $t(statusTypeRecord[row.statusType]);
         return <NTag type={tagMap[row.statusType]}>{label}</NTag>;
       }
-    },
-    {
-      key: 'operate',
-      title: $t('common.operate'),
-      align: 'center',
-      width: 130,
-      render: row => (
-        <div class="flex-center gap-8px">
-          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
-            {$t('common.edit')}
-          </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
-            {{
-              default: () => $t('common.confirmDelete'),
-              trigger: () => (
-                <NButton type="error" ghost size="small">
-                  {$t('common.delete')}
-                </NButton>
-              )
-            }}
-          </NPopconfirm>
-        </div>
-      )
     }
   ]
 });
-
-const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onBatchDeleted, onDeleted } =
-  useTableOperate(data, 'id', getData);
-const { hasAuth } = useAuth();
 
 function resetSearchParams() {
   Object.assign(searchParams, {
     ...defaultSearchParams
   });
   getDataByPage(1);
-}
-
-async function handleRefreshAPI() {
-  const { error } = await fetchRefreshAPI();
-  if (!error) {
-    await getDataByPage(1);
-  }
-}
-
-async function handleBatchDelete() {
-  const { error } = await fetchBatchDeleteApi({ ids: checkedRowKeys.value });
-  if (!error) {
-    onBatchDeleted();
-  }
-}
-
-async function handleDelete(id: string) {
-  const { error } = await fetchDeleteApi({ id });
-  if (!error) {
-    onDeleted();
-  }
-}
-
-function edit(id: string) {
-  handleEdit(id);
 }
 </script>
 
@@ -183,26 +124,16 @@ function edit(id: string) {
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
           table-id="api"
-          @add="handleAdd"
-          @delete="handleBatchDelete"
           @refresh="getData"
         >
           <template #default>
-            <NButton v-if="hasAuth('B_refreshAPI')" size="small" ghost type="primary" @click="handleRefreshAPI">
-              <template #icon>
-                <icon-ic-round-plus class="text-icon" />
-              </template>
-              {{ $t('common.refreshAPI') }}
-            </NButton>
             <span></span>
           </template>
         </TableHeaderOperation>
       </template>
       <NDataTable
-        v-model:checked-row-keys="checkedRowKeys"
         :columns="columns"
         :data="data"
         size="small"
@@ -213,12 +144,6 @@ function edit(id: string) {
         :row-key="row => row.id"
         :pagination="mobilePagination"
         class="sm:h-full"
-      />
-      <ApiOperateDrawer
-        v-model:visible="drawerVisible"
-        :operate-type="operateType"
-        :row-data="editingData"
-        @submitted="getData"
       />
     </NCard>
   </div>

@@ -35,7 +35,13 @@ export default defineConfig(configEnv => {
       host: '0.0.0.0',
       port: 9527,
       open: true,
-      proxy: createViteProxy(viteEnv, enableProxy)
+      proxy: {
+        ...createViteProxy(viteEnv, enableProxy),
+        '/static': {
+          target: viteEnv.VITE_SERVICE_BASE_URL?.replace(/\/api\/v1$/, '') || 'http://127.0.0.1:9999',
+          changeOrigin: true
+        }
+      }
     },
     preview: {
       port: 9725

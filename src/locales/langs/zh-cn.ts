@@ -574,13 +574,13 @@ const local: App.I18n.Schema = {
         path: 'API路径',
         method: '请求方式',
         summary: 'API简介',
-        tags: 'Tags',
+        tags: '标签',
         statusType: 'API状态',
         form: {
           path: '请输入API路径',
           method: '请选择请求方式',
           summary: '请输入API简介',
-          tags: '请输入Tags',
+          tags: '请选择标签',
           statusType: '请选择API状态'
         },
         addApi: '新增API',
@@ -836,6 +836,8 @@ const local: App.I18n.Schema = {
         email: '邮箱',
         phone: '电话',
         position: '职位',
+        avatar: '头像',
+        avatarUploadSuccess: '头像上传成功',
         department: '部门',
         tags: '标签',
         form: {

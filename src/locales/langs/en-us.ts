@@ -840,6 +840,8 @@ const local: App.I18n.Schema = {
         email: 'Email',
         phone: 'Phone',
         position: 'Position',
+        avatar: 'Avatar',
+        avatarUploadSuccess: 'Avatar uploaded successfully',
         department: 'Department',
         tags: 'Tags',
         form: {

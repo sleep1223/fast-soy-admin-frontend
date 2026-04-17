@@ -56,12 +56,25 @@ export function fetchTransitionEmployee(empId: string, data: Api.HrManage.Employ
   });
 }
 
+/** upload employee avatar */
+export function fetchUploadEmployeeAvatar(empId: string, file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+  return request<{ avatarUrl: string }>({
+    url: `/business/hr/employees/${empId}/avatar`,
+    method: 'post',
+    data: formData,
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+}
+
 // ---- Department ----
 export function fetchGetDepartmentList(data?: Api.HrManage.DepartmentSearchParams) {
   return request<Api.HrManage.DepartmentList>({
     url: '/business/hr/departments/search',
     method: 'post',
-    data: data ?? {}
+    data: data ?? {},
+    timeout: 30000
   });
 }
 

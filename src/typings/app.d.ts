@@ -1017,6 +1017,8 @@ declare namespace App {
             email: string;
             phone: string;
             position: string;
+            avatar: string;
+            avatarUploadSuccess: string;
             department: string;
             tags: string;
             addEmployee: string;

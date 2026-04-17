@@ -43,10 +43,6 @@ async function search() {
 
 const tagOptions = ref();
 
-function handleUpdateValue(value: string) {
-  model.value.tags = [value];
-}
-
 onMounted(async () => {
   const { error, data } = await fetchGetApiTagsList();
   if (!error) {
@@ -75,8 +71,16 @@ onMounted(async () => {
         <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.api.summary')" path="summary" class="pr-24px">
           <NInput v-model:value="model.summary" :placeholder="$t('page.manage.api.form.summary')" />
         </NFormItemGi>
-        <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.api.summary')" path="summary" class="pr-24px">
-          <NCascader :options="tagOptions" filterable @update:value="handleUpdateValue" />
+        <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.api.tags')" path="tags" class="pr-24px">
+          <NCascader
+            v-model:value="model.tags"
+            :options="tagOptions"
+            :placeholder="$t('page.manage.api.form.tags')"
+            multiple
+            filterable
+            clearable
+            check-strategy="child"
+          />
         </NFormItemGi>
 
         <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.api.statusType')" path="status" class="pr-24px">

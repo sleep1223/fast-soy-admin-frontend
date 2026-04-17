@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { fetchAddEmployee, fetchGetEmployee, fetchUpdateEmployee } from '@/service/api';
+import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
+import { fetchAddEmployee, fetchGetEmployee, fetchUpdateEmployee, fetchUploadEmployeeAvatar } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 
@@ -42,7 +43,30 @@ function createAddModel(): Api.HrManage.EmployeeAddParams {
 }
 
 function createEditModel(): Api.HrManage.EmployeeUpdateParams {
-  return { id: undefined, name: '', email: '', phone: '', position: '', tagIds: [] };
+  return { id: undefined, name: '', email: '', phone: '', position: '', avatar: null, tagIds: [] };
+}
+
+const avatarFileList = ref<UploadFileInfo[]>([]);
+
+async function handleAvatarUpload({ file, onFinish, onError }: UploadCustomRequestOptions) {
+  if (!editModel.value.id || !file.file) {
+    onError();
+    return;
+  }
+  const { data, error } = await fetchUploadEmployeeAvatar(editModel.value.id, file.file);
+  if (error || !data) {
+    onError();
+    return;
+  }
+  editModel.value.avatar = data.avatarUrl;
+  avatarFileList.value = [{ id: file.id, name: file.name, status: 'finished', url: data.avatarUrl }];
+  onFinish();
+  window.$message?.success($t('page.hr.employee.avatarUploadSuccess'));
+}
+
+function handleAvatarRemove() {
+  avatarFileList.value = [];
+  editModel.value.avatar = null;
 }
 
 const addRules: Record<string, App.Global.FormRule> = {
@@ -58,10 +82,14 @@ const editRules: Record<string, App.Global.FormRule> = {
 async function handleInitModel() {
   addModel.value = createAddModel();
   editModel.value = createEditModel();
+  avatarFileList.value = [];
   if (props.operateType === 'edit' && props.rowData) {
     const { data } = await fetchGetEmployee(props.rowData.id);
     if (data) {
       Object.assign(editModel.value, data);
+      if (data.avatar) {
+        avatarFileList.value = [{ id: 'current', name: 'avatar', status: 'finished', url: data.avatar }];
+      }
     }
   }
 }
@@ -116,6 +144,16 @@ watch(visible, () => {
       </NForm>
       <!-- Edit form -->
       <NForm v-else ref="formRef" :model="editModel" :rules="editRules">
+        <NFormItem :label="$t('page.hr.employee.avatar')">
+          <NUpload
+            v-model:file-list="avatarFileList"
+            list-type="image-card"
+            :max="1"
+            accept="image/jpeg,image/png,image/gif,image/webp"
+            :custom-request="handleAvatarUpload"
+            @remove="handleAvatarRemove"
+          />
+        </NFormItem>
         <NFormItem :label="$t('page.hr.employee.name')" path="name">
           <NInput v-model:value="editModel.name" :placeholder="$t('page.hr.employee.form.name')" />
         </NFormItem>
