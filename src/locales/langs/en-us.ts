@@ -290,6 +290,7 @@ const local: App.I18n.Schema = {
     hr_employee: 'Employee',
     hr_department: 'Department',
     hr_tag: 'Tag Management',
+    showcase: 'Showcase (Public)',
     'multi-menu': 'Multi Menu',
     'multi-menu_first': 'Menu One',
     'multi-menu_first_child': 'Menu One Child',
@@ -674,6 +675,11 @@ const local: App.I18n.Schema = {
         addMenu: 'Add Menu',
         editMenu: 'Edit Menu',
         addChildMenu: 'Add Child Menu',
+        includeBusiness: 'Business Menus',
+        includeBusinessWarningTitle: 'Show business menus?',
+        includeBusinessWarning:
+          'Business menus are declared by each module\'s init_data.py. Subtrees guarded by reconcile_menu_subtree are rebuilt from the declarations on every restart — menus you delete here will be restored, and menus you add under them will be removed.',
+        dontShowAgain: 'Don\'t show again',
         type: {
           directory: 'Directory',
           menu: 'Menu'

@@ -99,6 +99,21 @@ declare namespace Api {
       employeeCount: number;
     };
 
+    /** Public showcase overview (no auth required) */
+    type ShowcaseOverview = {
+      totals: {
+        department: number;
+        employee: number;
+        tag: number;
+      };
+      employeeStatus: Record<string, number>;
+      departments: {
+        name: string;
+        code: string;
+        employeeCount: number;
+      }[];
+    };
+
     // ---- Tag ----
     type Tag = Common.CommonRecord<{
       name: string;

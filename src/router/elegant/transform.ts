@@ -252,6 +252,7 @@ const routeMap: RouteMap = {
   "pro-naive_table": "/pro-naive/table",
   "pro-naive_table_remote": "/pro-naive/table/remote",
   "pro-naive_table_row-edit": "/pro-naive/table/row-edit",
+  "showcase": "/showcase",
   "user-center": "/user-center"
 };
 

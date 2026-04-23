@@ -1,7 +1,7 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
+import { h, ref } from 'vue';
 import type { Ref } from 'vue';
-import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { NButton, NCheckbox, NPopconfirm, NSwitch, NTag } from 'naive-ui';
 import { useBoolean } from '@sa/hooks';
 import { yesOrNoRecord } from '@/constants/common';
 import { menuTypeRecord, statusTypeRecord } from '@/constants/business';
@@ -18,9 +18,23 @@ const { bool: visible, setTrue: openModal } = useBoolean();
 
 const wrapperRef = ref<HTMLElement | null>(null);
 
+const SHOW_BUSINESS_WARNING_KEY = 'menu:showBusinessWarningDismissed';
+
+const searchParams = ref<Api.SystemManage.MenuSearchParams>({
+  current: 1,
+  size: 10,
+  includeConstant: false,
+  includeHidden: false,
+  includeBusiness: false
+});
+
 const { columns, columnChecks, data, loading, pagination, getData, getDataByPage } = useNaivePaginatedTable({
-  api: () => fetchGetMenuList(),
+  api: () => fetchGetMenuList(searchParams.value),
   transform: response => defaultTransform(response),
+  onPaginationParamsChange: params => {
+    searchParams.value.current = params.page ?? 1;
+    searchParams.value.size = params.pageSize ?? 10;
+  },
   columns: () => [
     {
       type: 'selection',
@@ -225,6 +239,59 @@ function init() {
 
 // init
 init();
+
+function handleIncludeBusinessUpdate(val: boolean) {
+  if (!val) {
+    searchParams.value.includeBusiness = false;
+    getDataByPage();
+    return;
+  }
+
+  if (localStorage.getItem(SHOW_BUSINESS_WARNING_KEY) === '1') {
+    searchParams.value.includeBusiness = true;
+    getDataByPage();
+    return;
+  }
+
+  let dontShowAgain = false;
+
+  window.$dialog?.warning({
+    title: $t('page.manage.menu.includeBusinessWarningTitle'),
+    content: () =>
+      h('div', { class: 'flex-col gap-12px' }, [
+        h('div', $t('page.manage.menu.includeBusinessWarning')),
+        h(
+          NCheckbox,
+          {
+            checked: dontShowAgain,
+            'onUpdate:checked': (v: boolean) => {
+              dontShowAgain = v;
+            }
+          },
+          { default: () => $t('page.manage.menu.dontShowAgain') }
+        )
+      ]),
+    positiveText: $t('common.confirm'),
+    negativeText: $t('common.cancel'),
+    onPositiveClick: () => {
+      if (dontShowAgain) {
+        localStorage.setItem(SHOW_BUSINESS_WARNING_KEY, '1');
+      }
+      searchParams.value.includeBusiness = true;
+      getDataByPage();
+    }
+  });
+}
+
+function handleIncludeConstantUpdate(val: boolean) {
+  searchParams.value.includeConstant = val;
+  getDataByPage();
+}
+
+function handleIncludeHiddenUpdate(val: boolean) {
+  searchParams.value.includeHidden = val;
+  getDataByPage();
+}
 </script>
 
 <template>
@@ -238,7 +305,32 @@ init();
           @add="handleAdd"
           @delete="handleBatchDelete"
           @refresh="getData"
-        />
+        >
+          <template #prefix>
+            <NSpace align="center" :size="16" class="mr-8px">
+              <NSpace align="center" :size="6">
+                <span class="text-12px">{{ $t('page.manage.menu.constant') }}</span>
+                <NSwitch
+                  size="small"
+                  :value="searchParams.includeConstant"
+                  @update:value="handleIncludeConstantUpdate"
+                />
+              </NSpace>
+              <NSpace align="center" :size="6">
+                <span class="text-12px">{{ $t('page.manage.menu.hideInMenu') }}</span>
+                <NSwitch size="small" :value="searchParams.includeHidden" @update:value="handleIncludeHiddenUpdate" />
+              </NSpace>
+              <NSpace align="center" :size="6">
+                <span class="text-12px">{{ $t('page.manage.menu.includeBusiness') }}</span>
+                <NSwitch
+                  size="small"
+                  :value="searchParams.includeBusiness"
+                  @update:value="handleIncludeBusinessUpdate"
+                />
+              </NSpace>
+            </NSpace>
+          </template>
+        </TableHeaderOperation>
       </template>
       <NDataTable
         v-model:checked-row-keys="checkedRowKeys"

@@ -268,9 +268,11 @@ declare namespace Api {
     type MenuUpdateParams = CommonType.RecordNullable<Pick<Api.SystemManage.Menu, 'id'>> & MenuAddParams;
 
     /** menu search params */
-    type MenuSearchParams = CommonType.RecordNullable<
-      Pick<Api.SystemManage.Menu, 'menuName' | 'menuType' | 'statusType'> & CommonSearchParams
-    >;
+    type MenuSearchParams = {
+      includeConstant: boolean;
+      includeHidden: boolean;
+      includeBusiness: boolean;
+    } & CommonSearchParams;
 
     /** menu list */
     type MenuList = Common.PaginatingQueryRecord<Menu>;

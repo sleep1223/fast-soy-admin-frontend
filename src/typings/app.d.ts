@@ -979,6 +979,10 @@ declare namespace App {
             addMenu: string;
             editMenu: string;
             addChildMenu: string;
+            includeBusiness: string;
+            includeBusinessWarningTitle: string;
+            includeBusinessWarning: string;
+            dontShowAgain: string;
             type: {
               directory: string;
               menu: string;

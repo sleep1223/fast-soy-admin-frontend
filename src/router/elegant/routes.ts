@@ -806,6 +806,17 @@ export const generatedRoutes: GeneratedRoute[] = [
     ]
   },
   {
+    name: 'showcase',
+    path: '/showcase',
+    component: 'layout.blank$view.showcase',
+    meta: {
+      title: 'showcase',
+      i18nKey: 'route.showcase',
+      constant: true,
+      hideInMenu: true
+    }
+  },
+  {
     name: 'user-center',
     path: '/user-center',
     component: 'layout.base$view.user-center',

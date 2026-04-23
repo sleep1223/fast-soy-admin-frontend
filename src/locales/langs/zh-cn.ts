@@ -286,6 +286,7 @@ const local: App.I18n.Schema = {
     hr_employee: '员工管理',
     hr_department: '部门管理',
     hr_tag: '标签管理',
+    showcase: '数据展示（公开）',
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',
     'multi-menu_first_child': '菜单一子菜单',
@@ -694,6 +695,11 @@ const local: App.I18n.Schema = {
         addMenu: '新增菜单',
         editMenu: '编辑菜单',
         addChildMenu: '新增子菜单',
+        includeBusiness: '业务菜单',
+        includeBusinessWarningTitle: '确认显示业务菜单？',
+        includeBusinessWarning:
+          '业务菜单由各业务模块的 init_data.py 声明，启用 reconcile_menu_subtree 的子树在服务重启时会根据声明重建——手动删除的菜单会被恢复，手动新增的菜单会被清除。',
+        dontShowAgain: '不再提示',
         type: {
           directory: '目录',
           menu: '菜单'

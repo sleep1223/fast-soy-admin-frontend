@@ -156,6 +156,14 @@ export function fetchBatchDeleteTag(data?: Api.HrManage.CommonBatchDeleteParams)
   });
 }
 
+// ---- Public Showcase (constant route, no auth) ----
+export function fetchGetHrShowcase() {
+  return request<Api.HrManage.ShowcaseOverview>({
+    url: '/business/hr/public/showcase',
+    method: 'get'
+  });
+}
+
 // ---- Dictionary Options ----
 export function fetchGetDictOptions(dictType: string) {
   return request<Api.SystemManage.DictionaryOption[]>({
