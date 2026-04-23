@@ -620,7 +620,7 @@ const local: App.I18n.Schema = {
         home: 'Home',
         title: 'Menu List',
         id: 'ID',
-        parentId: 'Parent ID',
+        parentId: 'Parent Menu',
         menuType: 'Menu Type',
         menuName: 'Menu Name',
         routeName: 'Route Name',

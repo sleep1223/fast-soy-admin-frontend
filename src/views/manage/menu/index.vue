@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { h, ref } from 'vue';
+import { computed, h, ref } from 'vue';
 import type { Ref } from 'vue';
 import { NButton, NCheckbox, NPopconfirm, NSwitch, NTag } from 'naive-ui';
 import { useBoolean } from '@sa/hooks';
@@ -44,7 +44,10 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
     {
       key: 'id',
       title: $t('page.manage.menu.id'),
-      align: 'center'
+      align: 'center',
+      width: 60,
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      render: row => menuIndexMap.value.get(row.id)?.index ?? ''
     },
     {
       key: 'menuType',
@@ -145,8 +148,14 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
     {
       key: 'parentId',
       title: $t('page.manage.menu.parentId'),
-      width: 90,
-      align: 'center'
+      width: 120,
+      align: 'center',
+      render: row => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        const parent = menuIndexMap.value.get(row.parentId);
+        if (!parent) return '';
+        return parent.i18nKey ? $t(parent.i18nKey as App.I18n.I18nKey) : parent.menuName;
+      }
     },
     {
       key: 'order',
@@ -183,6 +192,21 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       )
     }
   ]
+});
+
+const menuIndexMap = computed(() => {
+  const map = new Map<string | number, { index: number; menuName: string; i18nKey?: string | null }>();
+  let counter = 0;
+  const walk = (list: Api.SystemManage.Menu[] | null | undefined) => {
+    if (!list) return;
+    for (const item of list) {
+      counter += 1;
+      map.set(item.id, { index: counter, menuName: item.menuName, i18nKey: item.i18nKey });
+      walk(item.children);
+    }
+  };
+  walk(data.value);
+  return map;
 });
 
 const { checkedRowKeys, onBatchDeleted, onDeleted } = useTableOperate(data, 'id', getData);

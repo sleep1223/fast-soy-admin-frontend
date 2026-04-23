@@ -640,7 +640,7 @@ const local: App.I18n.Schema = {
         home: '首页',
         title: '菜单列表',
         id: 'ID',
-        parentId: '父级菜单ID',
+        parentId: '父级菜单',
         menuType: '菜单类型',
         menuName: '菜单名称',
         routeName: '路由名称',
