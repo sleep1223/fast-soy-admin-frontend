@@ -73,18 +73,18 @@ function buildFullSql(sql: string, params: string | null): string {
               <span class="break-all">{{ data.path }}</span>
             </NDescriptionsItem>
             <NDescriptionsItem :label="$t('page.manage.radar.requests.xRequestId')" :span="appStore.isMobile ? 1 : 2">
-              <div class="flex items-center gap-6px">
+              <div class="flex items-center gap-8px">
                 <NTooltip>
                   <template #trigger>
-                    <span class="break-all text-12px font-mono">
+                    <NTag size="small" :bordered="false" class="font-mono tracking-wide">
                       {{ appStore.isMobile ? `${data.xRequestId.slice(0, 12)}...` : data.xRequestId }}
-                    </span>
+                    </NTag>
                   </template>
                   {{ data.xRequestId }}
                 </NTooltip>
-                <NButton quaternary size="tiny" class="shrink-0" @click="copyText(data.xRequestId)">
+                <NButton quaternary size="small" class="shrink-0" @click="copyText(data.xRequestId)">
                   <template #icon>
-                    <icon-ic-round-content-copy class="text-14px" />
+                    <icon-ic-round-content-copy class="text-15px" />
                   </template>
                 </NButton>
               </div>
