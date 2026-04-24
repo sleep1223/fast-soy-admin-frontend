@@ -108,3 +108,19 @@ export function fetchRadarPurge(retentionHours?: number) {
     params: { retention_hours: retentionHours }
   });
 }
+
+/** get system monitor overview */
+export function fetchMonitorOverview() {
+  return radarRequest<Api.Monitor.Overview>({
+    url: '/monitor/overview',
+    method: 'get'
+  });
+}
+
+/** get system monitor realtime data */
+export function fetchMonitorRealtime() {
+  return radarRequest<Api.Monitor.Realtime>({
+    url: '/monitor/realtime',
+    method: 'get'
+  });
+}
