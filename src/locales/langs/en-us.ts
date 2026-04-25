@@ -833,6 +833,26 @@ const local: App.I18n.Schema = {
         }
       }
     },
+    userCenter: {
+      profile: {
+        title: 'Profile',
+        userName: 'Username',
+        nickName: 'Nickname',
+        roles: 'Roles',
+        impersonating: 'You are impersonating another user'
+      },
+      password: {
+        title: 'Change Password',
+        oldPassword: 'Old Password',
+        newPassword: 'New Password',
+        confirmPassword: 'Confirm Password',
+        oldPasswordPlaceholder: 'Enter old password',
+        newPasswordPlaceholder: 'Enter new password',
+        confirmPasswordPlaceholder: 'Re-enter new password',
+        submit: 'Submit',
+        success: 'Password changed, please log in again'
+      }
+    },
     hr: {
       common: {
         status: 'Status',

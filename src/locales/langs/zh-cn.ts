@@ -829,6 +829,26 @@ const local: App.I18n.Schema = {
         }
       }
     },
+    userCenter: {
+      profile: {
+        title: '个人信息',
+        userName: '用户名',
+        nickName: '昵称',
+        roles: '角色',
+        impersonating: '当前为模拟登录'
+      },
+      password: {
+        title: '修改密码',
+        oldPassword: '原密码',
+        newPassword: '新密码',
+        confirmPassword: '确认新密码',
+        oldPasswordPlaceholder: '请输入原密码',
+        newPasswordPlaceholder: '请输入新密码',
+        confirmPasswordPlaceholder: '请再次输入新密码',
+        submit: '提交',
+        success: '密码修改成功，请重新登录'
+      }
+    },
     hr: {
       common: {
         status: '状态',

@@ -993,6 +993,26 @@ declare namespace App {
             };
           };
         };
+        userCenter: {
+          profile: {
+            title: string;
+            userName: string;
+            nickName: string;
+            roles: string;
+            impersonating: string;
+          };
+          password: {
+            title: string;
+            oldPassword: string;
+            newPassword: string;
+            confirmPassword: string;
+            oldPasswordPlaceholder: string;
+            newPasswordPlaceholder: string;
+            confirmPasswordPlaceholder: string;
+            submit: string;
+            success: string;
+          };
+        };
         hr: {
           common: {
             status: string;
