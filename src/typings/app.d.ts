@@ -310,6 +310,22 @@ declare namespace App {
       invalid: string;
     };
 
+    /**
+     * 由 cli-gen 生成的业务模块通过 declare 合并向此 interface 注入 `page.<module>` 类型，
+     * 见 `web/src/locales/langs/_generated/<module>/types.d.ts`。
+     */
+    interface GeneratedPages {}
+
+    type _MergePages<T> = { [K in keyof T]: T[K] };
+
+    /**
+     * 基础语言包类型 — 不含 cli-gen 通过 GeneratedPages 注入的 `page.<module>` 子树。
+     * `web/src/locales/langs/{zh-cn,en-us}.ts` 用此类型；运行期由 locale.ts 合并 `_generated/*` 后还原 Schema 形态。
+     */
+    type BaseSchema = Omit<Schema, 'page'> & {
+      page: Omit<Schema['page'], keyof GeneratedPages>;
+    };
+
     type Schema = {
       system: {
         title: string;
@@ -488,7 +504,7 @@ declare namespace App {
           resetSuccessMsg: string;
         };
       };
-      route: Record<I18nRouteKey, string>;
+      route: Partial<Record<I18nRouteKey, string>>;
       page: {
         login: {
           common: {
@@ -1102,7 +1118,7 @@ declare namespace App {
             editTags: string;
           };
         };
-      };
+      } & _MergePages<GeneratedPages>;
       form: {
         required: string;
         userName: FormMsg;

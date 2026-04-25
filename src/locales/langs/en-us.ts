@@ -1,4 +1,4 @@
-const local: App.I18n.Schema = {
+const local: App.I18n.BaseSchema = {
   system: {
     title: 'SoybeanAdmin',
     updateTitle: 'System Version Update Notification',
