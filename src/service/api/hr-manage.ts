@@ -78,13 +78,6 @@ export function fetchGetDepartmentList(data?: Api.HrManage.DepartmentSearchParam
   });
 }
 
-export function fetchGetDepartmentStats() {
-  return request<Api.HrManage.DepartmentStat[]>({
-    url: '/business/hr/departments/stats',
-    method: 'get'
-  });
-}
-
 export function fetchAddDepartment(data?: Api.HrManage.DepartmentAddParams) {
   return request<null, 'json'>({
     url: '/business/hr/departments',

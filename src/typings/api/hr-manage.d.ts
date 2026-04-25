@@ -91,14 +91,6 @@ declare namespace Api {
 
     type DepartmentList = Common.PaginatingQueryRecord<Department>;
 
-    type DepartmentStat = {
-      id: string;
-      name: string;
-      code: string;
-      managerName: string | null;
-      employeeCount: number;
-    };
-
     /** Public showcase overview (no auth required) */
     type ShowcaseOverview = {
       totals: {
