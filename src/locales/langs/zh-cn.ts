@@ -578,6 +578,7 @@ const local: App.I18n.Schema = {
         summary: 'API简介',
         tags: '标签',
         statusType: 'API状态',
+        includeSystem: '包含系统接口',
         form: {
           path: '请输入API路径',
           method: '请选择请求方式',

@@ -81,16 +81,13 @@ declare namespace Api {
       tags: string[];
     }>;
 
-    /** api add params */
-    type ApiAddParams = Pick<Api.SystemManage.Api, 'apiPath' | 'apiMethod' | 'summary' | 'tags' | 'statusType'>;
-
-    /** api update params */
-    type ApiUpdateParams = CommonType.RecordNullable<Pick<Api.SystemManage.Api, 'id'>> & ApiAddParams;
-
     /** api search params */
     type ApiSearchParams = CommonType.RecordNullable<
       Pick<Api.SystemManage.Api, 'apiPath' | 'apiMethod' | 'summary' | 'tags' | 'statusType'> & CommonSearchParams
-    >;
+    > & {
+      /** include framework / system APIs (default false: only business module APIs) */
+      includeSystem?: boolean;
+    };
 
     /** api list */
     type ApiList = Common.PaginatingQueryRecord<Api>;

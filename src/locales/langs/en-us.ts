@@ -697,6 +697,7 @@ const local: App.I18n.Schema = {
         summary: '',
         tags: '',
         statusType: '',
+        includeSystem: 'Include system APIs',
         form: {
           path: '',
           method: '',

@@ -76,40 +76,6 @@ export function fetchGetApiList(data?: Api.SystemManage.ApiSearchParams) {
   });
 }
 
-/** add api */
-export function fetchAddApi(data?: Api.SystemManage.ApiAddParams) {
-  return request<Api.SystemManage.ApiList, 'json'>({
-    url: '/system-manage/apis',
-    method: 'post',
-    data
-  });
-}
-
-/** delete api */
-export function fetchDeleteApi(data?: Api.SystemManage.CommonDeleteParams) {
-  return request<Api.SystemManage.ApiList>({
-    url: `/system-manage/apis/${data?.id}`,
-    method: 'delete'
-  });
-}
-
-/** batch delete api */
-export function fetchBatchDeleteApi(data?: Api.SystemManage.CommonBatchDeleteParams) {
-  return request<Api.SystemManage.ApiList>({
-    url: '/system-manage/apis',
-    method: 'delete',
-    data: { ids: data?.ids }
-  });
-}
-
-/** update api */
-export function fetchUpdateApi(data?: Api.SystemManage.ApiUpdateParams) {
-  return request<Api.SystemManage.ApiList, 'json'>({
-    url: `/system-manage/apis/${data?.id}`,
-    method: 'patch',
-    data
-  });
-}
 
 /** add user */
 export function fetchAddUser(data?: Api.SystemManage.UserUpdateParams) {

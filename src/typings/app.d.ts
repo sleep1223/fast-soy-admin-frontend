@@ -743,6 +743,7 @@ declare namespace App {
             summary: string;
             tags: string;
             statusType: string;
+            includeSystem: string;
             form: {
               path: string;
               method: string;
