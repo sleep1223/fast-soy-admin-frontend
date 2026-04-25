@@ -59,14 +59,6 @@ export function fetchGetApiTree() {
   });
 }
 
-/** refresh api from fastapi */
-export function fetchRefreshAPI() {
-  return request({
-    url: '/system-manage/apis/refresh',
-    method: 'post'
-  });
-}
-
 /** get api tags */
 export function fetchGetApiTagsList() {
   return request({
@@ -166,15 +158,6 @@ export function fetchUserOffline(userId: string) {
 export function fetchBatchUserOffline(data: Api.SystemManage.CommonBatchDeleteParams) {
   return request({
     url: '/system-manage/users/batch-offline',
-    method: 'post',
-    data
-  });
-}
-
-/** offline users by role codes */
-export function fetchOfflineUsersByRole(data: { roleCodes: string[] }) {
-  return request({
-    url: '/system-manage/users/offline-by-role',
     method: 'post',
     data
   });
@@ -301,54 +284,3 @@ export function fetchUpdateMenu(data?: Api.SystemManage.MenuUpdateParams) {
   });
 }
 
-/** get dictionary list */
-export function fetchGetDictionaryList(data?: Api.SystemManage.DictionarySearchParams) {
-  return request<Api.SystemManage.DictionaryList>({
-    url: '/system-manage/dictionaries/search',
-    method: 'post',
-    data: data ?? {}
-  });
-}
-
-/** get dictionary detail */
-export function fetchGetDictionary(id: string) {
-  return request<Api.SystemManage.Dictionary>({
-    url: `/system-manage/dictionaries/${id}`,
-    method: 'get'
-  });
-}
-
-/** add dictionary */
-export function fetchAddDictionary(data?: Api.SystemManage.DictionaryAddParams) {
-  return request<null, 'json'>({
-    url: '/system-manage/dictionaries',
-    method: 'post',
-    data
-  });
-}
-
-/** update dictionary */
-export function fetchUpdateDictionary(data?: Api.SystemManage.DictionaryUpdateParams) {
-  return request<null, 'json'>({
-    url: `/system-manage/dictionaries/${data?.id}`,
-    method: 'patch',
-    data
-  });
-}
-
-/** delete dictionary */
-export function fetchDeleteDictionary(data?: Api.SystemManage.CommonDeleteParams) {
-  return request<null>({
-    url: `/system-manage/dictionaries/${data?.id}`,
-    method: 'delete'
-  });
-}
-
-/** batch delete dictionary */
-export function fetchBatchDeleteDictionary(data?: Api.SystemManage.CommonBatchDeleteParams) {
-  return request<null>({
-    url: '/system-manage/dictionaries',
-    method: 'delete',
-    data: { ids: data?.ids }
-  });
-}

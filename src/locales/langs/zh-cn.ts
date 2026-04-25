@@ -46,7 +46,6 @@ const local: App.I18n.Schema = {
     operate: '操作',
     pleaseCheckValue: '请检查输入的值是否合法',
     refresh: '刷新',
-    refreshAPI: '刷新API',
     reset: '重置',
     search: '搜索',
     switch: '切换',
@@ -283,6 +282,8 @@ const local: App.I18n.Schema = {
     manage_radar_exceptions: '异常列表',
     manage_radar_monitor: '系统监控',
     hr: 'HR管理',
+    'hr_my-workspace': '我的工作台',
+    hr_team: '我的团队',
     hr_employee: '员工管理',
     hr_department: '部门管理',
     hr_tag: '标签管理',
@@ -897,6 +898,23 @@ const local: App.I18n.Schema = {
         },
         addTag: '新增标签',
         editTag: '编辑标签'
+      },
+      my: {
+        profileTitle: '个人资料',
+        tagTitle: '我的标签',
+        colleaguesTitle: '同部门同事',
+        editProfile: '编辑我的资料',
+        editTags: '编辑我的标签',
+        avatarUploadSuccess: '头像上传成功'
+      },
+      team: {
+        title: '下属列表',
+        department: '所在部门',
+        total: '团队人数',
+        statusBreakdown: '状态分布',
+        addSubordinate: '新增下属',
+        editSubordinate: '编辑下属',
+        editTags: '编辑标签'
       }
     }
   },

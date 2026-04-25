@@ -358,7 +358,6 @@ declare namespace App {
         operate: string;
         pleaseCheckValue: string;
         refresh: string;
-        refreshAPI: string;
         reset: string;
         search: string;
         switch: string;
@@ -1063,6 +1062,23 @@ declare namespace App {
               category: string;
               description: string;
             };
+          };
+          my: {
+            profileTitle: string;
+            tagTitle: string;
+            colleaguesTitle: string;
+            editProfile: string;
+            editTags: string;
+            avatarUploadSuccess: string;
+          };
+          team: {
+            title: string;
+            department: string;
+            total: string;
+            statusBreakdown: string;
+            addSubordinate: string;
+            editSubordinate: string;
+            editTags: string;
           };
         };
       };

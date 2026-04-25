@@ -241,12 +241,30 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
+        name: 'hr_my-workspace',
+        path: '/hr/my-workspace',
+        component: 'view.hr_my-workspace',
+        meta: {
+          title: 'hr_my-workspace',
+          i18nKey: 'route.hr_my-workspace'
+        }
+      },
+      {
         name: 'hr_tag',
         path: '/hr/tag',
         component: 'view.hr_tag',
         meta: {
           title: 'hr_tag',
           i18nKey: 'route.hr_tag'
+        }
+      },
+      {
+        name: 'hr_team',
+        path: '/hr/team',
+        component: 'view.hr_team',
+        meta: {
+          title: 'hr_team',
+          i18nKey: 'route.hr_team'
         }
       }
     ]

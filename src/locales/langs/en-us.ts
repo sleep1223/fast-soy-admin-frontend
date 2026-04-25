@@ -46,7 +46,6 @@ const local: App.I18n.Schema = {
     operate: 'Operate',
     pleaseCheckValue: 'Please check whether the value is valid',
     refresh: 'Refresh',
-    refreshAPI: 'Refresh API',
     reset: 'Reset',
     search: 'Search',
     switch: 'Switch',
@@ -287,6 +286,8 @@ const local: App.I18n.Schema = {
     manage_radar_exceptions: 'Exceptions',
     manage_radar_monitor: 'System Monitor',
     hr: 'HR Management',
+    'hr_my-workspace': 'My Workspace',
+    hr_team: 'My Team',
     hr_employee: 'Employee',
     hr_department: 'Department',
     hr_tag: 'Tag Management',
@@ -901,6 +902,23 @@ const local: App.I18n.Schema = {
         },
         addTag: 'Add Tag',
         editTag: 'Edit Tag'
+      },
+      my: {
+        profileTitle: 'My Profile',
+        tagTitle: 'My Tags',
+        colleaguesTitle: 'Department Colleagues',
+        editProfile: 'Edit My Profile',
+        editTags: 'Edit My Tags',
+        avatarUploadSuccess: 'Avatar uploaded successfully'
+      },
+      team: {
+        title: 'Subordinates',
+        department: 'Department',
+        total: 'Headcount',
+        statusBreakdown: 'Status Breakdown',
+        addSubordinate: 'Add Subordinate',
+        editSubordinate: 'Edit Subordinate',
+        editTags: 'Edit Tags'
       }
     }
   },
