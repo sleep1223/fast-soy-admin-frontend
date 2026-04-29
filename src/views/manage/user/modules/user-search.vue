@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, toRaw } from 'vue';
+import { computed, ref, toRaw } from 'vue';
 import { jsonClone } from '@sa/utils';
-import { enableStatusOptions, userGenderOptions } from '@/constants/business';
+import { statusTypeOptions, userGenderOptions } from '@/constants/business';
+import { fetchGetRoleList } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { translateOptions } from '@/utils/common';
 import { $t } from '@/locales';
@@ -46,6 +47,22 @@ async function search() {
   await validate();
   emit('search');
 }
+
+const roleOptions = ref<CommonType.Option<string>[]>([]);
+
+async function getRoleOptions() {
+  const { error, data } = await fetchGetRoleList({ size: 1000, statusType: '1' });
+
+  if (!error) {
+    const options = data.records.map(item => ({
+      label: item.roleName,
+      value: item.roleCode
+    }));
+    roleOptions.value = options;
+  }
+}
+
+getRoleOptions();
 </script>
 
 <template>
@@ -67,6 +84,7 @@ async function search() {
                 v-model:value="model.userGender"
                 :placeholder="$t('page.manage.user.form.userGender')"
                 :options="translateOptions(userGenderOptions)"
+                filterable
                 clearable
               />
             </NFormItemGi>
@@ -81,14 +99,25 @@ async function search() {
             </NFormItemGi>
             <NFormItemGi
               span="24 s:12 m:6"
-              :label="$t('page.manage.user.userStatus')"
-              path="userStatus"
+              :label="$t('page.manage.user.userStatusType')"
+              path="userStatusType"
               class="pr-24px"
             >
               <NSelect
-                v-model:value="model.status"
-                :placeholder="$t('page.manage.user.form.userStatus')"
-                :options="translateOptions(enableStatusOptions)"
+                v-model:value="model.statusType"
+                :placeholder="$t('page.manage.user.form.userStatusType')"
+                :options="translateOptions(statusTypeOptions)"
+                filterable
+                clearable
+              />
+            </NFormItemGi>
+
+            <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.user.userRole')" path="roles" class="pr-24px">
+              <NSelect
+                v-model:value="model.byUserRoleCodeList"
+                :options="roleOptions"
+                :placeholder="$t('page.manage.user.form.userRole')"
+                filterable
                 clearable
               />
             </NFormItemGi>

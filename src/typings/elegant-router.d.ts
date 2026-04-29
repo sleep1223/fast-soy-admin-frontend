@@ -50,10 +50,23 @@ declare module "@elegant-router/types" {
     "function_tab": "/function/tab";
     "function_toggle-auth": "/function/toggle-auth";
     "home": "/home";
+    "hr": "/hr";
+    "hr_department": "/hr/department";
+    "hr_employee": "/hr/employee";
+    "hr_my-workspace": "/hr/my-workspace";
+    "hr_tag": "/hr/tag";
+    "hr_team": "/hr/team";
     "iframe-page": "/iframe-page/:url";
     "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
     "manage": "/manage";
+    "manage_api": "/manage/api";
     "manage_menu": "/manage/menu";
+    "manage_radar": "/manage/radar";
+    "manage_radar_exceptions": "/manage/radar/exceptions";
+    "manage_radar_monitor": "/manage/radar/monitor";
+    "manage_radar_overview": "/manage/radar/overview";
+    "manage_radar_queries": "/manage/radar/queries";
+    "manage_radar_requests": "/manage/radar/requests";
     "manage_role": "/manage/role";
     "manage_user": "/manage/user";
     "manage_user-detail": "/manage/user-detail/:id";
@@ -95,6 +108,7 @@ declare module "@elegant-router/types" {
     "pro-naive_table": "/pro-naive/table";
     "pro-naive_table_remote": "/pro-naive/table/remote";
     "pro-naive_table_row-edit": "/pro-naive/table/row-edit";
+    "showcase": "/showcase";
     "user-center": "/user-center";
   };
 
@@ -149,12 +163,14 @@ declare module "@elegant-router/types" {
     | "alova"
     | "function"
     | "home"
+    | "hr"
     | "iframe-page"
     | "login"
     | "manage"
     | "multi-menu"
     | "plugin"
     | "pro-naive"
+    | "showcase"
     | "user-center"
   >;
 
@@ -191,7 +207,18 @@ declare module "@elegant-router/types" {
     | "function_tab"
     | "function_toggle-auth"
     | "home"
+    | "hr_department"
+    | "hr_employee"
+    | "hr_my-workspace"
+    | "hr_tag"
+    | "hr_team"
+    | "manage_api"
     | "manage_menu"
+    | "manage_radar_exceptions"
+    | "manage_radar_monitor"
+    | "manage_radar_overview"
+    | "manage_radar_queries"
+    | "manage_radar_requests"
     | "manage_role"
     | "manage_user-detail"
     | "manage_user"
@@ -221,6 +248,7 @@ declare module "@elegant-router/types" {
     | "pro-naive_form_step"
     | "pro-naive_table_remote"
     | "pro-naive_table_row-edit"
+    | "showcase"
     | "user-center"
   >;
 

@@ -2,6 +2,8 @@
 import { computed, reactive } from 'vue';
 import { useRouterPush } from '@/hooks/common/router';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
+import { useCaptcha } from '@/hooks/business/captcha';
+import { fetchResetPassword } from '@/service/api';
 import { $t } from '@/locales';
 
 defineOptions({
@@ -10,6 +12,7 @@ defineOptions({
 
 const { toggleLoginModule } = useRouterPush();
 const { formRef, validate } = useNaiveForm();
+const { label, isCounting, loading: captchaLoading, getCaptcha } = useCaptcha();
 
 interface FormModel {
   phone: string;
@@ -25,13 +28,12 @@ const model: FormModel = reactive({
   confirmPassword: ''
 });
 
-type RuleRecord = Partial<Record<keyof FormModel, App.Global.FormRule[]>>;
-
-const rules = computed<RuleRecord>(() => {
+const rules = computed<Record<keyof FormModel, App.Global.FormRule[]>>(() => {
   const { formRules, createConfirmPwdRule } = useFormRules();
 
   return {
     phone: formRules.phone,
+    code: formRules.code,
     password: formRules.pwd,
     confirmPassword: createConfirmPwdRule(model.password)
   };
@@ -39,8 +41,17 @@ const rules = computed<RuleRecord>(() => {
 
 async function handleSubmit() {
   await validate();
-  // request to reset password
-  window.$message?.success($t('page.login.common.validateSuccess'));
+
+  const { error } = await fetchResetPassword({
+    phone: model.phone,
+    code: model.code,
+    password: model.password
+  });
+
+  if (!error) {
+    window.$message?.success?.($t('page.login.common.validateSuccess'));
+    toggleLoginModule('pwd-login');
+  }
 }
 </script>
 
@@ -50,7 +61,12 @@ async function handleSubmit() {
       <NInput v-model:value="model.phone" :placeholder="$t('page.login.common.phonePlaceholder')" />
     </NFormItem>
     <NFormItem path="code">
-      <NInput v-model:value="model.code" :placeholder="$t('page.login.common.codePlaceholder')" />
+      <div class="w-full flex-y-center gap-16px">
+        <NInput v-model:value="model.code" :placeholder="$t('page.login.common.codePlaceholder')" />
+        <NButton size="large" :disabled="isCounting" :loading="captchaLoading" @click="getCaptcha(model.phone)">
+          {{ label }}
+        </NButton>
+      </div>
     </NFormItem>
     <NFormItem path="password">
       <NInput

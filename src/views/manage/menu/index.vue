@@ -1,11 +1,11 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
+import { computed, h, ref } from 'vue';
 import type { Ref } from 'vue';
-import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { NButton, NCheckbox, NPopconfirm, NSwitch, NTag } from 'naive-ui';
 import { useBoolean } from '@sa/hooks';
 import { yesOrNoRecord } from '@/constants/common';
-import { enableStatusRecord, menuTypeRecord } from '@/constants/business';
-import { fetchGetAllPages, fetchGetMenuList } from '@/service/api';
+import { menuTypeRecord, statusTypeRecord } from '@/constants/business';
+import { fetchBatchDeleteMenu, fetchDeleteMenu, fetchGetAllPages, fetchGetMenuList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -18,9 +18,23 @@ const { bool: visible, setTrue: openModal } = useBoolean();
 
 const wrapperRef = ref<HTMLElement | null>(null);
 
+const SHOW_BUSINESS_WARNING_KEY = 'menu:showBusinessWarningDismissed';
+
+const searchParams = ref<Api.SystemManage.MenuSearchParams>({
+  current: 1,
+  size: 10,
+  includeConstant: false,
+  includeHidden: false,
+  includeBusiness: false
+});
+
 const { columns, columnChecks, data, loading, pagination, getData, getDataByPage } = useNaivePaginatedTable({
-  api: () => fetchGetMenuList(),
+  api: () => fetchGetMenuList(searchParams.value),
   transform: response => defaultTransform(response),
+  onPaginationParamsChange: params => {
+    searchParams.value.current = params.page ?? 1;
+    searchParams.value.size = params.pageSize ?? 10;
+  },
   columns: () => [
     {
       type: 'selection',
@@ -30,7 +44,10 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
     {
       key: 'id',
       title: $t('page.manage.menu.id'),
-      align: 'center'
+      align: 'center',
+      width: 60,
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      render: row => menuIndexMap.value.get(row.id)?.index ?? ''
     },
     {
       key: 'menuType',
@@ -91,12 +108,12 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       minWidth: 120
     },
     {
-      key: 'status',
-      title: $t('page.manage.menu.menuStatus'),
+      key: 'statusType',
+      title: $t('page.manage.menu.menuStatusType'),
       align: 'center',
       width: 80,
       render: row => {
-        if (row.status === null) {
+        if (row.statusType === null) {
           return null;
         }
 
@@ -105,9 +122,9 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
           2: 'warning'
         };
 
-        const label = $t(enableStatusRecord[row.status]);
+        const label = $t(statusTypeRecord[row.statusType]);
 
-        return <NTag type={tagMap[row.status]}>{label}</NTag>;
+        return <NTag type={tagMap[row.statusType]}>{label}</NTag>;
       }
     },
     {
@@ -131,8 +148,14 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
     {
       key: 'parentId',
       title: $t('page.manage.menu.parentId'),
-      width: 90,
-      align: 'center'
+      width: 120,
+      align: 'center',
+      render: row => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        const parent = menuIndexMap.value.get(row.parentId);
+        if (!parent) return '';
+        return parent.i18nKey ? $t(parent.i18nKey as App.I18n.I18nKey) : parent.menuName;
+      }
     },
     {
       key: 'order',
@@ -171,6 +194,21 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
   ]
 });
 
+const menuIndexMap = computed(() => {
+  const map = new Map<string | number, { index: number; menuName: string; i18nKey?: string | null }>();
+  let counter = 0;
+  const walk = (list: Api.SystemManage.Menu[] | null | undefined) => {
+    if (!list) return;
+    for (const item of list) {
+      counter += 1;
+      map.set(item.id, { index: counter, menuName: item.menuName, i18nKey: item.i18nKey });
+      walk(item.children);
+    }
+  };
+  walk(data.value);
+  return map;
+});
+
 const { checkedRowKeys, onBatchDeleted, onDeleted } = useTableOperate(data, 'id', getData);
 
 const operateType = ref<OperateType>('add');
@@ -181,17 +219,17 @@ function handleAdd() {
 }
 
 async function handleBatchDelete() {
-  // request
-  console.log(checkedRowKeys.value);
-
-  onBatchDeleted();
+  const { error } = await fetchBatchDeleteMenu({ ids: checkedRowKeys.value as string[] });
+  if (!error) {
+    onBatchDeleted();
+  }
 }
 
-function handleDelete(id: number) {
-  // request
-  console.log(id);
-
-  onDeleted();
+async function handleDelete(id: string) {
+  const { error } = await fetchDeleteMenu({ id });
+  if (!error) {
+    onDeleted();
+  }
 }
 
 /** the edit menu data or the parent menu data when adding a child menu */
@@ -216,7 +254,7 @@ const allPages = ref<string[]>([]);
 
 async function getAllPages() {
   const { data: pages } = await fetchGetAllPages();
-  allPages.value = pages || [];
+  allPages.value = pages?.map(item => item.value) || [];
 }
 
 function init() {
@@ -225,6 +263,59 @@ function init() {
 
 // init
 init();
+
+function handleIncludeBusinessUpdate(val: boolean) {
+  if (!val) {
+    searchParams.value.includeBusiness = false;
+    getDataByPage();
+    return;
+  }
+
+  if (localStorage.getItem(SHOW_BUSINESS_WARNING_KEY) === '1') {
+    searchParams.value.includeBusiness = true;
+    getDataByPage();
+    return;
+  }
+
+  let dontShowAgain = false;
+
+  window.$dialog?.warning({
+    title: $t('page.manage.menu.includeBusinessWarningTitle'),
+    content: () =>
+      h('div', { class: 'flex-col gap-12px' }, [
+        h('div', $t('page.manage.menu.includeBusinessWarning')),
+        h(
+          NCheckbox,
+          {
+            checked: dontShowAgain,
+            'onUpdate:checked': (v: boolean) => {
+              dontShowAgain = v;
+            }
+          },
+          { default: () => $t('page.manage.menu.dontShowAgain') }
+        )
+      ]),
+    positiveText: $t('common.confirm'),
+    negativeText: $t('common.cancel'),
+    onPositiveClick: () => {
+      if (dontShowAgain) {
+        localStorage.setItem(SHOW_BUSINESS_WARNING_KEY, '1');
+      }
+      searchParams.value.includeBusiness = true;
+      getDataByPage();
+    }
+  });
+}
+
+function handleIncludeConstantUpdate(val: boolean) {
+  searchParams.value.includeConstant = val;
+  getDataByPage();
+}
+
+function handleIncludeHiddenUpdate(val: boolean) {
+  searchParams.value.includeHidden = val;
+  getDataByPage();
+}
 </script>
 
 <template>
@@ -238,7 +329,32 @@ init();
           @add="handleAdd"
           @delete="handleBatchDelete"
           @refresh="getData"
-        />
+        >
+          <template #prefix>
+            <NSpace align="center" :size="16" class="mr-8px">
+              <NSpace align="center" :size="6">
+                <span class="text-12px">{{ $t('page.manage.menu.constant') }}</span>
+                <NSwitch
+                  size="small"
+                  :value="searchParams.includeConstant"
+                  @update:value="handleIncludeConstantUpdate"
+                />
+              </NSpace>
+              <NSpace align="center" :size="6">
+                <span class="text-12px">{{ $t('page.manage.menu.hideInMenu') }}</span>
+                <NSwitch size="small" :value="searchParams.includeHidden" @update:value="handleIncludeHiddenUpdate" />
+              </NSpace>
+              <NSpace align="center" :size="6">
+                <span class="text-12px">{{ $t('page.manage.menu.includeBusiness') }}</span>
+                <NSwitch
+                  size="small"
+                  :value="searchParams.includeBusiness"
+                  @update:value="handleIncludeBusinessUpdate"
+                />
+              </NSpace>
+            </NSpace>
+          </template>
+        </TableHeaderOperation>
       </template>
       <NDataTable
         v-model:checked-row-keys="checkedRowKeys"

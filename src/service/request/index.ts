@@ -1,7 +1,7 @@
 import type { AxiosResponse } from 'axios';
 import { BACKEND_ERROR_CODE, createFlatRequest, createRequest } from '@sa/axios';
 import { useAuthStore } from '@/store/modules/auth';
-import { localStg } from '@/utils/storage';
+import { getToken } from '@/store/modules/auth/shared';
 import { getServiceBaseURL } from '@/utils/service';
 import { $t } from '@/locales';
 import { getAuthorization, handleExpiredRequest, showErrorMsg } from './shared';
@@ -13,9 +13,6 @@ const { baseURL, otherBaseURL } = getServiceBaseURL(import.meta.env, isHttpProxy
 export const request = createFlatRequest(
   {
     baseURL,
-    headers: {
-      apifoxToken: 'XL299LiMEDZ0H5h3A29PxwQXdMJqWyY2'
-    }
   },
   {
     defaultState: {
@@ -122,6 +119,17 @@ export const request = createFlatRequest(
         return;
       }
 
+      // user custom codes (4000+): defer message, caller can cancel via error.cancelErrorMsg()
+      const codeNum = Number(backendErrorCode);
+      if (codeNum >= 4000) {
+        const timer = setTimeout(() => {
+          showErrorMsg(request.state, message);
+        }, 0);
+        (error as any).cancelErrorMsg = () => clearTimeout(timer);
+        return;
+      }
+
+      // system errors (1xxx) and business errors (2xxx): show message immediately
       showErrorMsg(request.state, message);
     }
   }
@@ -139,7 +147,7 @@ export const demoRequest = createRequest(
       const { headers } = config;
 
       // set token
-      const token = localStg.get('token');
+      const token = getToken();
       const Authorization = token ? `Bearer ${token}` : null;
       Object.assign(headers, { Authorization });
 

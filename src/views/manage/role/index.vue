@@ -1,8 +1,8 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { enableStatusRecord } from '@/constants/business';
-import { fetchGetRoleList } from '@/service/api';
+import { statusTypeRecord } from '@/constants/business';
+import { fetchBatchDeleteRole, fetchDeleteRole, fetchGetRoleList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -16,7 +16,7 @@ const searchParams = ref<Api.SystemManage.RoleSearchParams>({
   size: 10,
   roleName: null,
   roleCode: null,
-  status: null
+  statusType: null
 });
 
 const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
@@ -57,12 +57,12 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       minWidth: 120
     },
     {
-      key: 'status',
-      title: $t('page.manage.role.roleStatus'),
+      key: 'statusType',
+      title: $t('page.manage.role.rolestatusType'),
       align: 'center',
       width: 100,
       render: row => {
-        if (row.status === null) {
+        if (row.statusType === null) {
           return null;
         }
 
@@ -71,10 +71,22 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
           2: 'warning'
         };
 
-        const label = $t(enableStatusRecord[row.status]);
+        const label = $t(statusTypeRecord[row.statusType]);
 
-        return <NTag type={tagMap[row.status]}>{label}</NTag>;
+        return <NTag type={tagMap[row.statusType]}>{label}</NTag>;
       }
+    },
+    {
+      key: 'updatedInfo',
+      title: $t('page.manage.common.updatedInfo'),
+      align: 'center',
+      minWidth: 160,
+      render: row => (
+        <div class="flex-col-center gap-2px">
+          {row.updatedBy ? <span class="text-12px">{row.updatedBy}</span> : null}
+          {row.fmtUpdatedAt ? <span class="text-12px text-gray-400">{row.fmtUpdatedAt}</span> : null}
+        </div>
+      )
     },
     {
       key: 'operate',
@@ -116,19 +128,21 @@ const {
 
 async function handleBatchDelete() {
   // request
-  console.log(checkedRowKeys.value);
-
-  onBatchDeleted();
+  const { error } = await fetchBatchDeleteRole({ ids: checkedRowKeys.value });
+  if (!error) {
+    onBatchDeleted();
+  }
 }
 
-function handleDelete(id: number) {
+async function handleDelete(id: string) {
   // request
-  console.log(id);
-
-  onDeleted();
+  const { error } = await fetchDeleteRole({ id });
+  if (!error) {
+    onDeleted();
+  }
 }
 
-function edit(id: number) {
+function edit(id: string) {
   handleEdit(id);
 }
 </script>
@@ -153,7 +167,7 @@ function edit(id: number) {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="702"
+        :scroll-x="862"
         :loading="loading"
         remote
         :row-key="row => row.id"

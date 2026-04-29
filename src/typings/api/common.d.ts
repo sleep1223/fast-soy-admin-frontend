@@ -33,18 +33,22 @@ declare namespace Api {
 
     /** common record */
     type CommonRecord<T = any> = {
-      /** record id */
-      id: number;
+      /** record id (sqid-encoded string) */
+      id: string;
       /** record creator */
-      createBy: string;
+      createdBy: string;
       /** record create time */
-      createTime: string;
+      createdAt: number;
       /** record updater */
-      updateBy: string;
+      updatedBy: string;
       /** record update time */
-      updateTime: string;
+      updatedAt: number;
       /** record status */
-      status: EnableStatus | null;
+      statusType: EnableStatus | null;
+      /** record fmt create time */
+      fmtCreatedAt: string;
+      /** record fmt update time */
+      fmtUpdatedAt: string;
     } & T;
   }
 }

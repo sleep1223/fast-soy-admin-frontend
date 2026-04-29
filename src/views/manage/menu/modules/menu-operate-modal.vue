@@ -1,8 +1,8 @@
 <script setup lang="tsx">
 import { computed, ref, watch } from 'vue';
 import type { SelectOption } from 'naive-ui';
-import { enableStatusOptions, menuIconTypeOptions, menuTypeOptions } from '@/constants/business';
-import { fetchGetAllRoles } from '@/service/api';
+import { menuIconTypeOptions, menuTypeOptions, statusTypeOptions } from '@/constants/business';
+import { fetchAddMenu, fetchGetRoleList, fetchUpdateMenu } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { getLocalIcons } from '@/utils/icon';
 import { $t } from '@/locales';
@@ -65,7 +65,7 @@ type Model = Pick<
   | 'i18nKey'
   | 'icon'
   | 'iconType'
-  | 'status'
+  | 'statusType'
   | 'parentId'
   | 'keepAlive'
   | 'constant'
@@ -98,7 +98,7 @@ function createDefaultModel(): Model {
     icon: '',
     iconType: '1',
     parentId: 0,
-    status: '1',
+    statusType: '1',
     keepAlive: false,
     constant: false,
     order: 0,
@@ -112,11 +112,11 @@ function createDefaultModel(): Model {
   };
 }
 
-type RuleKey = Extract<keyof Model, 'menuName' | 'status' | 'routeName' | 'routePath'>;
+type RuleKey = Extract<keyof Model, 'menuName' | 'statusType' | 'routeName' | 'routePath'>;
 
 const rules: Record<RuleKey, App.Global.FormRule> = {
   menuName: defaultRequiredRule,
-  status: defaultRequiredRule,
+  statusType: defaultRequiredRule,
   routeName: defaultRequiredRule,
   routePath: defaultRequiredRule
 };
@@ -168,10 +168,10 @@ const layoutOptions: CommonType.Option[] = [
 const roleOptions = ref<CommonType.Option<string>[]>([]);
 
 async function getRoleOptions() {
-  const { error, data } = await fetchGetAllRoles();
+  const { error, data } = await fetchGetRoleList({ statusType: '1' });
 
   if (!error) {
-    const options = data.map(item => ({
+    const options = data.records.map(item => ({
       label: item.roleName,
       value: item.roleCode
     }));
@@ -230,8 +230,8 @@ function handleUpdateI18nKeyByRouteName() {
 
 function handleCreateButton() {
   const buttonItem: Api.SystemManage.MenuButton = {
-    code: '',
-    desc: ''
+    buttonCode: '',
+    buttonDesc: ''
   };
 
   return buttonItem;
@@ -254,10 +254,20 @@ async function handleSubmit() {
 
   const params = getSubmitParams();
 
-  console.log('params: ', params);
-
   // request
-  window.$message?.success($t('common.updateSuccess'));
+  model.value.component = params.component;
+  model.value.routePath = params.routePath;
+
+  if (props.operateType === 'add' || props.operateType === 'addChild') {
+    const { error } = await fetchAddMenu(model.value);
+    if (error) return;
+    window.$message?.success($t('common.addSuccess'));
+  } else if (props.operateType === 'edit') {
+    const { error } = await fetchUpdateMenu(model.value);
+    if (error) return;
+    window.$message?.success($t('common.updateSuccess'));
+  }
+
   closeDrawer();
   emit('submitted');
 }
@@ -306,6 +316,8 @@ watch(
               v-model:value="model.layout"
               :options="layoutOptions"
               :placeholder="$t('page.manage.menu.form.layout')"
+              filterable
+              clearable
             />
           </NFormItemGi>
           <NFormItemGi v-if="showPage" span="24 m:12" :label="$t('page.manage.menu.page')" path="page">
@@ -313,6 +325,8 @@ watch(
               v-model:value="model.page"
               :options="pageOptions"
               :placeholder="$t('page.manage.menu.form.page')"
+              filterable
+              clearable
             />
           </NFormItemGi>
           <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.i18nKey')" path="i18nKey">
@@ -344,17 +358,14 @@ watch(
                 v-model:value="model.icon"
                 :placeholder="$t('page.manage.menu.form.localIcon')"
                 :options="localIconOptions"
+                filterable
+                clearable
               />
             </template>
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.menuStatus')" path="status">
-            <NRadioGroup v-model:value="model.status">
-              <NRadio
-                v-for="item in enableStatusOptions"
-                :key="item.value"
-                :value="item.value"
-                :label="$t(item.label)"
-              />
+          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.menuStatusType')" path="status">
+            <NRadioGroup v-model:value="model.statusType">
+              <NRadio v-for="item in statusTypeOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
             </NRadioGroup>
           </NFormItemGi>
           <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.keepAlive')" path="keepAlive">
@@ -387,8 +398,9 @@ watch(
             <NSelect
               v-model:value="model.activeMenu"
               :options="pageOptions"
-              clearable
               :placeholder="$t('page.manage.menu.form.activeMenu')"
+              filterable
+              clearable
             />
           </NFormItemGi>
           <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.multiTab')" path="multiTab">
@@ -415,7 +427,7 @@ watch(
               <template #action="{ index, create, remove }">
                 <NSpace class="ml-12px">
                   <NButton size="medium" @click="() => create(index)">
-                    <icon-ic:round-plus class="text-icon" />
+                    <icon-ic-round-plus class="text-icon" />
                   </NButton>
                   <NButton size="medium" @click="() => remove(index)">
                     <icon-ic-round-remove class="text-icon" />
@@ -427,14 +439,14 @@ watch(
           <NFormItemGi span="24" :label="$t('page.manage.menu.button')">
             <NDynamicInput v-model:value="model.buttons" :on-create="handleCreateButton">
               <template #default="{ value }">
-                <div class="flex-y-center flex-1 gap-12px">
+                <div class="ml-8px flex-y-center flex-1 gap-12px">
                   <NInput
-                    v-model:value="value.code"
+                    v-model:value="value.buttonCode"
                     :placeholder="$t('page.manage.menu.form.buttonCode')"
                     class="flex-1"
                   />
                   <NInput
-                    v-model:value="value.desc"
+                    v-model:value="value.buttonDesc"
                     :placeholder="$t('page.manage.menu.form.buttonDesc')"
                     class="flex-1"
                   />
@@ -443,7 +455,7 @@ watch(
               <template #action="{ index, create, remove }">
                 <NSpace class="ml-12px">
                   <NButton size="medium" @click="() => create(index)">
-                    <icon-ic:round-plus class="text-icon" />
+                    <icon-ic-round-plus class="text-icon" />
                   </NButton>
                   <NButton size="medium" @click="() => remove(index)">
                     <icon-ic-round-remove class="text-icon" />

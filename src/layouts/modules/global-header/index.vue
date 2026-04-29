@@ -3,6 +3,8 @@ import { useFullscreen } from '@vueuse/core';
 import { GLOBAL_HEADER_MENU_ID } from '@/constants/app';
 import { useAppStore } from '@/store/modules/app';
 import { useThemeStore } from '@/store/modules/theme';
+import { useAuthStore } from '@/store/modules/auth';
+import { $t } from '@/locales';
 import GlobalLogo from '../global-logo/index.vue';
 import GlobalBreadcrumb from '../global-breadcrumb/index.vue';
 import GlobalSearch from '../global-search/index.vue';
@@ -25,8 +27,13 @@ interface Props {
 defineProps<Props>();
 
 const appStore = useAppStore();
+const authStore = useAuthStore();
 const themeStore = useThemeStore();
 const { isFullscreen, toggle } = useFullscreen();
+
+async function handleExitImpersonate() {
+  await authStore.exitImpersonate();
+}
 </script>
 
 <template>
@@ -36,6 +43,14 @@ const { isFullscreen, toggle } = useFullscreen();
     <div v-if="showMenu" :id="GLOBAL_HEADER_MENU_ID" class="h-full flex-y-center flex-1-hidden"></div>
     <div v-else class="h-full flex-y-center flex-1-hidden">
       <GlobalBreadcrumb v-if="!appStore.isMobile" class="ml-12px" />
+    </div>
+    <div v-if="authStore.impersonating" class="h-full flex-y-center gap-8px mr-12px">
+      <NTag type="warning" size="small" round>
+        {{ $t('page.manage.user.impersonate.actingAs', { name: authStore.userInfo.nickName || authStore.userInfo.userName }) }}
+      </NTag>
+      <NButton type="warning" size="tiny" @click="handleExitImpersonate">
+        {{ $t('page.manage.user.impersonate.exit') }}
+      </NButton>
     </div>
     <div class="h-full flex-y-center justify-end">
       <GlobalSearch v-if="themeStore.header.globalSearch.visible" />

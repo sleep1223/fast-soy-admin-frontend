@@ -2,14 +2,23 @@ import { computed, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { defineStore } from 'pinia';
 import { useLoading } from '@sa/hooks';
-import { fetchGetUserInfo, fetchLogin } from '@/service/api';
+import { fetchGetUserInfo, fetchImpersonate, fetchLogin } from '@/service/api';
 import { useRouterPush } from '@/hooks/common/router';
 import { localStg } from '@/utils/storage';
 import { SetupStoreId } from '@/enum';
 import { $t } from '@/locales';
 import { useRouteStore } from '../route';
 import { useTabStore } from '../tab';
-import { clearAuthStorage, getToken } from './shared';
+import {
+  clearAuthStorage,
+  clearOriginalToken,
+  getOriginalToken,
+  getRefreshToken,
+  getToken,
+  isRemembered,
+  setLoginTokens,
+  setOriginalToken
+} from './shared';
 
 export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const route = useRoute();
@@ -20,10 +29,12 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const { loading: loginLoading, startLoading, endLoading } = useLoading();
 
   const token = ref('');
+  const impersonating = ref(Boolean(getOriginalToken().token));
 
   const userInfo: Api.Auth.UserInfo = reactive({
     userId: '',
     userName: '',
+    nickName: '',
     roles: [],
     buttons: []
   });
@@ -94,15 +105,16 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
    *
    * @param userName User name
    * @param password Password
+   * @param [remember=false] Whether to persist the session across browser restarts. Default is `false`
    * @param [redirect=true] Whether to redirect after login. Default is `true`
    */
-  async function login(userName: string, password: string, redirect = true) {
+  async function login(userName: string, password: string, remember = false, redirect = true) {
     startLoading();
 
     const { data: loginToken, error } = await fetchLogin(userName, password);
 
     if (!error) {
-      const pass = await loginByToken(loginToken);
+      const pass = await loginByToken(loginToken, remember);
 
       if (pass) {
         // Check if the tab needs to be cleared
@@ -117,7 +129,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
         window.$notification?.success({
           title: $t('page.login.common.loginSuccess'),
-          content: $t('page.login.common.welcomeBack', { userName: userInfo.userName }),
+          content: $t('page.login.common.welcomeBack', { nickName: userInfo.nickName }),
           duration: 4500
         });
       }
@@ -128,10 +140,9 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     endLoading();
   }
 
-  async function loginByToken(loginToken: Api.Auth.LoginToken) {
-    // 1. stored in the localStorage, the later requests need it in headers
-    localStg.set('token', loginToken.token);
-    localStg.set('refreshToken', loginToken.refreshToken);
+  async function loginByToken(loginToken: Api.Auth.LoginToken, remember = isRemembered()) {
+    // 1. persist the tokens; storage location depends on "remember me"
+    setLoginTokens(loginToken.token, loginToken.refreshToken, remember);
 
     // 2. get user info
     const pass = await getUserInfo();
@@ -152,6 +163,9 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
       // update store
       Object.assign(userInfo, info);
 
+      // sync impersonation state from backend
+      impersonating.value = Boolean(info.impersonating);
+
       return true;
     }
 
@@ -171,14 +185,87 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     }
   }
 
+  /**
+   * Impersonate a user (admin only)
+   *
+   * @param userId Target user id
+   */
+  async function impersonate(userId: string) {
+    const { data: loginToken, error } = await fetchImpersonate(userId);
+
+    if (!error) {
+      // Only save original tokens if not already impersonating (prevent chain overwrite)
+      if (!impersonating.value) {
+        setOriginalToken(getToken(), getRefreshToken());
+      }
+
+      const pass = await loginByToken(loginToken);
+
+      if (pass) {
+        impersonating.value = true;
+        tabStore.initTabStore(route);
+        await routeStore.initAuthRoute();
+
+        window.$notification?.warning({
+          title: $t('page.manage.user.impersonate.switchSuccess'),
+          content: $t('page.manage.user.impersonate.nowActingAs', { name: userInfo.nickName || userInfo.userName }),
+          duration: 4500
+        });
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /** Exit impersonation and restore original admin session */
+  async function exitImpersonate() {
+    const originalToken = getOriginalToken();
+
+    if (!originalToken.token) {
+      return false;
+    }
+
+    // Restore original tokens
+    const pass = await loginByToken({
+      token: originalToken.token,
+      refreshToken: originalToken.refreshToken
+    });
+
+    // Always clear impersonation state, even if loginByToken fails (token expired)
+    clearOriginalToken();
+    impersonating.value = false;
+
+    if (pass) {
+      tabStore.initTabStore(route);
+      await routeStore.initAuthRoute();
+
+      window.$notification?.success({
+        title: $t('page.manage.user.impersonate.exitSuccess'),
+        duration: 3000
+      });
+
+      return true;
+    }
+
+    // Original token expired — force full logout
+    await resetStore();
+    return false;
+  }
+
   return {
     token,
     userInfo,
+    impersonating,
     isStaticSuper,
     isLogin,
     loginLoading,
     resetStore,
     login,
-    initUserInfo
+    loginByToken,
+    initUserInfo,
+    impersonate,
+    exitImpersonate
   };
 });

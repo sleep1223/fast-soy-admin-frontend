@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+
 import { jsonClone } from '@sa/utils';
-import { enableStatusOptions, userGenderOptions } from '@/constants/business';
-import { fetchGetAllRoles } from '@/service/api';
+import { statusTypeOptions, userGenderOptions } from '@/constants/business';
+import { fetchAddUser, fetchGetRoleList, fetchUpdateUser } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 
@@ -42,7 +43,7 @@ const title = computed(() => {
 
 type Model = Pick<
   Api.SystemManage.User,
-  'userName' | 'userGender' | 'nickName' | 'userPhone' | 'userEmail' | 'userRoles' | 'status'
+  'userName' | 'password' | 'userGender' | 'nickName' | 'userPhone' | 'userEmail' | 'byUserRoleCodeList' | 'statusType'
 >;
 
 const model = ref(createDefaultModel());
@@ -50,43 +51,40 @@ const model = ref(createDefaultModel());
 function createDefaultModel(): Model {
   return {
     userName: '',
-    userGender: null,
+    password: '',
+    userGender: '3',
     nickName: '',
     userPhone: '',
     userEmail: '',
-    userRoles: [],
-    status: null
+    byUserRoleCodeList: ['R_USER'],
+    statusType: '1'
   };
 }
 
-type RuleKey = Extract<keyof Model, 'userName' | 'status'>;
+type RuleKey = Extract<keyof Api.SystemManage.UserUpdateParams, 'userName' | 'password' | 'nickName' | 'statusType'>;
 
-const rules: Record<RuleKey, App.Global.FormRule> = {
-  userName: defaultRequiredRule,
-  status: defaultRequiredRule
-};
+const rules = computed<Record<RuleKey, App.Global.FormRule>>(() => {
+  const isAdd = props.operateType === 'add';
+  return {
+    userName: defaultRequiredRule,
+    password: isAdd ? defaultRequiredRule : {},
+    nickName: isAdd ? defaultRequiredRule : {},
+    statusType: defaultRequiredRule
+  };
+});
 
 /** the enabled role options */
 const roleOptions = ref<CommonType.Option<string>[]>([]);
 
 async function getRoleOptions() {
-  const { error, data } = await fetchGetAllRoles();
+  const { error, data } = await fetchGetRoleList({ size: 1000, statusType: '1' });
 
   if (!error) {
-    const options = data.map(item => ({
+    const options = data.records.map(item => ({
       label: item.roleName,
       value: item.roleCode
     }));
-
-    // the mock data does not have the roleCode, so fill it
-    // if the real request, remove the following code
-    const userRoleOptions = model.value.userRoles.map(item => ({
-      label: item,
-      value: item
-    }));
-    // end
-
-    roleOptions.value = [...userRoleOptions, ...options];
+    roleOptions.value = options;
   }
 }
 
@@ -95,6 +93,8 @@ function handleInitModel() {
 
   if (props.operateType === 'edit' && props.rowData) {
     Object.assign(model.value, jsonClone(props.rowData));
+    // 编辑时清空密码，不填则不修改
+    model.value.password = '';
   }
 }
 
@@ -104,8 +104,24 @@ function closeDrawer() {
 
 async function handleSubmit() {
   await validate();
-  // request
-  window.$message?.success($t('common.updateSuccess'));
+
+  if (props.operateType === 'add') {
+    const { error } = await fetchAddUser(model.value);
+    if (error) return;
+    window.$message?.success($t('common.addSuccess'));
+  } else if (props.operateType === 'edit') {
+    // 编辑时过滤空字符串字段，实现部分更新
+    const payload: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(model.value)) {
+      if (value !== '' && value !== null) {
+        payload[key] = value;
+      }
+    }
+    const { error } = await fetchUpdateUser(payload);
+    if (error) return;
+    window.$message?.success($t('common.updateSuccess'));
+  }
+
   closeDrawer();
   emit('submitted');
 }
@@ -124,7 +140,23 @@ watch(visible, () => {
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <NForm ref="formRef" :model="model" :rules="rules">
         <NFormItem :label="$t('page.manage.user.userName')" path="userName">
-          <NInput v-model:value="model.userName" :placeholder="$t('page.manage.user.form.userName')" />
+          <NInput
+            v-model:value="model.userName"
+            :placeholder="$t('page.manage.user.form.userName')"
+            :on-update-value="
+              (value: string) => {
+                model.nickName = value;
+              }
+            "
+          />
+        </NFormItem>
+        <NFormItem :label="$t('page.manage.user.password')" path="password">
+          <NInput
+            v-model:value="model.password"
+            type="password"
+            show-password-on="click"
+            :placeholder="operateType === 'edit' ? $t('page.manage.user.form.passwordEditHint') : $t('page.manage.user.form.password')"
+          />
         </NFormItem>
         <NFormItem :label="$t('page.manage.user.userGender')" path="userGender">
           <NRadioGroup v-model:value="model.userGender">
@@ -140,18 +172,20 @@ watch(visible, () => {
         <NFormItem :label="$t('page.manage.user.userEmail')" path="email">
           <NInput v-model:value="model.userEmail" :placeholder="$t('page.manage.user.form.userEmail')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.userStatus')" path="status">
-          <NRadioGroup v-model:value="model.status">
-            <NRadio v-for="item in enableStatusOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
-          </NRadioGroup>
-        </NFormItem>
         <NFormItem :label="$t('page.manage.user.userRole')" path="roles">
           <NSelect
-            v-model:value="model.userRoles"
+            v-model:value="model.byUserRoleCodeList"
             multiple
+            filterable
+            clearable
             :options="roleOptions"
             :placeholder="$t('page.manage.user.form.userRole')"
           />
+        </NFormItem>
+        <NFormItem :label="$t('page.manage.user.userStatusType')" path="status">
+          <NRadioGroup v-model:value="model.statusType">
+            <NRadio v-for="item in statusTypeOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
+          </NRadioGroup>
         </NFormItem>
       </NForm>
       <template #footer>

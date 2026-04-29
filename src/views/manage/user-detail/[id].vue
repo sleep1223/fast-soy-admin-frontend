@@ -1,10 +1,4 @@
-<script setup lang="ts">
-interface Props {
-  id: string;
-}
-
-defineProps<Props>();
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <LookForward />

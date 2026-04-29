@@ -11,49 +11,49 @@ export function fetchGetRoleList(params?: Api.SystemManage.RoleSearchParams) {
  * these roles are all enabled
  */
 export function fetchGetAllRoles() {
-  return alova.Get<Api.SystemManage.AllRole[]>('/systemManage/getAllRoles');
+  return alova.Get<Api.SystemManage.AllRole[]>('/system-manage/roles');
 }
 
 /** get user list */
-export function fetchGetUserList(params?: Api.SystemManage.UserSearchParams) {
-  return alova.Get<Api.SystemManage.UserList>('/systemManage/getUserList', { params });
+export function fetchGetUserList(data?: Api.SystemManage.UserSearchParams) {
+  return alova.Post<Api.SystemManage.UserList>('/system-manage/users/all/', { data });
 }
 
 export type UserModel = Pick<
   Api.SystemManage.User,
-  'userName' | 'userGender' | 'nickName' | 'userPhone' | 'userEmail' | 'userRoles' | 'status'
+  'userName' | 'userGender' | 'nickName' | 'userPhone' | 'userEmail' | 'byUserRoleCodeList' | 'statusType'
 >;
 /** add user */
 export function addUser(data: UserModel) {
-  return alova.Post<null>('/systemManage/addUser', data);
+  return alova.Post<null>('/systemManage/users', data);
 }
 
 /** update user */
 export function updateUser(data: UserModel) {
-  return alova.Post<null>('/systemManage/updateUser', data);
+  return alova.Patch<null>('/systemManage/users', data);
 }
 
 /** delete user */
 export function deleteUser(id: number) {
-  return alova.Delete<null>('/systemManage/deleteUser', { id });
+  return alova.Delete<null>(`/system-manage/users/${id}`);
 }
 
 /** batch delete user */
 export function batchDeleteUser(ids: number[]) {
-  return alova.Delete<null>('/systemManage/batchDeleteUser', { ids });
+  return alova.Delete<null>('/system-manage/users', { ids });
 }
 
 /** get menu list */
 export function fetchGetMenuList() {
-  return alova.Get<Api.SystemManage.MenuList>('/systemManage/getMenuList/v2');
+  return alova.Get<Api.SystemManage.MenuList>('/system-manage/menus');
 }
 
 /** get all pages */
 export function fetchGetAllPages() {
-  return alova.Get<string[]>('/systemManage/getAllPages');
+  return alova.Get<{ [key: string]: string }>('/system-manage/menus/pages/');
 }
 
 /** get menu tree */
 export function fetchGetMenuTree() {
-  return alova.Get<Api.SystemManage.MenuTree[]>('/systemManage/getMenuTree');
+  return alova.Get<Api.SystemManage.MenuTree[]>('/system-manage/menus/tree/');
 }

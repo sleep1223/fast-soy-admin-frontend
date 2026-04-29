@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, shallowRef, watch } from 'vue';
-import { fetchGetAllPages, fetchGetMenuTree } from '@/service/api';
+import { fetchGetAllPages, fetchGetMenuTree, fetchGetRoleMenu, fetchUpdateRoleMenu } from '@/service/api';
 import { $t } from '@/locales';
 
 defineOptions({
@@ -9,7 +9,8 @@ defineOptions({
 
 interface Props {
   /** the roleId */
-  roleId: number;
+  roleId: string;
+  byRoleHomeId: string;
 }
 
 const props = defineProps<Props>();
@@ -24,21 +25,15 @@ function closeModal() {
 
 const title = computed(() => $t('common.edit') + $t('page.manage.role.menuAuth'));
 
-const home = shallowRef('');
-
-async function getHome() {
-  console.log(props.roleId);
-
-  home.value = 'home';
-}
+const byRoleHome = shallowRef<string>('');
 
 async function updateHome(val: string) {
   // request
-
-  home.value = val;
+  byRoleHome.value = val;
+  await fetchUpdateRoleMenu({ id: props.roleId, byRoleHomeId: val });
 }
 
-const pages = shallowRef<string[]>([]);
+const pages = shallowRef<{ [key: string]: string }[]>([]);
 
 async function getPages() {
   const { error, data } = await fetchGetAllPages();
@@ -50,8 +45,8 @@ async function getPages() {
 
 const pageSelectOptions = computed(() => {
   const opts: CommonType.Option[] = pages.value.map(page => ({
-    label: page,
-    value: page
+    label: page.key,
+    value: page.value
   }));
 
   return opts;
@@ -59,7 +54,7 @@ const pageSelectOptions = computed(() => {
 
 const tree = shallowRef<Api.SystemManage.MenuTree[]>([]);
 
-async function getTree() {
+async function getMenuTree() {
   const { error, data } = await fetchGetMenuTree();
 
   if (!error) {
@@ -67,28 +62,37 @@ async function getTree() {
   }
 }
 
-const checks = shallowRef<number[]>([]);
+const checks = shallowRef<string[]>([]);
 
 async function getChecks() {
-  console.log(props.roleId);
   // request
-  checks.value = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+
+  const { error, data } = await fetchGetRoleMenu({ id: props.roleId });
+  if (!error) {
+    checks.value = data.byRoleMenuIds || [];
+    byRoleHome.value = data.byRoleHomeId || props.byRoleHomeId;
+  }
 }
 
-function handleSubmit() {
-  console.log(checks.value, props.roleId);
+async function handleSubmit() {
+  // console.log(checks.value, props.roleId);
   // request
 
+  const { error } = await fetchUpdateRoleMenu({
+    id: props.roleId,
+    byRoleHomeId: byRoleHome.value,
+    byRoleMenuIds: checks.value
+  });
+  if (error) return;
   window.$message?.success?.($t('common.modifySuccess'));
 
   closeModal();
 }
 
 function init() {
-  getHome();
-  getPages();
-  getTree();
   getChecks();
+  getPages();
+  getMenuTree();
 }
 
 watch(visible, val => {
@@ -102,12 +106,21 @@ watch(visible, val => {
   <NModal v-model:show="visible" :title="title" preset="card" class="w-480px">
     <div class="flex-y-center gap-16px pb-12px">
       <div>{{ $t('page.manage.menu.home') }}</div>
-      <NSelect :value="home" :options="pageSelectOptions" size="small" class="w-160px" @update:value="updateHome" />
+      <NSelect
+        :value="byRoleHome"
+        :options="pageSelectOptions"
+        size="small"
+        class="w-160px"
+        filterable
+        clearable
+        @update:value="updateHome"
+      />
     </div>
     <NTree
       v-model:checked-keys="checks"
       :data="tree"
       key-field="id"
+      cascade
       checkable
       expand-on-click
       virtual-scroll

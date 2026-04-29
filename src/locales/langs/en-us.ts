@@ -1,4 +1,4 @@
-const local: App.I18n.Schema = {
+const local: App.I18n.BaseSchema = {
   system: {
     title: 'SoybeanAdmin',
     updateTitle: 'System Version Update Notification',
@@ -11,6 +11,8 @@ const local: App.I18n.Schema = {
     add: 'Add',
     addSuccess: 'Add Success',
     backToHome: 'Back to home',
+    batchApprove: 'Batch Approve',
+    batchReject: 'Batch Reject',
     batchDelete: 'Batch Delete',
     cancel: 'Cancel',
     close: 'Close',
@@ -23,7 +25,14 @@ const local: App.I18n.Schema = {
     delete: 'Delete',
     deleteSuccess: 'Delete Success',
     confirmDelete: 'Are you sure you want to delete?',
+    approve: 'Approve',
+    approveSuccess: 'Approve Success',
+    confirmApprove: 'Are you sure you want to approve?',
+    reject: 'Reject',
+    rejectSuccess: 'Approve Reject',
+    confirmReject: 'Are you sure you want to reject?',
     edit: 'Edit',
+    view: 'View',
     warning: 'Warning',
     error: 'Error',
     index: 'Index',
@@ -265,10 +274,24 @@ const local: App.I18n.Schema = {
     'function_toggle-auth': 'Toggle Auth',
     'function_super-page': 'Super Admin Visible',
     manage: 'System Manage',
+    manage_api: 'API Manage',
     manage_user: 'User Manage',
     'manage_user-detail': 'User Detail',
     manage_role: 'Role Manage',
     manage_menu: 'Menu Manage',
+    manage_radar: 'Radar',
+    manage_radar_overview: 'Dashboard',
+    manage_radar_requests: 'Requests',
+    manage_radar_queries: 'SQL Queries',
+    manage_radar_exceptions: 'Exceptions',
+    manage_radar_monitor: 'System Monitor',
+    hr: 'HR Management',
+    'hr_my-workspace': 'My Workspace',
+    hr_team: 'My Team',
+    hr_employee: 'Employee',
+    hr_department: 'Department',
+    hr_tag: 'Tag Management',
+    showcase: 'Showcase (Public)',
     'multi-menu': 'Multi Menu',
     'multi-menu_first': 'Menu One',
     'multi-menu_first_child': 'Menu One Child',
@@ -318,7 +341,7 @@ const local: App.I18n.Schema = {
         back: 'Back',
         validateSuccess: 'Verification passed',
         loginSuccess: 'Login successfully',
-        welcomeBack: 'Welcome back, {userName} !'
+        welcomeBack: 'Welcome back, {nickName} !'
       },
       pwdLogin: {
         title: 'Password Login',
@@ -524,23 +547,29 @@ const local: App.I18n.Schema = {
     },
     manage: {
       common: {
-        status: {
+        statusType: {
           enable: 'Enable',
           disable: 'Disable'
-        }
+        },
+        updatedInfo: 'Updated Info',
+        updatedBy: 'Updated By',
+        updatedAt: 'Updated At',
+        createdBy: 'Created By',
+        createdAt: 'Created At'
       },
       role: {
         title: 'Role List',
         roleName: 'Role Name',
         roleCode: 'Role Code',
-        roleStatus: 'Role Status',
+        rolestatusType: 'Role statusType',
         roleDesc: 'Role Description',
         menuAuth: 'Menu Auth',
         buttonAuth: 'Button Auth',
+        apiAuth: 'Api Auth',
         form: {
           roleName: 'Please enter role name',
           roleCode: 'Please enter role code',
-          roleStatus: 'Please select role status',
+          rolestatusType: 'Please select role statusType',
           roleDesc: 'Please enter role description'
         },
         addRole: 'Add Role',
@@ -549,33 +578,50 @@ const local: App.I18n.Schema = {
       user: {
         title: 'User List',
         userName: 'User Name',
+        password: 'Password',
         userGender: 'Gender',
         nickName: 'Nick Name',
         userPhone: 'Phone Number',
         userEmail: 'Email',
-        userStatus: 'User Status',
+        userStatusType: 'User statusType',
         userRole: 'User Role',
         form: {
           userName: 'Please enter user name',
+          password: 'Please enter password',
+          passwordEditHint: 'Leave blank to keep current password',
           userGender: 'Please select gender',
           nickName: 'Please enter nick name',
           userPhone: 'Please enter phone number',
           userEmail: 'Please enter email',
-          userStatus: 'Please select user status',
+          userStatusType: 'Please select user statusType',
           userRole: 'Please select user role'
+        },
+        offline: 'Offline',
+        batchOffline: 'Batch Offline',
+        confirmOffline: 'Are you sure to force this user offline?',
+        offlineSuccess: 'User has been forced offline',
+        impersonate: {
+          button: 'Impersonate',
+          confirm: 'Are you sure to impersonate as {name}?',
+          switchSuccess: 'Impersonation started',
+          nowActingAs: 'Now acting as {name}',
+          actingAs: 'Impersonating: {name}',
+          exit: 'Exit Impersonation',
+          exitSuccess: 'Impersonation ended'
         },
         addUser: 'Add User',
         editUser: 'Edit User',
         gender: {
           male: 'Male',
-          female: 'Female'
+          female: 'Female',
+          unknow: 'Unknow'
         }
       },
       menu: {
         home: 'Home',
         title: 'Menu List',
         id: 'ID',
-        parentId: 'Parent ID',
+        parentId: 'Parent Menu',
         menuType: 'Menu Type',
         menuName: 'Menu Name',
         routeName: 'Route Name',
@@ -599,7 +645,7 @@ const local: App.I18n.Schema = {
         button: 'Button',
         buttonCode: 'Button Code',
         buttonDesc: 'Button Desc',
-        menuStatus: 'Menu Status',
+        menuStatusType: 'Menu statusType',
         form: {
           home: 'Please select home',
           menuType: 'Please select menu type',
@@ -625,11 +671,16 @@ const local: App.I18n.Schema = {
           button: 'Please select whether it is a button',
           buttonCode: 'Please enter button code',
           buttonDesc: 'Please enter button description',
-          menuStatus: 'Please select menu status'
+          menuStatusType: 'Please select menu statusType'
         },
         addMenu: 'Add Menu',
         editMenu: 'Edit Menu',
         addChildMenu: 'Add Child Menu',
+        includeBusiness: 'Business Menus',
+        includeBusinessWarningTitle: 'Show business menus?',
+        includeBusinessWarning:
+          'Business menus are declared by each module\'s init_data.py. Subtrees guarded by reconcile_menu_subtree are rebuilt from the declarations on every restart — menus you delete here will be restored, and menus you add under them will be removed.',
+        dontShowAgain: 'Don\'t show again',
         type: {
           directory: 'Directory',
           menu: 'Menu'
@@ -638,6 +689,257 @@ const local: App.I18n.Schema = {
           iconify: 'Iconify Icon',
           local: 'Local Icon'
         }
+      },
+      api: {
+        title: '',
+        path: '',
+        method: '',
+        summary: '',
+        tags: '',
+        statusType: '',
+        includeSystem: 'Include system APIs',
+        form: {
+          path: '',
+          method: '',
+          summary: '',
+          tags: '',
+          statusType: ''
+        },
+        addApi: '',
+        editApi: '',
+        methods: {
+          GET: '',
+          POST: '',
+          PUT: '',
+          PATCH: '',
+          DELETE: ''
+        }
+      },
+      radar: {
+        purge: 'Purge Data',
+        purgeConfirm: 'Purge monitoring data older than 24 hours?',
+        purgeSuccess: 'Records purged',
+        overview: {
+          title: 'Dashboard',
+          requestCount: 'Total Requests',
+          avgDuration: 'Avg Duration',
+          errorCount: 'Errors',
+          errorRate: 'Error Rate',
+          queryCount: 'SQL Queries',
+          slowQueryCount: 'Slow Queries',
+          userLogCount: 'User Logs'
+        },
+        dashboard: {
+          totalRequests: 'Total Requests',
+          avgResponseTime: 'Avg Response Time',
+          dbQueries: 'DB Queries',
+          exceptions: 'Exceptions',
+          perfOverview: 'Performance Overview',
+          successRate: 'Success Rate',
+          errorRate: 'Error Rate',
+          rps: 'Requests/s',
+          responseTime: 'Response Time',
+          queryPerf: 'Query Performance',
+          requestDist: 'Request Distribution',
+          responseTimeTrend: 'Response Time Trend',
+          queryActivity: 'Database Activity'
+        },
+        monitor: {
+          title: 'System Monitor',
+          autoRefresh: 'Auto Refresh',
+          paused: 'Paused',
+          cpuUsage: 'CPU Usage',
+          cores: 'Cores',
+          threads: 'Threads',
+          memoryUsage: 'Memory Usage',
+          used: 'Used',
+          total: 'Total',
+          diskUsage: 'Disk Usage',
+          diskIO: 'Disk IO',
+          read: 'Read',
+          write: 'Write',
+          totalRead: 'Total Read',
+          totalWrite: 'Total Write',
+          networkIO: 'Network IO',
+          activeConnections: 'Active Conn',
+
+          upload: 'Upload',
+          download: 'Download',
+          totalSent: 'Total Sent',
+          totalRecv: 'Total Recv',
+          basicInfo: 'Basic Info',
+          hostname: 'Hostname',
+          ipAddress: 'IP Address',
+          os: 'OS',
+          architecture: 'Architecture',
+          processor: 'Processor',
+          pythonVersion: 'Python Version',
+          systemStatus: 'System Status',
+          systemLoad: 'System Load',
+          loadAvg: '1/5/15 min load avg',
+          uptime: 'Uptime',
+          bootTime: 'Boot Time',
+          processes: 'Processes',
+          running: 'Running',
+          sleeping: 'Sleeping',
+          onlineUsers: 'Online Users',
+          updateTime: 'Update Time',
+          networkTrend: 'Network Usage Trend',
+          topProcesses: 'Top 10 Processes',
+          processName: 'Process Name',
+          memPercent: 'Memory%',
+          status: 'Status',
+          createTime: 'Create Time'
+        },
+        requests: {
+          title: 'Requests',
+          method: 'Method',
+          path: 'Path',
+          status: 'Status',
+          businessCode: 'Business Code',
+          businessMsg: 'Message',
+          duration: 'Duration',
+          error: 'Error',
+          createdAt: 'Time',
+          detail: 'Request Detail',
+          queryParams: 'Query Params',
+          minDuration: 'Min Duration',
+          hasError: 'Has Error',
+          xRequestId: 'Request ID',
+          clientIp: 'Client IP',
+          requestHeaders: 'Request Headers',
+          requestBody: 'Request Body',
+          responseHeaders: 'Response Headers',
+          responseBody: 'Response Body'
+        },
+        queries: {
+          title: 'SQL Queries',
+          operation: 'Operation',
+          connection: 'Connection',
+          slowOnly: 'Slow Only',
+          threshold: 'Threshold'
+        },
+        exceptions: {
+          title: 'Exceptions',
+          errorType: 'Error Type',
+          errorMessage: 'Error Message',
+          detail: 'Exception Detail',
+          status: 'Status',
+          resolved: 'Resolved',
+          unresolved: 'Unresolved'
+        },
+        userLogs: {
+          title: 'User Logs'
+        }
+      }
+    },
+    userCenter: {
+      profile: {
+        title: 'Profile',
+        userName: 'Username',
+        nickName: 'Nickname',
+        roles: 'Roles',
+        impersonating: 'You are impersonating another user'
+      },
+      password: {
+        title: 'Change Password',
+        oldPassword: 'Old Password',
+        newPassword: 'New Password',
+        confirmPassword: 'Confirm Password',
+        oldPasswordPlaceholder: 'Enter old password',
+        newPasswordPlaceholder: 'Enter new password',
+        confirmPasswordPlaceholder: 'Re-enter new password',
+        submit: 'Submit',
+        success: 'Password changed, please log in again'
+      }
+    },
+    hr: {
+      common: {
+        status: 'Status',
+        form: {
+          status: 'Please select status'
+        }
+      },
+      employee: {
+        title: 'Employee List',
+        name: 'Name',
+        userName: 'Username',
+        employeeNo: 'Employee No.',
+        email: 'Email',
+        phone: 'Phone',
+        position: 'Position',
+        avatar: 'Avatar',
+        avatarUploadSuccess: 'Avatar uploaded successfully',
+        department: 'Department',
+        tags: 'Tags',
+        form: {
+          name: 'Please enter name',
+          userName: 'Please enter username (phone)',
+          email: 'Please enter email',
+          phone: 'Please enter phone',
+          position: 'Please enter position',
+          department: 'Please select department',
+          tags: 'Please select tags',
+          status: 'Please select employee status'
+        },
+        status: {
+          pending: 'Pending',
+          onboarding: 'Onboarding',
+          active: 'Active',
+          resigned: 'Resigned'
+        },
+        transition: {
+          toOnboarding: 'Start Onboarding',
+          toActive: 'Mark Active',
+          toResigned: 'Mark Resigned',
+          confirm: 'Confirm employee status change?',
+          success: 'Employee status updated'
+        },
+        addEmployee: 'Add Employee',
+        editEmployee: 'Edit Employee'
+      },
+      department: {
+        title: 'Department List',
+        name: 'Department Name',
+        code: 'Department Code',
+        description: 'Description',
+        form: {
+          name: 'Please enter department name',
+          code: 'Please enter department code',
+          description: 'Please enter description'
+        },
+        addDepartment: 'Add Department',
+        editDepartment: 'Edit Department'
+      },
+      tag: {
+        title: 'Tag List',
+        name: 'Tag Name',
+        category: 'Category',
+        description: 'Description',
+        form: {
+          name: 'Please enter tag name',
+          category: 'Please select category',
+          description: 'Please enter description'
+        },
+        addTag: 'Add Tag',
+        editTag: 'Edit Tag'
+      },
+      my: {
+        profileTitle: 'My Profile',
+        tagTitle: 'My Tags',
+        colleaguesTitle: 'Department Colleagues',
+        editProfile: 'Edit My Profile',
+        editTags: 'Edit My Tags',
+        avatarUploadSuccess: 'Avatar uploaded successfully'
+      },
+      team: {
+        title: 'Subordinates',
+        department: 'Department',
+        total: 'Headcount',
+        statusBreakdown: 'Status Breakdown',
+        addSubordinate: 'Add Subordinate',
+        editSubordinate: 'Edit Subordinate',
+        editTags: 'Edit Tags'
       }
     }
   },

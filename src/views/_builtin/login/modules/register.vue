@@ -3,6 +3,7 @@ import { computed, reactive } from 'vue';
 import { useRouterPush } from '@/hooks/common/router';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { useCaptcha } from '@/hooks/business/captcha';
+import { fetchRegister } from '@/service/api';
 import { $t } from '@/locales';
 
 defineOptions({
@@ -11,7 +12,7 @@ defineOptions({
 
 const { toggleLoginModule } = useRouterPush();
 const { formRef, validate } = useNaiveForm();
-const { label, isCounting, loading, getCaptcha } = useCaptcha();
+const { label, isCounting, loading: captchaLoading, getCaptcha } = useCaptcha();
 
 interface FormModel {
   phone: string;
@@ -40,8 +41,17 @@ const rules = computed<Record<keyof FormModel, App.Global.FormRule[]>>(() => {
 
 async function handleSubmit() {
   await validate();
-  // request to register
-  window.$message?.success($t('page.login.common.validateSuccess'));
+
+  const { error } = await fetchRegister({
+    phone: model.phone,
+    code: model.code,
+    password: model.password
+  });
+
+  if (!error) {
+    window.$message?.success?.($t('page.login.common.validateSuccess'));
+    toggleLoginModule('pwd-login');
+  }
 }
 </script>
 
@@ -53,7 +63,7 @@ async function handleSubmit() {
     <NFormItem path="code">
       <div class="w-full flex-y-center gap-16px">
         <NInput v-model:value="model.code" :placeholder="$t('page.login.common.codePlaceholder')" />
-        <NButton size="large" :disabled="isCounting" :loading="loading" @click="getCaptcha(model.phone)">
+        <NButton size="large" :disabled="isCounting" :loading="captchaLoading" @click="getCaptcha(model.phone)">
           {{ label }}
         </NButton>
       </div>

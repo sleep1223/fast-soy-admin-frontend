@@ -32,7 +32,7 @@ export function verifyCaptcha(phone: string, code: string) {
  */
 export function fetchRefreshToken(refreshToken: string) {
   return alova.Post<Api.Auth.LoginToken>(
-    '/auth/refreshToken',
+    '/auth/refresh-token',
     { refreshToken },
     {
       meta: {

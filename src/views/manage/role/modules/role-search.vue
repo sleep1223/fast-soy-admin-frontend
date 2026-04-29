@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { toRaw } from 'vue';
 import { jsonClone } from '@sa/utils';
-import { enableStatusOptions } from '@/constants/business';
+import { statusTypeOptions } from '@/constants/business';
 import { translateOptions } from '@/utils/common';
 import { $t } from '@/locales';
-
 defineOptions({
   name: 'RoleSearch'
 });
@@ -40,11 +39,17 @@ function search() {
             <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.role.roleCode')" path="roleCode" class="pr-24px">
               <NInput v-model:value="model.roleCode" :placeholder="$t('page.manage.role.form.roleCode')" />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.role.roleStatus')" path="status" class="pr-24px">
+            <NFormItemGi
+              span="24 s:12 m:6"
+              :label="$t('page.manage.role.rolestatusType')"
+              path="status"
+              class="pr-24px"
+            >
               <NSelect
-                v-model:value="model.status"
-                :placeholder="$t('page.manage.role.form.roleStatus')"
-                :options="translateOptions(enableStatusOptions)"
+                v-model:value="model.statusType"
+                :placeholder="$t('page.manage.role.form.rolestatusType')"
+                :options="translateOptions(statusTypeOptions)"
+                filterable
                 clearable
               />
             </NFormItemGi>

@@ -1,10 +1,10 @@
 import { request } from '../request';
 
 /**
- * Login
+ * login
  *
- * @param userName User name
- * @param password Password
+ * @param userName user name
+ * @param password password
  */
 export function fetchLogin(userName: string, password: string) {
   return request<Api.Auth.LoginToken>({
@@ -17,19 +17,19 @@ export function fetchLogin(userName: string, password: string) {
   });
 }
 
-/** Get user info */
+/** get user info */
 export function fetchGetUserInfo() {
-  return request<Api.Auth.UserInfo>({ url: '/auth/getUserInfo' });
+  return request<Api.Auth.UserInfo>({ url: '/auth/user-info' });
 }
 
 /**
- * Refresh token
+ * refresh token
  *
- * @param refreshToken Refresh token
+ * @param refreshToken refresh token
  */
 export function fetchRefreshToken(refreshToken: string) {
   return request<Api.Auth.LoginToken>({
-    url: '/auth/refreshToken',
+    url: '/auth/refresh-token',
     method: 'post',
     data: {
       refreshToken
@@ -37,12 +37,55 @@ export function fetchRefreshToken(refreshToken: string) {
   });
 }
 
-/**
- * return custom backend error
- *
- * @param code error code
- * @param msg error message
- */
-export function fetchCustomBackendError(code: string, msg: string) {
-  return request({ url: '/auth/error', params: { code, msg } });
+/** send captcha code */
+export function fetchSendCaptcha(phone: string) {
+  return request<null>({
+    url: '/auth/captcha',
+    method: 'post',
+    data: { phone }
+  });
+}
+
+/** login by captcha code */
+export function fetchCodeLogin(phone: string, code: string) {
+  return request<Api.Auth.LoginToken>({
+    url: '/auth/code-login',
+    method: 'post',
+    data: { phone, code }
+  });
+}
+
+/** register */
+export function fetchRegister(data: { phone: string; code: string; password: string; userName?: string }) {
+  return request<null>({
+    url: '/auth/register',
+    method: 'post',
+    data
+  });
+}
+
+/** reset password by phone captcha */
+export function fetchResetPassword(data: { phone: string; code: string; password: string }) {
+  return request<null>({
+    url: '/auth/reset-password',
+    method: 'post',
+    data
+  });
+}
+
+/** impersonate user (admin only) */
+export function fetchImpersonate(userId: string) {
+  return request<Api.Auth.LoginToken>({
+    url: `/auth/impersonate/${userId}`,
+    method: 'post'
+  });
+}
+
+/** update password for the current user */
+export function fetchUpdatePassword(data: Api.Auth.UpdatePasswordParams) {
+  return request<null, 'json'>({
+    url: '/auth/password',
+    method: 'patch',
+    data
+  });
 }

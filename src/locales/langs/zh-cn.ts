@@ -1,4 +1,4 @@
-const local: App.I18n.Schema = {
+const local: App.I18n.BaseSchema = {
   system: {
     title: 'Soybean 管理系统',
     updateTitle: '系统版本更新通知',
@@ -12,6 +12,8 @@ const local: App.I18n.Schema = {
     addSuccess: '添加成功',
     backToHome: '返回首页',
     batchDelete: '批量删除',
+    batchApprove: '批量通过',
+    batchReject: '批量拒绝',
     cancel: '取消',
     close: '关闭',
     check: '勾选',
@@ -23,7 +25,14 @@ const local: App.I18n.Schema = {
     delete: '删除',
     deleteSuccess: '删除成功',
     confirmDelete: '确认删除吗？',
+    approve: '通过',
+    approveSuccess: '通过成功',
+    confirmApprove: '确认通过吗？',
+    reject: '拒绝',
+    rejectSuccess: '拒绝成功',
+    confirmReject: '确认拒绝吗？',
     edit: '编辑',
+    view: '查看',
     warning: '警告',
     error: '错误',
     index: '序号',
@@ -261,10 +270,24 @@ const local: App.I18n.Schema = {
     'function_toggle-auth': '切换权限',
     'function_super-page': '超级管理员可见',
     manage: '系统管理',
+    manage_api: 'API管理',
     manage_user: '用户管理',
     'manage_user-detail': '用户详情',
     manage_role: '角色管理',
     manage_menu: '菜单管理',
+    manage_radar: '性能监控',
+    manage_radar_overview: '仪表盘',
+    manage_radar_requests: '请求列表',
+    manage_radar_queries: 'SQL查询',
+    manage_radar_exceptions: '异常列表',
+    manage_radar_monitor: '系统监控',
+    hr: 'HR管理',
+    'hr_my-workspace': '我的工作台',
+    hr_team: '我的团队',
+    hr_employee: '员工管理',
+    hr_department: '部门管理',
+    hr_tag: '标签管理',
+    showcase: '数据展示（公开）',
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',
     'multi-menu_first_child': '菜单一子菜单',
@@ -314,7 +337,7 @@ const local: App.I18n.Schema = {
         back: '返回',
         validateSuccess: '验证成功',
         loginSuccess: '登录成功',
-        welcomeBack: '欢迎回来，{userName} ！'
+        welcomeBack: '欢迎回来，{nickName} ！'
       },
       pwdLogin: {
         title: '密码登录',
@@ -520,58 +543,106 @@ const local: App.I18n.Schema = {
     },
     manage: {
       common: {
-        status: {
+        statusType: {
           enable: '启用',
           disable: '禁用'
-        }
+        },
+        updatedInfo: '更新信息',
+        updatedBy: '更新人',
+        updatedAt: '更新时间',
+        createdBy: '创建人',
+        createdAt: '创建时间'
       },
       role: {
         title: '角色列表',
         roleName: '角色名称',
         roleCode: '角色编码',
-        roleStatus: '角色状态',
+        rolestatusType: '角色状态',
         roleDesc: '角色描述',
         menuAuth: '菜单权限',
         buttonAuth: '按钮权限',
+        apiAuth: 'API权限',
         form: {
           roleName: '请输入角色名称',
           roleCode: '请输入角色编码',
-          roleStatus: '请选择角色状态',
+          rolestatusType: '请选择角色状态',
           roleDesc: '请输入角色描述'
         },
         addRole: '新增角色',
         editRole: '编辑角色'
       },
+      api: {
+        title: 'API列表',
+        path: 'API路径',
+        method: '请求方式',
+        summary: 'API简介',
+        tags: '标签',
+        statusType: 'API状态',
+        includeSystem: '包含系统接口',
+        form: {
+          path: '请输入API路径',
+          method: '请选择请求方式',
+          summary: '请输入API简介',
+          tags: '请选择标签',
+          statusType: '请选择API状态'
+        },
+        addApi: '新增API',
+        editApi: '编辑API',
+        methods: {
+          GET: 'GET',
+          POST: 'POST',
+          PUT: 'PUT',
+          PATCH: 'PATCH',
+          DELETE: 'DELETE'
+        }
+      },
       user: {
         title: '用户列表',
         userName: '用户名',
+        password: '密码',
         userGender: '性别',
         nickName: '昵称',
         userPhone: '手机号',
         userEmail: '邮箱',
-        userStatus: '用户状态',
+        userStatusType: '用户状态',
         userRole: '用户角色',
         form: {
           userName: '请输入用户名',
+          password: '请输入密码',
+          passwordEditHint: '不填则不修改密码',
           userGender: '请选择性别',
           nickName: '请输入昵称',
           userPhone: '请输入手机号',
           userEmail: '请输入邮箱',
-          userStatus: '请选择用户状态',
+          userStatusType: '请选择用户状态',
           userRole: '请选择用户角色'
+        },
+        offline: '下线',
+        batchOffline: '批量下线',
+        confirmOffline: '确认将该用户强制下线吗？',
+        offlineSuccess: '下线成功',
+        impersonate: {
+          button: '模拟登录',
+          confirm: '确认以 {name} 的身份模拟登录吗？',
+          switchSuccess: '模拟登录成功',
+          nowActingAs: '当前正在模拟用户 {name}',
+          actingAs: '模拟中: {name}',
+          exit: '退出模拟',
+          exitSuccess: '已退出模拟登录'
         },
         addUser: '新增用户',
         editUser: '编辑用户',
         gender: {
           male: '男',
-          female: '女'
+          female: '女',
+          unknow: '未知'
         }
       },
       menu: {
         home: '首页',
         title: '菜单列表',
         id: 'ID',
-        parentId: '父级菜单ID',
+        parentId: '父级菜单',
         menuType: '菜单类型',
         menuName: '菜单名称',
         routeName: '路由名称',
@@ -595,7 +666,7 @@ const local: App.I18n.Schema = {
         button: '按钮',
         buttonCode: '按钮编码',
         buttonDesc: '按钮描述',
-        menuStatus: '菜单状态',
+        menuStatusType: '菜单状态',
         form: {
           home: '请选择首页',
           menuType: '请选择菜单类型',
@@ -621,11 +692,16 @@ const local: App.I18n.Schema = {
           button: '请选择是否按钮',
           buttonCode: '请输入按钮编码',
           buttonDesc: '请输入按钮描述',
-          menuStatus: '请选择菜单状态'
+          menuStatusType: '请选择菜单状态'
         },
         addMenu: '新增菜单',
         editMenu: '编辑菜单',
         addChildMenu: '新增子菜单',
+        includeBusiness: '业务菜单',
+        includeBusinessWarningTitle: '确认显示业务菜单？',
+        includeBusinessWarning:
+          '业务菜单由各业务模块的 init_data.py 声明，启用 reconcile_menu_subtree 的子树在服务重启时会根据声明重建——手动删除的菜单会被恢复，手动新增的菜单会被清除。',
+        dontShowAgain: '不再提示',
         type: {
           directory: '目录',
           menu: '菜单'
@@ -634,6 +710,232 @@ const local: App.I18n.Schema = {
           iconify: 'iconify图标',
           local: '本地图标'
         }
+      },
+      radar: {
+        purge: '清理数据',
+        purgeConfirm: '确定清理24小时前的监控数据？',
+        purgeSuccess: '已清理记录数',
+        overview: {
+          title: '仪表盘',
+          requestCount: '总请求数',
+          avgDuration: '平均耗时',
+          errorCount: '异常数',
+          errorRate: '异常率',
+          queryCount: 'SQL查询数',
+          slowQueryCount: '慢查询数',
+          userLogCount: '用户日志数'
+        },
+        dashboard: {
+          totalRequests: '总请求数',
+          avgResponseTime: '平均响应时间',
+          dbQueries: '数据库查询',
+          exceptions: '异常数',
+          perfOverview: '性能概览',
+          successRate: '成功率',
+          errorRate: '错误率',
+          rps: '每秒请求数',
+          responseTime: '响应时间',
+          queryPerf: '查询性能',
+          requestDist: '请求分布',
+          responseTimeTrend: '响应时间趋势',
+          queryActivity: '数据库活动'
+        },
+        monitor: {
+          title: '系统监控',
+          autoRefresh: '自动刷新',
+          paused: '已暂停',
+          cpuUsage: 'CPU使用率',
+          cores: '核心',
+          threads: '线程',
+          memoryUsage: '内存使用率',
+          used: '已使用',
+          total: '总计',
+          diskUsage: '磁盘使用率',
+          diskIO: '磁盘IO',
+          read: '读取',
+          write: '写入',
+          totalRead: '总读取',
+          totalWrite: '总写入',
+          networkIO: '网络IO',
+          activeConnections: '活跃连接',
+
+          upload: '上传',
+          download: '下载',
+          totalSent: '总发送',
+          totalRecv: '总接收',
+          basicInfo: '基本信息',
+          hostname: '主机名',
+          ipAddress: 'IP地址',
+          os: '操作系统',
+          architecture: '架构',
+          processor: '处理器',
+          pythonVersion: 'Python版本',
+          systemStatus: '系统状态',
+          systemLoad: '系统负载',
+          loadAvg: '1/5/15 分钟平均负载',
+          uptime: '运行时间',
+          bootTime: '启动时间',
+          processes: '进程数',
+          running: '运行中',
+          sleeping: '休眠中',
+          onlineUsers: '在线用户',
+          updateTime: '更新时间',
+          networkTrend: '网络使用趋势',
+          topProcesses: 'Top 10 进程',
+          processName: '进程名',
+          memPercent: '内存%',
+          status: '状态',
+          createTime: '创建时间'
+        },
+        requests: {
+          title: '请求列表',
+          method: '请求方法',
+          path: '请求路径',
+          status: '状态码',
+          businessCode: '业务码',
+          businessMsg: '业务消息',
+          duration: '耗时',
+          error: '异常',
+          createdAt: '时间',
+          detail: '请求详情',
+          queryParams: '查询参数',
+          minDuration: '最小耗时',
+          hasError: '是否异常',
+          xRequestId: '请求ID',
+          clientIp: '客户端IP',
+          requestHeaders: '请求头',
+          requestBody: '请求体',
+          responseHeaders: '响应头',
+          responseBody: '响应体'
+        },
+        queries: {
+          title: 'SQL查询列表',
+          operation: '操作类型',
+          connection: '连接',
+          slowOnly: '仅慢查询',
+          threshold: '阈值'
+        },
+        exceptions: {
+          title: '异常列表',
+          errorType: '异常类型',
+          errorMessage: '异常消息',
+          detail: '异常详情',
+          status: '处理状态',
+          resolved: '已处理',
+          unresolved: '未处理'
+        },
+        userLogs: {
+          title: '用户日志'
+        }
+      }
+    },
+    userCenter: {
+      profile: {
+        title: '个人信息',
+        userName: '用户名',
+        nickName: '昵称',
+        roles: '角色',
+        impersonating: '当前为模拟登录'
+      },
+      password: {
+        title: '修改密码',
+        oldPassword: '原密码',
+        newPassword: '新密码',
+        confirmPassword: '确认新密码',
+        oldPasswordPlaceholder: '请输入原密码',
+        newPasswordPlaceholder: '请输入新密码',
+        confirmPasswordPlaceholder: '请再次输入新密码',
+        submit: '提交',
+        success: '密码修改成功，请重新登录'
+      }
+    },
+    hr: {
+      common: {
+        status: '状态',
+        form: {
+          status: '请选择状态'
+        }
+      },
+      employee: {
+        title: '员工列表',
+        name: '姓名',
+        userName: '用户名',
+        employeeNo: '工号',
+        email: '邮箱',
+        phone: '电话',
+        position: '职位',
+        avatar: '头像',
+        avatarUploadSuccess: '头像上传成功',
+        department: '部门',
+        tags: '标签',
+        form: {
+          name: '请输入姓名',
+          userName: '请输入用户名(手机号)',
+          email: '请输入邮箱',
+          phone: '请输入电话',
+          position: '请输入职位',
+          department: '请选择部门',
+          tags: '请选择标签',
+          status: '请选择员工状态'
+        },
+        status: {
+          pending: '待入职',
+          onboarding: '入职中',
+          active: '在职',
+          resigned: '已离职'
+        },
+        transition: {
+          toOnboarding: '办理入职',
+          toActive: '确认转正',
+          toResigned: '办理离职',
+          confirm: '确认变更员工状态吗？',
+          success: '员工状态更新成功'
+        },
+        addEmployee: '新增员工',
+        editEmployee: '编辑员工'
+      },
+      department: {
+        title: '部门列表',
+        name: '部门名称',
+        code: '部门编码',
+        description: '描述',
+        form: {
+          name: '请输入部门名称',
+          code: '请输入部门编码',
+          description: '请输入描述'
+        },
+        addDepartment: '新增部门',
+        editDepartment: '编辑部门'
+      },
+      tag: {
+        title: '标签列表',
+        name: '标签名称',
+        category: '分类',
+        description: '描述',
+        form: {
+          name: '请输入标签名称',
+          category: '请选择分类',
+          description: '请输入描述'
+        },
+        addTag: '新增标签',
+        editTag: '编辑标签'
+      },
+      my: {
+        profileTitle: '个人资料',
+        tagTitle: '我的标签',
+        colleaguesTitle: '同部门同事',
+        editProfile: '编辑我的资料',
+        editTags: '编辑我的标签',
+        avatarUploadSuccess: '头像上传成功'
+      },
+      team: {
+        title: '下属列表',
+        department: '所在部门',
+        total: '团队人数',
+        statusBreakdown: '状态分布',
+        addSubordinate: '新增下属',
+        editSubordinate: '编辑下属',
+        editTags: '编辑标签'
       }
     }
   },

@@ -3,6 +3,14 @@ declare namespace StorageType {
   interface Session {
     /** The theme color */
     themeColor: string;
+    /** The token (used when "remember me" is unchecked — cleared on tab/window close) */
+    token: string;
+    /** The refresh token (only present when impersonating in non-remember mode) */
+    refreshToken: string;
+    /** Original admin token saved during impersonation (non-remember mode) */
+    originalToken: string;
+    /** Original admin refresh token saved during impersonation (non-remember mode) */
+    originalRefreshToken: string;
     // /**
     //  * the theme settings
     //  */
@@ -39,5 +47,9 @@ declare namespace StorageType {
     };
     /** The last login user id */
     lastLoginUserId: string;
+    /** The original admin token saved during impersonation */
+    originalToken: string;
+    /** The original admin refresh token saved during impersonation */
+    originalRefreshToken: string;
   }
 }

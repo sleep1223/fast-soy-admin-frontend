@@ -310,6 +310,22 @@ declare namespace App {
       invalid: string;
     };
 
+    /**
+     * 由 cli-gen 生成的业务模块通过 declare 合并向此 interface 注入 `page.<module>` 类型，
+     * 见 `web/src/locales/langs/_generated/<module>/types.d.ts`。
+     */
+    interface GeneratedPages {}
+
+    type _MergePages<T> = { [K in keyof T]: T[K] };
+
+    /**
+     * 基础语言包类型 — 不含 cli-gen 通过 GeneratedPages 注入的 `page.<module>` 子树。
+     * `web/src/locales/langs/{zh-cn,en-us}.ts` 用此类型；运行期由 locale.ts 合并 `_generated/*` 后还原 Schema 形态。
+     */
+    type BaseSchema = Omit<Schema, 'page'> & {
+      page: Omit<Schema['page'], keyof GeneratedPages>;
+    };
+
     type Schema = {
       system: {
         title: string;
@@ -324,6 +340,8 @@ declare namespace App {
         addSuccess: string;
         backToHome: string;
         batchDelete: string;
+        batchApprove: string;
+        batchReject: string;
         cancel: string;
         close: string;
         check: string;
@@ -335,7 +353,14 @@ declare namespace App {
         delete: string;
         deleteSuccess: string;
         confirmDelete: string;
+        approve: string;
+        approveSuccess: string;
+        confirmApprove: string;
+        reject: string;
+        rejectSuccess: string;
+        confirmReject: string;
         edit: string;
+        view: string;
         warning: string;
         error: string;
         index: string;
@@ -479,7 +504,7 @@ declare namespace App {
           resetSuccessMsg: string;
         };
       };
-      route: Record<I18nRouteKey, string>;
+      route: Partial<Record<I18nRouteKey, string>>;
       page: {
         login: {
           common: {
@@ -699,51 +724,216 @@ declare namespace App {
         };
         manage: {
           common: {
-            status: {
+            statusType: {
               enable: string;
               disable: string;
             };
+            updatedInfo: string;
+            updatedBy: string;
+            updatedAt: string;
+            createdBy: string;
+            createdAt: string;
           };
           role: {
             title: string;
             roleName: string;
             roleCode: string;
-            roleStatus: string;
+            rolestatusType: string;
             roleDesc: string;
             form: {
               roleName: string;
               roleCode: string;
-              roleStatus: string;
+              rolestatusType: string;
               roleDesc: string;
             };
             addRole: string;
             editRole: string;
             menuAuth: string;
             buttonAuth: string;
+            apiAuth: string;
+          };
+          api: {
+            title: string;
+            path: string;
+            method: string;
+            summary: string;
+            tags: string;
+            statusType: string;
+            includeSystem: string;
+            form: {
+              path: string;
+              method: string;
+              summary: string;
+              tags: string;
+              statusType: string;
+            };
+            addApi: string;
+            editApi: string;
+            methods: {
+              GET: string;
+              POST: string;
+              PUT: string;
+              PATCH: string;
+              DELETE: string;
+            };
           };
           user: {
             title: string;
             userName: string;
+            password: string;
             userGender: string;
             nickName: string;
             userPhone: string;
             userEmail: string;
-            userStatus: string;
+            userStatusType: string;
             userRole: string;
             form: {
               userName: string;
+              password: string;
+              passwordEditHint: string;
               userGender: string;
               nickName: string;
               userPhone: string;
               userEmail: string;
-              userStatus: string;
+              userStatusType: string;
               userRole: string;
+            };
+            offline: string;
+            batchOffline: string;
+            confirmOffline: string;
+            offlineSuccess: string;
+            impersonate: {
+              button: string;
+              confirm: string;
+              switchSuccess: string;
+              nowActingAs: string;
+              actingAs: string;
+              exit: string;
+              exitSuccess: string;
             };
             addUser: string;
             editUser: string;
             gender: {
               male: string;
               female: string;
+              unknow: string;
+            };
+          };
+
+          radar: {
+            purge: string;
+            purgeConfirm: string;
+            purgeSuccess: string;
+            overview: {
+              title: string;
+              requestCount: string;
+              avgDuration: string;
+              errorCount: string;
+              errorRate: string;
+              queryCount: string;
+              slowQueryCount: string;
+              userLogCount: string;
+            };
+            dashboard: {
+              totalRequests: string;
+              avgResponseTime: string;
+              dbQueries: string;
+              exceptions: string;
+              perfOverview: string;
+              successRate: string;
+              errorRate: string;
+              rps: string;
+              responseTime: string;
+              queryPerf: string;
+              requestDist: string;
+              responseTimeTrend: string;
+              queryActivity: string;
+            };
+            monitor: {
+              title: string;
+              autoRefresh: string;
+              paused: string;
+              cpuUsage: string;
+              cores: string;
+              threads: string;
+              memoryUsage: string;
+              used: string;
+              total: string;
+              diskUsage: string;
+              diskIO: string;
+              read: string;
+              write: string;
+              totalRead: string;
+              totalWrite: string;
+              networkIO: string;
+              activeConnections: string;
+              upload: string;
+              download: string;
+              totalSent: string;
+              totalRecv: string;
+              basicInfo: string;
+              hostname: string;
+              ipAddress: string;
+              os: string;
+              architecture: string;
+              processor: string;
+              pythonVersion: string;
+              systemStatus: string;
+              systemLoad: string;
+              loadAvg: string;
+              uptime: string;
+              bootTime: string;
+              processes: string;
+              running: string;
+              sleeping: string;
+              onlineUsers: string;
+              updateTime: string;
+              networkTrend: string;
+              topProcesses: string;
+              processName: string;
+              memPercent: string;
+              status: string;
+              createTime: string;
+            };
+            requests: {
+              title: string;
+              method: string;
+              path: string;
+              status: string;
+              duration: string;
+              error: string;
+              createdAt: string;
+              detail: string;
+              queryParams: string;
+              minDuration: string;
+              hasError: string;
+              businessCode: string;
+              businessMsg: string;
+              xRequestId: string;
+              clientIp: string;
+              requestHeaders: string;
+              requestBody: string;
+              responseHeaders: string;
+              responseBody: string;
+            };
+            queries: {
+              title: string;
+              operation: string;
+              connection: string;
+              slowOnly: string;
+              threshold: string;
+            };
+            exceptions: {
+              title: string;
+              errorType: string;
+              errorMessage: string;
+              detail: string;
+              status: string;
+              resolved: string;
+              unresolved: string;
+            };
+            userLogs: {
+              title: string;
             };
           };
           menu: {
@@ -774,7 +964,7 @@ declare namespace App {
             button: string;
             buttonCode: string;
             buttonDesc: string;
-            menuStatus: string;
+            menuStatusType: string;
             form: {
               home: string;
               menuType: string;
@@ -800,11 +990,15 @@ declare namespace App {
               button: string;
               buttonCode: string;
               buttonDesc: string;
-              menuStatus: string;
+              menuStatusType: string;
             };
             addMenu: string;
             editMenu: string;
             addChildMenu: string;
+            includeBusiness: string;
+            includeBusinessWarningTitle: string;
+            includeBusinessWarning: string;
+            dontShowAgain: string;
             type: {
               directory: string;
               menu: string;
@@ -815,7 +1009,116 @@ declare namespace App {
             };
           };
         };
-      };
+        userCenter: {
+          profile: {
+            title: string;
+            userName: string;
+            nickName: string;
+            roles: string;
+            impersonating: string;
+          };
+          password: {
+            title: string;
+            oldPassword: string;
+            newPassword: string;
+            confirmPassword: string;
+            oldPasswordPlaceholder: string;
+            newPasswordPlaceholder: string;
+            confirmPasswordPlaceholder: string;
+            submit: string;
+            success: string;
+          };
+        };
+        hr: {
+          common: {
+            status: string;
+            form: {
+              status: string;
+            };
+          };
+          department: {
+            title: string;
+            name: string;
+            code: string;
+            description: string;
+            addDepartment: string;
+            editDepartment: string;
+            form: {
+              name: string;
+              code: string;
+              description: string;
+            };
+          };
+          employee: {
+            title: string;
+            userName: string;
+            name: string;
+            employeeNo: string;
+            email: string;
+            phone: string;
+            position: string;
+            avatar: string;
+            avatarUploadSuccess: string;
+            department: string;
+            tags: string;
+            addEmployee: string;
+            editEmployee: string;
+            form: {
+              userName: string;
+              name: string;
+              email: string;
+              phone: string;
+              position: string;
+              department: string;
+              tags: string;
+              status: string;
+            };
+            status: {
+              pending: string;
+              onboarding: string;
+              active: string;
+              resigned: string;
+            };
+            transition: {
+              toOnboarding: string;
+              toActive: string;
+              toResigned: string;
+              confirm: string;
+              success: string;
+            };
+          };
+          tag: {
+            title: string;
+            name: string;
+            category: string;
+            description: string;
+            addTag: string;
+            editTag: string;
+            form: {
+              name: string;
+              category: string;
+              description: string;
+            };
+          };
+          my: {
+            profileTitle: string;
+            tagTitle: string;
+            colleaguesTitle: string;
+            editProfile: string;
+            editTags: string;
+            avatarUploadSuccess: string;
+          };
+          team: {
+            title: string;
+            department: string;
+            total: string;
+            statusBreakdown: string;
+            addSubordinate: string;
+            editSubordinate: string;
+            editTags: string;
+          };
+        };
+      } & _MergePages<GeneratedPages>;
       form: {
         required: string;
         userName: FormMsg;

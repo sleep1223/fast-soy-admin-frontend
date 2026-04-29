@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, shallowRef } from 'vue';
+import { computed, shallowRef, watch } from 'vue';
+import { fetchGetMenuButtonTree, fetchGetRoleButton, fetchUpdateRoleButton } from '@/service/api';
 import { $t } from '@/locales';
 
 defineOptions({
@@ -8,7 +9,7 @@ defineOptions({
 
 interface Props {
   /** the roleId */
-  roleId: number;
+  roleId: string;
 }
 
 const props = defineProps<Props>();
@@ -23,63 +24,66 @@ function closeModal() {
 
 const title = computed(() => $t('common.edit') + $t('page.manage.role.buttonAuth'));
 
-type ButtonConfig = {
-  id: number;
-  label: string;
-  code: string;
-};
+// type ButtonConfig = {
+//   id: number;
+//   label: string;
+//   code: string;
+// };
 
-const tree = shallowRef<ButtonConfig[]>([]);
+// const tree = shallowRef<ButtonConfig[]>([]);
+const tree = shallowRef<Api.SystemManage.ButtonTree[]>([]);
 
-async function getAllButtons() {
-  // request
-  tree.value = [
-    { id: 1, label: 'button1', code: 'code1' },
-    { id: 2, label: 'button2', code: 'code2' },
-    { id: 3, label: 'button3', code: 'code3' },
-    { id: 4, label: 'button4', code: 'code4' },
-    { id: 5, label: 'button5', code: 'code5' },
-    { id: 6, label: 'button6', code: 'code6' },
-    { id: 7, label: 'button7', code: 'code7' },
-    { id: 8, label: 'button8', code: 'code8' },
-    { id: 9, label: 'button9', code: 'code9' },
-    { id: 10, label: 'button10', code: 'code10' }
-  ];
+async function getButtonTree() {
+  const { error, data } = await fetchGetMenuButtonTree();
+  if (!error) {
+    tree.value = data;
+  }
 }
 
-const checks = shallowRef<number[]>([]);
+const byRoleButtonIds = shallowRef<string[]>([]);
 
 async function getChecks() {
-  console.log(props.roleId);
-  // request
-  checks.value = [1, 2, 3, 4, 5];
+  const { error, data } = await fetchGetRoleButton({ id: props.roleId });
+  if (!error) {
+    byRoleButtonIds.value = data.byRoleButtonIds || [];
+  }
 }
 
-function handleSubmit() {
-  console.log(checks.value, props.roleId);
+async function handleSubmit() {
+  // console.log(checks.value, props.roleId);
   // request
 
+  const { error } = await fetchUpdateRoleButton({
+    id: props.roleId,
+    byRoleButtonIds: byRoleButtonIds.value.filter(item => typeof item === 'string')
+  });
+  if (error) return;
   window.$message?.success?.($t('common.modifySuccess'));
 
   closeModal();
 }
 
 function init() {
-  getAllButtons();
   getChecks();
+  getButtonTree();
 }
 
-// init
-init();
+watch(visible, val => {
+  if (val) {
+    init();
+  }
+});
 </script>
 
 <template>
   <NModal v-model:show="visible" :title="title" preset="card" class="w-480px">
     <NTree
-      v-model:checked-keys="checks"
+      v-model:checked-keys="byRoleButtonIds"
       :data="tree"
       key-field="id"
+      default-expand-all
       block-line
+      cascade
       checkable
       expand-on-click
       virtual-scroll

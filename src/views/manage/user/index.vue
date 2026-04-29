@@ -1,27 +1,31 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { enableStatusRecord, userGenderRecord } from '@/constants/business';
-import { fetchGetUserList } from '@/service/api';
+import { statusTypeRecord, userGenderRecord } from '@/constants/business';
+import { fetchBatchDeleteUser, fetchBatchUserOffline, fetchDeleteUser, fetchGetUserList, fetchUserOffline } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
+import { useAuthStore } from '@/store/modules/auth';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
 import UserOperateDrawer from './modules/user-operate-drawer.vue';
 import UserSearch from './modules/user-search.vue';
 
 const appStore = useAppStore();
+const authStore = useAuthStore();
+const isSuperAdmin = computed(() => authStore.userInfo.roles.includes('R_SUPER'));
 
 const searchParams = ref<Api.SystemManage.UserSearchParams>({
   current: 1,
   size: 10,
-  status: null,
   userName: null,
+  password: null,
   userGender: null,
   nickName: null,
   userPhone: null,
-  userEmail: null
+  userEmail: null,
+  byUserRoleCodeList: null,
+  statusType: null
 });
-
 const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination } = useNaivePaginatedTable({
   api: () => fetchGetUserList(searchParams.value),
   transform: response => defaultTransform(response),
@@ -60,7 +64,8 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
 
         const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
           1: 'primary',
-          2: 'error'
+          2: 'error',
+          3: 'info'
         };
 
         const label = $t(userGenderRecord[row.userGender]);
@@ -87,12 +92,12 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       minWidth: 200
     },
     {
-      key: 'status',
-      title: $t('page.manage.user.userStatus'),
+      key: 'statusType',
+      title: $t('page.manage.user.userStatusType'),
       align: 'center',
       width: 100,
       render: row => {
-        if (row.status === null) {
+        if (row.statusType === null) {
           return null;
         }
 
@@ -101,21 +106,55 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
           2: 'warning'
         };
 
-        const label = $t(enableStatusRecord[row.status]);
+        const label = $t(statusTypeRecord[row.statusType]);
 
-        return <NTag type={tagMap[row.status]}>{label}</NTag>;
+        return <NTag type={tagMap[row.statusType]}>{label}</NTag>;
       }
+    },
+    {
+      key: 'updatedInfo',
+      title: $t('page.manage.common.updatedInfo'),
+      align: 'center',
+      minWidth: 160,
+      render: row => (
+        <div class="flex-col-center gap-2px">
+          {row.updatedBy ? <span class="text-12px">{row.updatedBy}</span> : null}
+          {row.fmtUpdatedAt ? <span class="text-12px text-gray-400">{row.fmtUpdatedAt}</span> : null}
+        </div>
+      )
     },
     {
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 130,
+      width: 260,
       render: row => (
         <div class="flex-center gap-8px">
+          {isSuperAdmin.value && String(row.id) !== authStore.userInfo.userId ? (
+            <NPopconfirm onPositiveClick={() => handleImpersonate(row.id)}>
+              {{
+                default: () => $t('page.manage.user.impersonate.confirm', { name: row.userName }),
+                trigger: () => (
+                  <NButton type="info" ghost size="small">
+                    {$t('page.manage.user.impersonate.button')}
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          ) : null}
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
           </NButton>
+          <NPopconfirm onPositiveClick={() => handleOffline(row.id)}>
+            {{
+              default: () => $t('page.manage.user.confirmOffline'),
+              trigger: () => (
+                <NButton type="warning" ghost size="small">
+                  {$t('page.manage.user.offline')}
+                </NButton>
+              )
+            }}
+          </NPopconfirm>
           <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
               default: () => $t('common.confirmDelete'),
@@ -146,19 +185,39 @@ const {
 
 async function handleBatchDelete() {
   // request
-  console.log(checkedRowKeys.value);
-
-  onBatchDeleted();
+  const { error } = await fetchBatchDeleteUser({ ids: checkedRowKeys.value });
+  if (!error) {
+    onBatchDeleted();
+  }
 }
 
-function handleDelete(id: number) {
+async function handleOffline(id: string) {
+  const { error } = await fetchUserOffline(id);
+  if (!error) {
+    window.$message?.success($t('page.manage.user.offlineSuccess'));
+  }
+}
+
+async function handleBatchOffline() {
+  const { error } = await fetchBatchUserOffline({ ids: checkedRowKeys.value });
+  if (!error) {
+    window.$message?.success($t('page.manage.user.offlineSuccess'));
+  }
+}
+
+async function handleImpersonate(id: string) {
+  await authStore.impersonate(id);
+}
+
+async function handleDelete(id: string) {
   // request
-  console.log(id);
-
-  onDeleted();
+  const { error } = await fetchDeleteUser({ id });
+  if (!error) {
+    onDeleted();
+  }
 }
 
-function edit(id: number) {
+function edit(id: string) {
   handleEdit(id);
 }
 </script>
@@ -175,7 +234,21 @@ function edit(id: number) {
           @add="handleAdd"
           @delete="handleBatchDelete"
           @refresh="getData"
-        />
+        >
+          <template #prefix>
+            <NPopconfirm @positive-click="handleBatchOffline">
+              <template #trigger>
+                <NButton size="small" ghost type="warning" :disabled="checkedRowKeys.length === 0">
+                  <template #icon>
+                    <icon-ic-round-logout class="text-icon" />
+                  </template>
+                  {{ $t('page.manage.user.batchOffline') }}
+                </NButton>
+              </template>
+              {{ $t('page.manage.user.confirmOffline') }}
+            </NPopconfirm>
+          </template>
+        </TableHeaderOperation>
       </template>
       <NDataTable
         v-model:checked-row-keys="checkedRowKeys"
@@ -183,7 +256,7 @@ function edit(id: number) {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="962"
+        :scroll-x="1122"
         :loading="loading"
         remote
         :row-key="row => row.id"

@@ -7,6 +7,12 @@ declare namespace Api {
   namespace SystemManage {
     type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size'>;
 
+    /** common delete params */
+    type CommonDeleteParams = { id: string };
+
+    /** common batch delete params */
+    type CommonBatchDeleteParams = { ids: string[] };
+
     /** role */
     type Role = Common.CommonRecord<{
       /** role name */
@@ -15,31 +21,92 @@ declare namespace Api {
       roleCode: string;
       /** role description */
       roleDesc: string;
+      /** role home */
+      byRoleHomeId: string;
     }>;
+
+    /** role add params */
+    type RoleAddParams = Pick<
+      Api.SystemManage.Role,
+      'roleName' | 'roleCode' | 'roleDesc' | 'byRoleHomeId' | 'statusType'
+    >;
+
+    /** role update params */
+    type RoleUpdateParams = CommonType.RecordNullable<Pick<Api.SystemManage.Role, 'id'>> & RoleAddParams;
 
     /** role search params */
     type RoleSearchParams = CommonType.RecordNullable<
-      Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'status'> & CommonSearchParams
+      Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'statusType'> & CommonSearchParams
     >;
 
     /** role list */
     type RoleList = Common.PaginatingQueryRecord<Role>;
 
+    /** role authorized */
+    type RoleAuthorized = Api.SystemManage.Role & {
+      byRoleMenuIds: string[];
+      byRoleApiIds: string[];
+      byRoleButtonIds: string[];
+    };
+
+    /** get role authorized params */
+    type RoleAuthorizedParams = Pick<Api.SystemManage.RoleAuthorized, 'id'>;
+
+    /** role authorized list */
+    type RoleAuthorizedList = CommonType.RecordNullable<RoleAuthorized>;
+
     /** all role */
     type AllRole = Pick<Role, 'id' | 'roleName' | 'roleCode'>;
+
+    /**
+     * api method
+     *
+     * - "1": "GET"
+     * - "2": "POST"
+     * - "3": "PUT"
+     * - "4": "PATCH"
+     * - "5": "DELETE"
+     */
+    type methods = 'get' | 'post' | 'put' | 'patch' | 'delete';
+
+    /** api */
+    type Api = Common.CommonRecord<{
+      /** api path */
+      apiPath: string;
+      /** api method */
+      apiMethod: methods;
+      /** api summary */
+      summary: string;
+      /** api tags name */
+      tags: string[];
+    }>;
+
+    /** api search params */
+    type ApiSearchParams = CommonType.RecordNullable<
+      Pick<Api.SystemManage.Api, 'apiPath' | 'apiMethod' | 'summary' | 'tags' | 'statusType'> & CommonSearchParams
+    > & {
+      /** include framework / system APIs (default false: only business module APIs) */
+      includeSystem?: boolean;
+    };
+
+    /** api list */
+    type ApiList = Common.PaginatingQueryRecord<Api>;
 
     /**
      * user gender
      *
      * - "1": "male"
      * - "2": "female"
+     * - "3": "unknow"
      */
-    type UserGender = '1' | '2';
+    type UserGender = '1' | '2' | '3';
 
     /** user */
     type User = Common.CommonRecord<{
       /** user name */
       userName: string;
+      /** password */
+      password: string;
       /** user gender */
       userGender: UserGender | null;
       /** user nick name */
@@ -49,12 +116,38 @@ declare namespace Api {
       /** user email */
       userEmail: string;
       /** user role code collection */
-      userRoles: string[];
+      byUserRoleCodeList: string[];
     }>;
+
+    /** user add params */
+    type UserAddParams = Pick<
+      Api.SystemManage.User,
+      | 'userName'
+      | 'password'
+      | 'userGender'
+      | 'nickName'
+      | 'userPhone'
+      | 'userEmail'
+      | 'byUserRoleCodeList'
+      | 'statusType'
+    >;
+
+    /** user update params */
+    type UserUpdateParams = CommonType.RecordNullable<Pick<Api.SystemManage.User, 'id'> & UserAddParams>;
 
     /** user search params */
     type UserSearchParams = CommonType.RecordNullable<
-      Pick<Api.SystemManage.User, 'userName' | 'userGender' | 'nickName' | 'userPhone' | 'userEmail' | 'status'> &
+      Pick<
+        Api.SystemManage.User,
+        | 'userName'
+        | 'password'
+        | 'userGender'
+        | 'nickName'
+        | 'userPhone'
+        | 'userEmail'
+        | 'statusType'
+        | 'byUserRoleCodeList'
+      > &
         CommonSearchParams
     >;
 
@@ -75,9 +168,9 @@ declare namespace Api {
        *
        * it can be used to control the button permission
        */
-      code: string;
+      buttonCode: string;
       /** button description */
-      desc: string;
+      buttonDesc: string;
     };
 
     /**
@@ -103,8 +196,8 @@ declare namespace Api {
     >;
 
     type Menu = Common.CommonRecord<{
-      /** parent menu id */
-      parentId: number;
+      /** parent menu id (sqid string; `0` for root) */
+      parentId: string | number;
       /** menu type */
       menuType: MenuType;
       /** menu name */
@@ -126,14 +219,129 @@ declare namespace Api {
     }> &
       MenuPropsOfRoute;
 
+    /** menu add params */
+    // type MenuAddParams = Pick<
+    //   Api.SystemManage.Menu,
+    //   | 'parentId'
+    //   | 'menuType'
+    //   | 'menuName'
+    //   | 'routeName'
+    //   | 'routePath'
+    //   | 'component'
+    //   | 'icon'
+    //   | 'iconType'
+    //   | 'buttons'
+    //   | 'children'
+    // >;
+    type MenuAddParams = Pick<
+      Api.SystemManage.Menu,
+      | 'menuType'
+      | 'menuName'
+      | 'routeName'
+      | 'routePath'
+      | 'component'
+      | 'order'
+      | 'i18nKey'
+      | 'icon'
+      | 'iconType'
+      | 'statusType'
+      | 'parentId'
+      | 'keepAlive'
+      | 'constant'
+      | 'href'
+      | 'hideInMenu'
+      | 'activeMenu'
+      | 'multiTab'
+      | 'fixedIndexInTab'
+    > & {
+      query: NonNullable<Api.SystemManage.Menu['query']>;
+      buttons: NonNullable<Api.SystemManage.Menu['buttons']>;
+      layout: string;
+      page: string;
+      pathParam: string;
+    };
+
+    /** menu update params */
+    type MenuUpdateParams = CommonType.RecordNullable<Pick<Api.SystemManage.Menu, 'id'>> & MenuAddParams;
+
+    /** menu search params */
+    type MenuSearchParams = {
+      includeConstant: boolean;
+      includeHidden: boolean;
+      includeBusiness: boolean;
+    } & CommonSearchParams;
+
     /** menu list */
     type MenuList = Common.PaginatingQueryRecord<Menu>;
 
     type MenuTree = {
-      id: number;
+      id: string | number;
       label: string;
-      pId: number;
+      pId: string | number;
       children?: MenuTree[];
     };
+
+    type ButtonTree = {
+      id: string | number;
+      label: string;
+      pId: string | number;
+      children?: ButtonTree[];
+    };
+
+    type ApiTree = {
+      id: string | number;
+      summary: string;
+      children?: ApiTree[];
+    };
+
+    /**
+     * dictionary status
+     *
+     * - "0": all
+     * - "1": enable
+     * - "2": disable
+     * - "3": invalid
+     */
+    type DictionaryStatus = '0' | '1' | '2' | '3';
+
+    /** dictionary */
+    type Dictionary = Omit<
+      Common.CommonRecord<{
+        /** dict type, e.g. `tag_category` */
+        dictType: string;
+        /** display label */
+        label: string;
+        /** stored value */
+        value: string;
+        /** order */
+        order: number | null;
+        /** dictionary status */
+        status: DictionaryStatus | null;
+        /** remark */
+        remark: string | null;
+      }>,
+      'statusType'
+    >;
+
+    /** dictionary add params */
+    type DictionaryAddParams = Pick<
+      Api.SystemManage.Dictionary,
+      'dictType' | 'label' | 'value' | 'order' | 'status' | 'remark'
+    >;
+
+    /** dictionary update params */
+    type DictionaryUpdateParams = CommonType.RecordNullable<Pick<Api.SystemManage.Dictionary, 'id'>> &
+      DictionaryAddParams;
+
+    /** dictionary search params */
+    type DictionarySearchParams = CommonType.RecordNullable<
+      Pick<Api.SystemManage.Dictionary, 'dictType' | 'label' | 'status'> & CommonSearchParams
+    >;
+
+    /** dictionary list */
+    type DictionaryList = Common.PaginatingQueryRecord<Dictionary>;
+
+    /** dictionary option (for dropdowns) */
+    type DictionaryOption = { label: string; value: string };
   }
 }

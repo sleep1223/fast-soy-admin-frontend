@@ -214,6 +214,62 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
+    name: 'hr',
+    path: '/hr',
+    component: 'layout.base',
+    meta: {
+      title: 'hr',
+      i18nKey: 'route.hr'
+    },
+    children: [
+      {
+        name: 'hr_department',
+        path: '/hr/department',
+        component: 'view.hr_department',
+        meta: {
+          title: 'hr_department',
+          i18nKey: 'route.hr_department'
+        }
+      },
+      {
+        name: 'hr_employee',
+        path: '/hr/employee',
+        component: 'view.hr_employee',
+        meta: {
+          title: 'hr_employee',
+          i18nKey: 'route.hr_employee'
+        }
+      },
+      {
+        name: 'hr_my-workspace',
+        path: '/hr/my-workspace',
+        component: 'view.hr_my-workspace',
+        meta: {
+          title: 'hr_my-workspace',
+          i18nKey: 'route.hr_my-workspace'
+        }
+      },
+      {
+        name: 'hr_tag',
+        path: '/hr/tag',
+        component: 'view.hr_tag',
+        meta: {
+          title: 'hr_tag',
+          i18nKey: 'route.hr_tag'
+        }
+      },
+      {
+        name: 'hr_team',
+        path: '/hr/team',
+        component: 'view.hr_team',
+        meta: {
+          title: 'hr_team',
+          i18nKey: 'route.hr_team'
+        }
+      }
+    ]
+  },
+  {
     name: 'iframe-page',
     path: '/iframe-page/:url',
     component: 'layout.base$view.iframe-page',
@@ -251,6 +307,15 @@ export const generatedRoutes: GeneratedRoute[] = [
     },
     children: [
       {
+        name: 'manage_api',
+        path: '/manage/api',
+        component: 'view.manage_api',
+        meta: {
+          title: 'manage_api',
+          i18nKey: 'route.manage_api'
+        }
+      },
+      {
         name: 'manage_menu',
         path: '/manage/menu',
         component: 'view.manage_menu',
@@ -262,6 +327,73 @@ export const generatedRoutes: GeneratedRoute[] = [
           roles: ['R_ADMIN'],
           keepAlive: true
         }
+      },
+      {
+        name: 'manage_radar',
+        path: '/manage/radar',
+        meta: {
+          title: 'manage_radar',
+          i18nKey: 'route.manage_radar',
+          icon: 'mdi:radar',
+          order: 7
+        },
+        children: [
+          {
+            name: 'manage_radar_exceptions',
+            path: '/manage/radar/exceptions',
+            component: 'view.manage_radar_exceptions',
+            meta: {
+              title: 'manage_radar_exceptions',
+              i18nKey: 'route.manage_radar_exceptions',
+              icon: 'mdi:bug-outline',
+              order: 4
+            }
+          },
+          {
+            name: 'manage_radar_monitor',
+            path: '/manage/radar/monitor',
+            component: 'view.manage_radar_monitor',
+            meta: {
+              title: 'manage_radar_monitor',
+              i18nKey: 'route.manage_radar_monitor',
+              icon: 'mdi:monitor-dashboard',
+              order: 5
+            }
+          },
+          {
+            name: 'manage_radar_overview',
+            path: '/manage/radar/overview',
+            component: 'view.manage_radar_overview',
+            meta: {
+              title: 'manage_radar_overview',
+              i18nKey: 'route.manage_radar_overview',
+              icon: 'mdi:chart-box-outline',
+              order: 1
+            }
+          },
+          {
+            name: 'manage_radar_queries',
+            path: '/manage/radar/queries',
+            component: 'view.manage_radar_queries',
+            meta: {
+              title: 'manage_radar_queries',
+              i18nKey: 'route.manage_radar_queries',
+              icon: 'mdi:database-search',
+              order: 3
+            }
+          },
+          {
+            name: 'manage_radar_requests',
+            path: '/manage/radar/requests',
+            component: 'view.manage_radar_requests',
+            meta: {
+              title: 'manage_radar_requests',
+              i18nKey: 'route.manage_radar_requests',
+              icon: 'mdi:swap-horizontal',
+              order: 2
+            }
+          }
+        ]
       },
       {
         name: 'manage_role',
@@ -690,6 +822,17 @@ export const generatedRoutes: GeneratedRoute[] = [
         ]
       }
     ]
+  },
+  {
+    name: 'showcase',
+    path: '/showcase',
+    component: 'layout.blank$view.showcase',
+    meta: {
+      title: 'showcase',
+      i18nKey: 'route.showcase',
+      constant: true,
+      hideInMenu: true
+    }
   },
   {
     name: 'user-center',
