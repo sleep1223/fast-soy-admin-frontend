@@ -1,6 +1,5 @@
 import { computed, effectScope, onScopeDispose, reactive, shallowRef, watch } from 'vue';
 import type { Ref } from 'vue';
-import { useRoute } from 'vue-router';
 import type { PaginationProps } from 'naive-ui';
 import { useBoolean, useTable } from '@sa/hooks';
 import type { PaginationData, TableColumnCheck, UseTableOptions } from '@sa/hooks';
@@ -23,113 +22,21 @@ export type UseNaiveTableOptions<ResponseData, ApiData, Pagination extends boole
    * @returns true if the column is visible, false otherwise
    */
   getColumnVisible?: (column: NaiveUI.TableColumn<ApiData>) => boolean;
-  /**
-   * persist per-page column settings (checked / fixed / order) to localStorage
-   *
-   * - pass a string: use it as the storage key
-   * - pass `false`: disable persistence
-   * - omit: derive from the current `route.name`; skip if route has no name
-   */
-  persistKey?: string | false;
 };
 
 const SELECTION_KEY = '__selection__';
 
 const EXPAND_KEY = '__expand__';
 
-const COLUMN_SETTINGS_VERSION = 1;
-const COLUMN_SETTINGS_PREFIX = `${import.meta.env.VITE_STORAGE_PREFIX || ''}columnSettings:`;
-
-interface StoredColumnSettings {
-  v: number;
-  items: { key: string; checked: boolean; fixed: NaiveUI.TableColumnFixed }[];
-}
-
-function resolvePersistKey(optionKey: string | false | undefined): string {
-  if (optionKey === false) return '';
-  if (typeof optionKey === 'string' && optionKey) return optionKey;
-  const route = useRoute();
-  return route?.name ? String(route.name) : '';
-}
-
-function loadColumnSettings(key: string): StoredColumnSettings | null {
-  try {
-    const raw = window.localStorage.getItem(COLUMN_SETTINGS_PREFIX + key);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as StoredColumnSettings;
-    if (parsed?.v !== COLUMN_SETTINGS_VERSION || !Array.isArray(parsed.items)) return null;
-    return parsed;
-  } catch {
-    return null;
-  }
-}
-
-function saveColumnSettings(key: string, checks: TableColumnCheck[]) {
-  try {
-    const payload: StoredColumnSettings = {
-      v: COLUMN_SETTINGS_VERSION,
-      items: checks.map(c => ({ key: c.key, checked: c.checked, fixed: c.fixed }))
-    };
-    window.localStorage.setItem(COLUMN_SETTINGS_PREFIX + key, JSON.stringify(payload));
-  } catch {
-    // ignore quota / serialization errors
-  }
-}
-
-function mergePersistedChecks(fresh: TableColumnCheck[], stored: StoredColumnSettings): TableColumnCheck[] {
-  const freshMap = new Map(fresh.map(c => [c.key, c]));
-  const used = new Set<string>();
-  const merged: TableColumnCheck[] = [];
-
-  stored.items.forEach(item => {
-    const base = freshMap.get(item.key);
-    if (!base) return;
-    merged.push({ ...base, checked: item.checked, fixed: item.fixed ?? base.fixed });
-    used.add(item.key);
-  });
-
-  fresh.forEach(c => {
-    if (!used.has(c.key)) merged.push(c);
-  });
-
-  return merged;
-}
-
-function setupColumnPersistence(
-  columnChecks: Ref<TableColumnCheck[]>,
-  persistKey: string,
-  scope: ReturnType<typeof effectScope>
-) {
-  const stored = loadColumnSettings(persistKey);
-  if (stored) {
-    columnChecks.value = mergePersistedChecks(columnChecks.value, stored);
-  }
-
-  scope.run(() => {
-    watch(
-      columnChecks,
-      val => {
-        saveColumnSettings(persistKey, val);
-      },
-      { deep: true }
-    );
-  });
-}
-
 export function useNaiveTable<ResponseData, ApiData>(options: UseNaiveTableOptions<ResponseData, ApiData, false>) {
   const scope = effectScope();
   const appStore = useAppStore();
-  const persistKey = resolvePersistKey(options.persistKey);
 
   const result = useTable<ResponseData, ApiData, NaiveUI.TableColumn<ApiData>, false>({
     ...options,
     getColumnChecks: cols => getColumnChecks(cols, options.getColumnVisible),
     getColumns
   });
-
-  if (persistKey) {
-    setupColumnPersistence(result.columnChecks, persistKey, scope);
-  }
 
   // calculate the total width of the table this is used for horizontal scrolling
   const scrollX = computed(() => getScrollX(result.columns.value));
@@ -171,7 +78,6 @@ export function useNaivePaginatedTable<ResponseData, ApiData>(
 ) {
   const scope = effectScope();
   const appStore = useAppStore();
-  const persistKey = resolvePersistKey(options.persistKey);
 
   const isMobile = computed(() => appStore.isMobile);
 
@@ -224,10 +130,6 @@ export function useNaivePaginatedTable<ResponseData, ApiData>(
       pagination.pageSize = data.pageSize;
     }
   });
-
-  if (persistKey) {
-    setupColumnPersistence(result.columnChecks, persistKey, scope);
-  }
 
   const scrollX = computed(() => getScrollX(result.columns.value));
 

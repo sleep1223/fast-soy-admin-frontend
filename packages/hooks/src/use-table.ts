@@ -80,23 +80,14 @@ export default function useTable<ResponseData, ApiData, Column, Pagination exten
   function reloadColumns() {
     const checkMap = new Map(columnChecks.value.map(col => [col.key, col.checked]));
     const fixedMap = new Map(columnChecks.value.map(col => [col.key, col.fixed]));
-    const orderMap = new Map(columnChecks.value.map((col, i) => [col.key, i]));
 
     const defaultChecks = getColumnChecks(columns());
 
-    const preserved = defaultChecks.map(col => ({
+    columnChecks.value = defaultChecks.map(col => ({
       ...col,
       checked: checkMap.get(col.key) ?? col.checked,
       fixed: (fixedMap.get(col.key) !== 'unFixed' ? fixedMap.get(col.key) : undefined) ?? col.fixed
     }));
-
-    preserved.sort((a, b) => {
-      const ai = orderMap.get(a.key) ?? Number.MAX_SAFE_INTEGER;
-      const bi = orderMap.get(b.key) ?? Number.MAX_SAFE_INTEGER;
-      return ai - bi;
-    });
-
-    columnChecks.value = preserved;
   }
 
   async function getData() {

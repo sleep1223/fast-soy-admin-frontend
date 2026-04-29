@@ -1,12 +1,11 @@
 import { computed } from 'vue';
 import { useCountDown, useLoading } from '@sa/hooks';
-import { fetchSendCaptcha } from '@/service/api';
 import { REG_PHONE } from '@/constants/reg';
 import { $t } from '@/locales';
 
 export function useCaptcha() {
   const { loading, startLoading, endLoading } = useLoading();
-  const { count, start, stop, isCounting } = useCountDown(60);
+  const { count, start, stop, isCounting } = useCountDown(10);
 
   const label = computed(() => {
     let text = $t('page.login.codeLogin.getCode');
@@ -49,12 +48,14 @@ export function useCaptcha() {
 
     startLoading();
 
-    const { error } = await fetchSendCaptcha(phone);
+    // request
+    await new Promise(resolve => {
+      setTimeout(resolve, 500);
+    });
 
-    if (!error) {
-      window.$message?.success?.($t('page.login.codeLogin.sendCodeSuccess'));
-      start();
-    }
+    window.$message?.success?.($t('page.login.codeLogin.sendCodeSuccess'));
+
+    start();
 
     endLoading();
   }

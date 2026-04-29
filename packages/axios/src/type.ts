@@ -26,6 +26,13 @@ export interface RequestOption<
    */
   transform: ResponseTransform<AxiosResponse<ResponseData>, ApiData>;
   /**
+   * transform the response data to the api data
+   *
+   * @deprecated use `transform` instead, will be removed in the next major version v3
+   * @param response Axios response
+   */
+  transformBackendResponse: ResponseTransform<AxiosResponse<ResponseData>, ApiData>;
+  /**
    * The hook before request
    *
    * For example: You can add header token in this hook

@@ -130,7 +130,11 @@ export function useEcharts<T extends ECOption>(optionsFactory: () => T, hooks: C
 
     if (!isRendered()) return;
 
-    chart.value?.setOption({ ...updatedOpts, backgroundColor: 'transparent' }, { notMerge: true });
+    if (isRendered()) {
+      chart.value?.clear();
+    }
+
+    chart.value?.setOption({ ...updatedOpts, backgroundColor: 'transparent' });
 
     await onUpdated?.(chart.value!);
   }

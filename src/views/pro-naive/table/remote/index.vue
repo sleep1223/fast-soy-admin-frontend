@@ -12,8 +12,8 @@ import {
 import { $t } from '@/locales';
 import ConfigProvider from '../../ConfigProvider.vue';
 
-function fetchList(_params: any, _values: any) {
-  // console.log(params, values);
+function fetchList(params: any, values: any) {
+  console.log(params, values);
   return new Promise<{ total: number; list: any[] }>(resolve => {
     setTimeout(() => {
       resolve({

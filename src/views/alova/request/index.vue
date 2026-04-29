@@ -2,38 +2,34 @@
 import { $t } from '@/locales';
 import { fetchCustomBackendError } from '@/service-alova/api';
 
-function safe<T>(p: Promise<T>) {
-  return p.catch(() => undefined);
-}
-
 async function logout() {
-  await safe(fetchCustomBackendError('2100', $t('request.logoutMsg')));
+  await fetchCustomBackendError('8888', $t('request.logoutMsg'));
 }
 
 async function logoutWithModal() {
-  await safe(fetchCustomBackendError('2106', $t('request.logoutWithModalMsg')));
+  await fetchCustomBackendError('7777', $t('request.logoutWithModalMsg'));
 }
 
 async function refreshToken() {
-  await safe(fetchCustomBackendError('2103', $t('request.tokenExpired')));
+  await fetchCustomBackendError('9999', $t('request.tokenExpired'));
 }
 
 async function handleRepeatedMessageError() {
   await Promise.all([
-    safe(fetchCustomBackendError('2222', $t('page.function.request.repeatedErrorMsg1'))),
-    safe(fetchCustomBackendError('2222', $t('page.function.request.repeatedErrorMsg1'))),
-    safe(fetchCustomBackendError('2222', $t('page.function.request.repeatedErrorMsg1'))),
-    safe(fetchCustomBackendError('3333', $t('page.function.request.repeatedErrorMsg2'))),
-    safe(fetchCustomBackendError('3333', $t('page.function.request.repeatedErrorMsg2'))),
-    safe(fetchCustomBackendError('3333', $t('page.function.request.repeatedErrorMsg2')))
+    fetchCustomBackendError('2222', $t('page.function.request.repeatedErrorMsg1')),
+    fetchCustomBackendError('2222', $t('page.function.request.repeatedErrorMsg1')),
+    fetchCustomBackendError('2222', $t('page.function.request.repeatedErrorMsg1')),
+    fetchCustomBackendError('3333', $t('page.function.request.repeatedErrorMsg2')),
+    fetchCustomBackendError('3333', $t('page.function.request.repeatedErrorMsg2')),
+    fetchCustomBackendError('3333', $t('page.function.request.repeatedErrorMsg2'))
   ]);
 }
 
 async function handleRepeatedModalError() {
   await Promise.all([
-    safe(fetchCustomBackendError('2106', $t('request.logoutWithModalMsg'))),
-    safe(fetchCustomBackendError('2106', $t('request.logoutWithModalMsg'))),
-    safe(fetchCustomBackendError('2106', $t('request.logoutWithModalMsg')))
+    fetchCustomBackendError('7777', $t('request.logoutWithModalMsg')),
+    fetchCustomBackendError('7777', $t('request.logoutWithModalMsg')),
+    fetchCustomBackendError('7777', $t('request.logoutWithModalMsg'))
   ]);
 }
 </script>

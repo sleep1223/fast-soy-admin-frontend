@@ -2,7 +2,7 @@
 import { reactive } from 'vue';
 import { NButton, NTag } from 'naive-ui';
 import { utils, writeFile } from 'xlsx';
-import { statusTypeRecord, userGenderRecord } from '@/constants/business';
+import { enableStatusRecord, userGenderRecord } from '@/constants/business';
 import { fetchGetUserList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { isTableColumnHasKey, useNaiveTable } from '@/hooks/common/table';
@@ -63,8 +63,7 @@ const { columns, data, loading } = useNaiveTable({
 
         const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
           1: 'primary',
-          2: 'error',
-          3: 'info'
+          2: 'error'
         };
 
         const label = $t(userGenderRecord[row.userGender]);
@@ -92,11 +91,11 @@ const { columns, data, loading } = useNaiveTable({
     },
     {
       key: 'status',
-      title: $t('page.manage.user.userStatusType'),
+      title: $t('page.manage.user.userStatus'),
       align: 'center',
       width: 100,
       render: row => {
-        if (row.statusType === null) {
+        if (row.status === null) {
           return null;
         }
 
@@ -105,9 +104,9 @@ const { columns, data, loading } = useNaiveTable({
           2: 'warning'
         };
 
-        const label = $t(statusTypeRecord[row.statusType]);
+        const label = $t(enableStatusRecord[row.status]);
 
-        return <NTag type={tagMap[row.statusType]}>{label}</NTag>;
+        return <NTag type={tagMap[row.status]}>{label}</NTag>;
       }
     }
   ]
@@ -142,12 +141,12 @@ function getTableValue(col: NaiveUI.TableColumn<Api.SystemManage.User>, item: Ap
 
   const { key } = col;
 
-  if (key === 'byUserRoleCodeList') {
-    return item.byUserRoleCodeList.map(role => role).join(',');
+  if (key === 'userRoles') {
+    return item.userRoles.map(role => role).join(',');
   }
 
-  if (key === 'statusType') {
-    return (item.statusType && $t(statusTypeRecord[item.statusType])) || null;
+  if (key === 'status') {
+    return (item.status && $t(enableStatusRecord[item.status])) || null;
   }
 
   if (key === 'userGender') {
