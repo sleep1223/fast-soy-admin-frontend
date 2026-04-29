@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { Component } from 'vue';
+import { useRoute } from 'vue-router';
 import { getPaletteColorByNumber, mixColor } from '@sa/color';
 import { loginModuleRecord } from '@/constants/app';
 import { useAppStore } from '@/store/modules/app';
@@ -13,11 +14,21 @@ import ResetPwd from './modules/reset-pwd.vue';
 import BindWechat from './modules/bind-wechat.vue';
 
 interface Props {
-  /** The login module */
+  /** The login module (path param fallback) */
   module?: UnionKey.LoginModule;
 }
 
 const props = defineProps<Props>();
+const route = useRoute();
+
+const VALID_MODULES: UnionKey.LoginModule[] = ['pwd-login', 'code-login', 'register', 'reset-pwd', 'bind-wechat'];
+
+const currentModule = computed<UnionKey.LoginModule>(() => {
+  const fromQuery = route.query.module as UnionKey.LoginModule | undefined;
+  if (fromQuery && VALID_MODULES.includes(fromQuery)) return fromQuery;
+  if (props.module && VALID_MODULES.includes(props.module)) return props.module;
+  return 'pwd-login';
+});
 
 const appStore = useAppStore();
 const themeStore = useThemeStore();
@@ -35,7 +46,7 @@ const moduleMap: Record<UnionKey.LoginModule, LoginModule> = {
   'bind-wechat': { label: loginModuleRecord['bind-wechat'], component: BindWechat }
 };
 
-const activeModule = computed(() => moduleMap[props.module || 'pwd-login']);
+const activeModule = computed(() => moduleMap[currentModule.value]);
 
 const bgThemeColor = computed(() =>
   themeStore.darkMode ? getPaletteColorByNumber(themeStore.themeColor, 600) : themeStore.themeColor

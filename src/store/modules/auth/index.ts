@@ -9,7 +9,16 @@ import { SetupStoreId } from '@/enum';
 import { $t } from '@/locales';
 import { useRouteStore } from '../route';
 import { useTabStore } from '../tab';
-import { clearAuthStorage, getToken, getOriginalToken, setOriginalToken, clearOriginalToken } from './shared';
+import {
+  clearAuthStorage,
+  clearOriginalToken,
+  getOriginalToken,
+  getRefreshToken,
+  getToken,
+  isRemembered,
+  setLoginTokens,
+  setOriginalToken
+} from './shared';
 
 export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const route = useRoute();
@@ -96,15 +105,16 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
    *
    * @param userName User name
    * @param password Password
+   * @param [remember=false] Whether to persist the session across browser restarts. Default is `false`
    * @param [redirect=true] Whether to redirect after login. Default is `true`
    */
-  async function login(userName: string, password: string, redirect = true) {
+  async function login(userName: string, password: string, remember = false, redirect = true) {
     startLoading();
 
     const { data: loginToken, error } = await fetchLogin(userName, password);
 
     if (!error) {
-      const pass = await loginByToken(loginToken);
+      const pass = await loginByToken(loginToken, remember);
 
       if (pass) {
         // Check if the tab needs to be cleared
@@ -130,10 +140,9 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     endLoading();
   }
 
-  async function loginByToken(loginToken: Api.Auth.LoginToken) {
-    // 1. stored in the localStorage, the later requests need it in headers
-    localStg.set('token', loginToken.token);
-    localStg.set('refreshToken', loginToken.refreshToken);
+  async function loginByToken(loginToken: Api.Auth.LoginToken, remember = isRemembered()) {
+    // 1. persist the tokens; storage location depends on "remember me"
+    setLoginTokens(loginToken.token, loginToken.refreshToken, remember);
 
     // 2. get user info
     const pass = await getUserInfo();
@@ -187,9 +196,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     if (!error) {
       // Only save original tokens if not already impersonating (prevent chain overwrite)
       if (!impersonating.value) {
-        const currentToken = localStg.get('token') || '';
-        const currentRefreshToken = localStg.get('refreshToken') || '';
-        setOriginalToken(currentToken, currentRefreshToken);
+        setOriginalToken(getToken(), getRefreshToken());
       }
 
       const pass = await loginByToken(loginToken);

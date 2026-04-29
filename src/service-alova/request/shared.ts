@@ -1,10 +1,10 @@
 import { useAuthStore } from '@/store/modules/auth';
-import { localStg } from '@/utils/storage';
+import { getRefreshToken, getToken, updateTokensPreservingMode } from '@/store/modules/auth/shared';
 import { fetchRefreshToken } from '../api';
 import type { RequestInstanceState } from './type';
 
 export function getAuthorization() {
-  const token = localStg.get('token');
+  const token = getToken();
   const Authorization = token ? `Bearer ${token}` : null;
 
   return Authorization;
@@ -14,7 +14,13 @@ export function getAuthorization() {
 export async function handleRefreshToken() {
   const { resetStore } = useAuthStore();
 
-  const rToken = localStg.get('refreshToken') || '';
+  const rToken = getRefreshToken();
+  // No refresh token (non-remember session) — cannot renew, force logout.
+  if (!rToken) {
+    resetStore();
+    throw new Error('No refresh token available');
+  }
+
   const refreshTokenMethod = fetchRefreshToken(rToken);
 
   // set the refreshToken role, so that the request will not be intercepted
@@ -22,8 +28,7 @@ export async function handleRefreshToken() {
 
   try {
     const data = await refreshTokenMethod;
-    localStg.set('token', data.token);
-    localStg.set('refreshToken', data.refreshToken);
+    updateTokensPreservingMode(data.token, data.refreshToken);
   } catch (error) {
     resetStore();
     throw error;

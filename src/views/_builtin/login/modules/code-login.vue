@@ -12,7 +12,7 @@ defineOptions({
 });
 
 const authStore = useAuthStore();
-const { toggleLoginModule } = useRouterPush();
+const { toggleLoginModule, redirectFromLogin } = useRouterPush();
 const { formRef, validate } = useNaiveForm();
 const { label, isCounting, loading: captchaLoading, getCaptcha } = useCaptcha();
 
@@ -41,12 +41,16 @@ async function handleSubmit() {
   const { data: loginToken, error } = await fetchCodeLogin(model.phone, model.code);
 
   if (!error) {
-    await authStore.loginByToken(loginToken);
-    window.$notification?.success({
-      title: $t('page.login.common.loginSuccess'),
-      content: $t('page.login.common.welcomeBack', { nickName: authStore.userInfo.nickName }),
-      duration: 4500
-    });
+    const pass = await authStore.loginByToken(loginToken);
+
+    if (pass) {
+      await redirectFromLogin();
+      window.$notification?.success({
+        title: $t('page.login.common.loginSuccess'),
+        content: $t('page.login.common.welcomeBack', { nickName: authStore.userInfo.nickName }),
+        duration: 4500
+      });
+    }
   }
 }
 </script>
