@@ -29,6 +29,31 @@ test('user-info requires auth and returns user identity', async ({ request }) =>
   expect(body.data.userName).toBe('Soybean');
 });
 
+test('reset-password rejects invalid captcha', async ({ request }) => {
+  // 不预置验证码 -> 后端 verify_captcha 必然失败 -> 业务码 != 0000
+  const res = await request.post(`${API_BASE}/auth/reset-password`, {
+    data: { phone: '13800000000', code: '000000', password: 'whatever_new_pwd' }
+  });
+  const body = await jsonOk(res);
+  expect(body.code).not.toBe('0000');
+});
+
+test('register rejects invalid captcha', async ({ request }) => {
+  const res = await request.post(`${API_BASE}/auth/register`, {
+    data: { phone: '13800000000', code: '000000', password: 'whatever_new_pwd' }
+  });
+  const body = await jsonOk(res);
+  expect(body.code).not.toBe('0000');
+});
+
+test('code-login rejects invalid captcha', async ({ request }) => {
+  const res = await request.post(`${API_BASE}/auth/code-login`, {
+    data: { phone: '13800000000', code: '000000' }
+  });
+  const body = await jsonOk(res);
+  expect(body.code).not.toBe('0000');
+});
+
 test('response uses camelCase, never snake_case', async ({ request }) => {
   const { data } = await login(request, 'Soybean', '123456');
   const me = await request.get(`${API_BASE}/auth/user-info`, {

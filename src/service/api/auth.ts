@@ -64,6 +64,15 @@ export function fetchRegister(data: { phone: string; code: string; password: str
   });
 }
 
+/** reset password by phone captcha */
+export function fetchResetPassword(data: { phone: string; code: string; password: string }) {
+  return request<null>({
+    url: '/auth/reset-password',
+    method: 'post',
+    data
+  });
+}
+
 /** impersonate user (admin only) */
 export function fetchImpersonate(userId: string) {
   return request<Api.Auth.LoginToken>({
