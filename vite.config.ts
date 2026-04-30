@@ -40,6 +40,10 @@ export default defineConfig(configEnv => {
         '/static': {
           target: viteEnv.VITE_SERVICE_BASE_URL?.replace(/\/api\/v1$/, '') || 'http://127.0.0.1:9999',
           changeOrigin: true
+        },
+        '/__radar': {
+          target: viteEnv.VITE_SERVICE_BASE_URL?.replace(/\/api\/v1$/, '') || 'http://127.0.0.1:9999',
+          changeOrigin: true
         }
       }
     },

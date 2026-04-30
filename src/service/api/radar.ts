@@ -13,10 +13,10 @@ function cleanParams<T extends Record<string, any>>(params?: T): Partial<T> | un
   return Object.keys(cleaned).length > 0 ? (cleaned as Partial<T>) : undefined;
 }
 
-/** radar uses a separate base URL since it's not under /api/v1 */
+/** radar uses a separate base URL since it's not under /api/v1; dev requests go through Vite proxy at /__radar */
 const radarRequest = createFlatRequest(
   {
-    baseURL: import.meta.env.DEV ? 'http://127.0.0.1:9999/__radar/api' : '/__radar/api'
+    baseURL: '/__radar/api'
   },
   {
     transform(response: AxiosResponse<App.Service.Response<any>>) {
