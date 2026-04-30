@@ -1,0 +1,55 @@
+name: Sync upstream
+
+on:
+  schedule:
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: example
+
+      - name: Sync example with upstream
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git remote add upstream https://github.com/soybeanjs/soybean-admin.git
+          git fetch upstream example
+
+          if git merge-base --is-ancestor upstream/example HEAD; then
+            echo "Already up to date with upstream/example."
+            exit 0
+          fi
+
+          if git merge-base --is-ancestor HEAD upstream/example; then
+            git merge --ff-only upstream/example
+            git push origin example
+            exit 0
+          fi
+
+          BR="sync/upstream-$(date +%Y%m%d-%H%M)"
+          git checkout -b "$BR"
+          if git merge --no-edit upstream/example; then
+            git push origin "$BR"
+            gh pr create --base example --head "$BR" \
+              --title "Sync upstream soybean-admin@example" \
+              --body  "Automated upstream sync. Review and merge."
+          else
+            git merge --abort
+            git push origin "$BR"
+            gh pr create --base example --head "$BR" --draft \
+              --title "Sync upstream soybean-admin@example (CONFLICT)" \
+              --body  "Auto-merge failed. Resolve conflicts on this branch then mark ready."
+          fi
