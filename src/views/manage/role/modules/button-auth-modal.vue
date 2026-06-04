@@ -42,6 +42,27 @@ async function getButtonTree() {
 
 const byRoleButtonIds = shallowRef<string[]>([]);
 
+function collectButtonIdSet(nodes: Api.SystemManage.ButtonTree[]) {
+  const ids = new Set<string>();
+
+  nodes.forEach(node => {
+    const children = node.children || [];
+    if (children.length) {
+      collectButtonIdSet(children).forEach(id => ids.add(id));
+    } else if (!String(node.id).startsWith('parent$')) {
+      ids.add(String(node.id));
+    }
+  });
+
+  return ids;
+}
+
+function getCheckedButtonIds() {
+  const buttonIdSet = collectButtonIdSet(tree.value);
+
+  return byRoleButtonIds.value.filter(id => buttonIdSet.has(String(id))).map(String);
+}
+
 async function getChecks() {
   const { error, data } = await fetchGetRoleButton({ id: props.roleId });
   if (!error) {
@@ -55,7 +76,7 @@ async function handleSubmit() {
 
   const { error } = await fetchUpdateRoleButton({
     id: props.roleId,
-    byRoleButtonIds: byRoleButtonIds.value.filter(item => typeof item === 'string')
+    byRoleButtonIds: getCheckedButtonIds()
   });
   if (error) return;
   window.$message?.success?.($t('common.modifySuccess'));
